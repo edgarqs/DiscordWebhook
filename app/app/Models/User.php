@@ -49,4 +49,22 @@ class User extends Authenticatable
             'two_factor_confirmed_at' => 'datetime',
         ];
     }
+
+    // Webhook relationships
+    public function webhooks()
+    {
+        return $this->hasMany(\App\Models\Webhook::class);
+    }
+
+    public function collaboratedWebhooks()
+    {
+        return $this->belongsToMany(\App\Models\Webhook::class, 'webhook_collaborators')
+            ->withPivot('permission_level', 'invited_at', 'accepted_at')
+            ->withTimestamps();
+    }
+
+    public function sentMessages()
+    {
+        return $this->hasMany(\App\Models\MessageHistory::class);
+    }
 }

@@ -41,3 +41,39 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export interface Webhook {
+    id: number;
+    user_id: number;
+    name: string;
+    webhook_url: string;
+    avatar_url?: string;
+    description?: string;
+    tags?: string[];
+    guild_id?: string;
+    channel_id?: string;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+    message_history_count?: number;
+}
+
+export interface MessageHistory {
+    id: number;
+    webhook_id: number;
+    user_id: number;
+    message_content: {
+        content?: string;
+        embeds?: any[];
+        components?: any[];
+    };
+    sent_at: string;
+    status: 'success' | 'failed';
+    response?: any;
+    created_at: string;
+    updated_at: string;
+    user?: {
+        id: number;
+        name: string;
+    };
+}
