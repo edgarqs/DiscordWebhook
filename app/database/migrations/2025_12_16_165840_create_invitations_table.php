@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('invitee_email');
             $table->enum('permission_level', ['admin', 'editor', 'viewer'])->default('viewer');
             $table->string('token')->unique();
-            $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');
+            $table->enum('status', ['pending', 'accepted', 'declined', 'cancelled'])->default('pending');
             $table->timestamp('expires_at');
             $table->timestamps();
 

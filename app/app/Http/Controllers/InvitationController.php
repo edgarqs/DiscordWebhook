@@ -134,8 +134,15 @@ class InvitationController extends Controller
      */
     public function cancel(Invitation $invitation)
     {
-        // Load webhook relationship
-        $invitation->load('webhook');
+        // Ensure webhook relationship is loaded
+        if (!$invitation->relationLoaded('webhook')) {
+            $invitation->load('webhook');
+        }
+        
+        // Check if webhook exists
+        if (!$invitation->webhook) {
+            abort(404, 'Webhook not found.');
+        }
         
         // Only the inviter or webhook owner can cancel
         if ($invitation->inviter_id !== auth()->id() && $invitation->webhook->user_id !== auth()->id()) {
