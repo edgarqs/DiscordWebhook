@@ -13,21 +13,10 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Webhook, Send, Plus, Shield, Mail } from 'lucide-react';
+import { LayoutGrid, Webhook, Send, Plus, Shield, Mail, FileText } from 'lucide-react';
 import AppLogo from './app-logo';
 
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },
-];
+const footerNavItems: NavItem[] = [];
 
 export function AppSidebar() {
     const { auth } = usePage<any>().props;
@@ -46,20 +35,28 @@ export function AppSidebar() {
             icon: Webhook,
         },
         {
-            title: 'Invitations',
-            href: '/invitations',
-            icon: Mail,
-            badge: pendingInvitationsCount > 0 ? pendingInvitationsCount.toString() : undefined,
-        },
-        {
             title: 'Quick Send',
             href: '/send',
             icon: Send,
         },
         {
+            title: 'Templates',
+            href: '/templates',
+            icon: FileText,
+        },
+        {
             title: 'Create Webhook',
             href: '/webhooks/create',
             icon: Plus,
+        },
+    ];
+
+    const dynamicFooterNavItems: NavItem[] = [
+        {
+            title: 'Invitations',
+            href: '/invitations',
+            icon: Mail,
+            badge: pendingInvitationsCount > 0 ? pendingInvitationsCount.toString() : undefined,
         },
         // Show Admin Panel only for admin users
         ...(user?.role === 'admin' ? [{
@@ -88,7 +85,7 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
+                <NavFooter items={dynamicFooterNavItems} className="mt-auto" />
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

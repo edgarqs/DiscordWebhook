@@ -1,7 +1,9 @@
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { useState } from 'react';
+import { Head, useForm, usePage, router } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, Shield, Webhook as WebhookIcon, MessageSquare, Settings as SettingsIcon } from 'lucide-react';
+import { ConfirmDialog } from '@/components/confirm-dialog';
+import { Users, Shield, Webhook as WebhookIcon, MessageSquare, Settings as SettingsIcon, Trash2 } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -30,9 +32,26 @@ export default function AdminIndex({ stats, recentUsers }: AdminProps) {
         password_reset_enabled: settings.password_reset_enabled,
     });
 
+    const [deleteDTO, setDeleteDTO] = useState<{ open: boolean; user: AdminProps['recentUsers'][0] | null }>({
+        open: false,
+        user: null,
+    });
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         post('/admin/settings');
+    };
+
+    const confirmDelete = () => {
+        if (deleteDTO.user) {
+            router.delete(`/admin/users/${deleteDTO.user.id}`, {
+                onFinish: () => setDeleteDTO({ open: false, user: null }),
+            });
+        }
+    };
+
+    const openDeleteDialog = (user: AdminProps['recentUsers'][0]) => {
+        setDeleteDTO({ open: true, user });
     };
 
     return (
@@ -47,58 +66,6 @@ export default function AdminIndex({ stats, recentUsers }: AdminProps) {
                         Manage users and monitor system activity
                     </p>
                 </div>
-
-                {/* Settings Card */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <SettingsIcon className="h-5 w-5" />
-                            System Settings
-                        </CardTitle>
-                        <CardDescription>
-                            Configure registration and password reset features
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            <div className="flex items-center justify-between">
-                                <div className="space-y-0.5">
-                                    <Label htmlFor="registration" className="text-base">
-                                        User Registration
-                                    </Label>
-                                    <p className="text-sm text-muted-foreground">
-                                        Allow new users to create accounts
-                                    </p>
-                                </div>
-                                <Switch
-                                    id="registration"
-                                    checked={data.registration_enabled}
-                                    onCheckedChange={(checked) => setData('registration_enabled', checked)}
-                                />
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                                <div className="space-y-0.5">
-                                    <Label htmlFor="password-reset" className="text-base">
-                                        Password Reset
-                                    </Label>
-                                    <p className="text-sm text-muted-foreground">
-                                        Allow users to reset their passwords
-                                    </p>
-                                </div>
-                                <Switch
-                                    id="password-reset"
-                                    checked={data.password_reset_enabled}
-                                    onCheckedChange={(checked) => setData('password_reset_enabled', checked)}
-                                />
-                            </div>
-
-                            <Button type="submit" disabled={processing}>
-                                {processing ? 'Saving...' : 'Save Settings'}
-                            </Button>
-                        </form>
-                    </CardContent>
-                </Card>
 
                 {/* Stats Grid */}
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -163,7 +130,7 @@ export default function AdminIndex({ stats, recentUsers }: AdminProps) {
                     </Card>
                 </div>
 
-                {/* Recent Users */}
+                {  /* Recent Users */}
                 <Card>
                     <CardHeader>
                         <CardTitle>Recent Users</CardTitle>
@@ -187,11 +154,20 @@ export default function AdminIndex({ stats, recentUsers }: AdminProps) {
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        {user.role === 'admin' && (
+                                        {user.role === 'admin' ? (
                                             <span className="inline-flex items-center rounded-full bg-blue-100 dark:bg-blue-900 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:text-blue-100">
                                                 <Shield className="mr-1 h-3 w-3" />
                                                 Admin
                                             </span>
+                                        ) : (
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => openDeleteDialog(user)}
+                                                className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/10"
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
                                         )}
                                         <span className="text-xs text-muted-foreground">
                                             {new Date(user.created_at).toLocaleDateString()}
@@ -202,7 +178,70 @@ export default function AdminIndex({ stats, recentUsers }: AdminProps) {
                         </div>
                     </CardContent>
                 </Card>
+
+                {/* Settings Card */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <SettingsIcon className="h-5 w-5" />
+                            System Settings
+                        </CardTitle>
+                        <CardDescription>
+                            Configure registration and password reset features
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div className="flex items-center justify-between">
+                                <div className="space-y-0.5">
+                                    <Label htmlFor="registration" className="text-base">
+                                        User Registration
+                                    </Label>
+                                    <p className="text-sm text-muted-foreground">
+                                        Allow new users to create accounts
+                                    </p>
+                                </div>
+                                <Switch
+                                    id="registration"
+                                    checked={data.registration_enabled}
+                                    onCheckedChange={(checked) => setData('registration_enabled', checked)}
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between">
+                                <div className="space-y-0.5">
+                                    <Label htmlFor="password-reset" className="text-base">
+                                        Password Reset
+                                    </Label>
+                                    <p className="text-sm text-muted-foreground">
+                                        Allow users to reset their passwords
+                                    </p>
+                                </div>
+                                <Switch
+                                    id="password-reset"
+                                    checked={data.password_reset_enabled}
+                                    onCheckedChange={(checked) => setData('password_reset_enabled', checked)}
+                                />
+                            </div>
+
+                            <Button type="submit" disabled={processing}>
+                                {processing ? 'Saving...' : 'Save Settings'}
+                            </Button>
+                        </form>
+                    </CardContent>
+                </Card>
             </div>
+
+            <ConfirmDialog
+                open={deleteDTO.open}
+                onOpenChange={(open) => setDeleteDTO((prev) => ({ ...prev, open }))}
+                onConfirm={confirmDelete}
+                title="Delete User"
+                description={`Are you sure you want to delete ${deleteDTO.user?.name}? This action cannot be undone.`}
+                confirmText="Delete"
+                cancelText="Cancel"
+                variant="destructive"
+            />
         </AppLayout>
     );
 }

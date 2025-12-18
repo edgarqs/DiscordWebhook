@@ -61,6 +61,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('invitations/{invitation}', [\App\Http\Controllers\InvitationController::class, 'cancel'])
         ->name('invitations.cancel');
 
+    // Template routes
+    Route::resource('templates', \App\Http\Controllers\TemplateController::class);
+    Route::post('templates/{template}/duplicate', [\App\Http\Controllers\TemplateController::class, 'duplicate'])
+        ->name('templates.duplicate');
+    
+    // Template collaborators
+    Route::prefix('templates/{template}/collaborators')->group(function () {
+        Route::get('/', [\App\Http\Controllers\TemplateCollaboratorController::class, 'index'])
+            ->name('templates.collaborators.index');
+        Route::post('/', [\App\Http\Controllers\TemplateCollaboratorController::class, 'store'])
+            ->name('templates.collaborators.store');
+        Route::put('/{user}', [\App\Http\Controllers\TemplateCollaboratorController::class, 'update'])
+            ->name('templates.collaborators.update');
+        Route::delete('/{user}', [\App\Http\Controllers\TemplateCollaboratorController::class, 'destroy'])
+            ->name('templates.collaborators.destroy');
+    });
+    
+    // Leave template (for collaborators)
+    Route::post('templates/{template}/leave', [\App\Http\Controllers\TemplateCollaboratorController::class, 'leave'])
+        ->name('templates.leave');
+
     // Admin routes
     Route::middleware(['admin', 'password.confirm'])->group(function () {
         Route::get('admin', function () {
@@ -92,6 +113,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
             return redirect()->back()->with('success', 'Settings updated successfully.');
         })->name('admin.settings.update');
+
+        Route::delete('admin/users/{user}', function (\App\Models\User $user) {
+            if ($user->id === auth()->id()) {
+                return redirect()->back()->with('error', 'You cannot delete your own account.');
+            }
+
+            if ($user->role === 'admin') {
+                return redirect()->back()->with('error', 'You cannot delete another admin account.');
+            }
+
+            $user->delete();
+
+            return redirect()->back()->with('success', 'User deleted successfully.');
+        })->name('admin.users.destroy');
     });
 });
 

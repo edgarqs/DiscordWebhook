@@ -186,8 +186,15 @@ class WebhookController extends Controller
         $webhook->permission_level = $webhook->getUserPermissionLevel();
         $webhook->is_owner = $webhook->isOwnedBy();
 
+        // Get user's templates
+        $templates = auth()->user()->templates()
+            ->select('id', 'name', 'category', 'content')
+            ->latest()
+            ->get();
+
         return Inertia::render('webhooks/send', [
             'webhook' => $webhook,
+            'templates' => $templates,
         ]);
     }
 
@@ -325,8 +332,15 @@ class WebhookController extends Controller
     {
         $webhooks = auth()->user()->webhooks()->get();
 
+        // Get user's templates
+        $templates = auth()->user()->templates()
+            ->select('id', 'name', 'category', 'content')
+            ->latest()
+            ->get();
+
         return Inertia::render('send', [
             'webhooks' => $webhooks,
+            'templates' => $templates,
         ]);
     }
 

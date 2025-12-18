@@ -116,16 +116,25 @@ Integración de IA para la generación automática de contenido de mensajes, sug
   - Ver historial
 - **Notificaciones** de envíos exitosos/fallidos
 
-### 6. Colaboración Multi-Usuario
-- **Invitar usuarios** por email
-- **Niveles de permisos**:
-  - **Administrador**: Gestión completa, invitar usuarios, eliminar webhooks
-  - **Editor**: Crear y enviar mensajes, gestionar plantillas
-  - **Visualizador**: Solo ver webhooks y historial
-- **Gestión de invitaciones**:
-  - Pendientes, aceptadas, rechazadas
-  - Revocar acceso
-- **Actividad compartida**: Ver quién hizo qué y cuándo
+### 6. Colaboración Multi-Usuario ✅ IMPLEMENTADO
+- **Invitar usuarios** por email ✅
+  - Sistema de invitaciones con tokens únicos
+  - Notificaciones por email
+  - Expiración de invitaciones (7 días)
+- **Niveles de permisos**: ✅
+  - **Admin**: Gestión completa, invitar usuarios, gestionar colaboradores
+  - **Editor**: Crear y enviar mensajes, editar webhook
+  - **Viewer**: Solo ver webhooks y historial
+- **Gestión de invitaciones**: ✅
+  - Ver invitaciones pendientes
+  - Aceptar/rechazar invitaciones
+  - Cancelar invitaciones enviadas
+  - Página dedicada `/invitations` para gestionar invitaciones recibidas
+- **Gestión de colaboradores**: ✅
+  - Página `/webhooks/{id}/collaborators` para gestionar acceso
+  - Cambiar niveles de permisos de colaboradores
+  - Remover colaboradores
+  - Ver lista de colaboradores actuales y pendientes
 
 ### 7. Panel de Control (Dashboard)
 - **Estadísticas de uso**:
@@ -156,8 +165,9 @@ Integración de IA para la generación automática de contenido de mensajes, sug
   - Contexto visual claro de ubicación en la aplicación
   - Implementado en:
     - Dashboard
-    - Webhooks (Index, Create, Edit, Send, History)
+    - Webhooks (Index, Create, Edit, Send, History, Collaborators)
     - Quick Send
+    - Invitations (Index, Show)
     - Settings (Profile, Password, Appearance, Two-Factor)
 - **Navegación del Sidebar Mejorada** ✅
   - Detección inteligente de página activa
@@ -172,6 +182,11 @@ Integración de IA para la generación automática de contenido de mensajes, sug
   - Cierre manual disponible
   - Soporte para mensajes de éxito y error
   - Integración completa con sistema de flash messages de Laravel
+- **Modales de Confirmación** ✅
+  - Componente ConfirmDialog reutilizable
+  - Reemplazo de alerts nativos del navegador
+  - Variantes para acciones destructivas
+  - Implementado en eliminación de webhooks, colaboradores e invitaciones
 
 ---
 
@@ -447,6 +462,18 @@ Cuando la IA trabaje en este proyecto, debe:
    - Formularios responsive con layout de 2 columnas
    - Notificaciones visuales con iconos
    - Modo oscuro soportado
+   - Diseño consistente en todas las páginas
+   - Breadcrumbs de navegación
+   - Modales de confirmación en lugar de alerts
+
+7. **Sistema de Colaboración**
+   - Invitaciones por email con tokens únicos
+   - Gestión de permisos (Admin, Editor, Viewer)
+   - Página de invitaciones recibidas
+   - Página de gestión de colaboradores por webhook
+   - Aceptar/rechazar/cancelar invitaciones
+   - Cambiar permisos de colaboradores existentes
+   - Remover colaboradores
 
 ### 🔄 En Progreso
 - Sistema de plantillas reutilizables
@@ -454,15 +481,14 @@ Cuando la IA trabaje en este proyecto, debe:
 - Botones interactivos (Action Rows)
 
 ### 📋 Pendiente
-- Sistema de colaboración y permisos
 - Organización por categorías/proyectos
-- Webhooks compartidos
-- Sistema de invitaciones
 - Guardado de borradores
 - Integración con IA
 - Webhooks programados recurrentes
 - Análisis y estadísticas avanzadas
 - API REST para integraciones externas
+- Notificaciones de actividad de colaboradores
+- Logs de auditoría de acciones de colaboradores
 
 ---
 
@@ -475,13 +501,55 @@ Cuando la IA trabaje en este proyecto, debe:
 - Se descubran nuevos requisitos
 - Se complete una fase del roadmap
 
-**Última actualización**: 2025-12-17  
-**Versión**: 1.2.0  
-**Estado del proyecto**: Desarrollo activo - Editor de embeds completo
+**Última actualización**: 2025-12-18  
+**Versión**: 1.3.0  
+**Estado del proyecto**: Desarrollo activo - Sistema de colaboración implementado
 
 ---
 
 ## 📝 Changelog
+
+### Versión 1.3.0 (2025-12-18)
+**Sistema de Colaboración y Mejoras de Consistencia UI**
+
+#### ✨ Nuevas Funcionalidades
+- **Sistema de Colaboración Completo**:
+  - Invitaciones por email con tokens únicos y expiración
+  - Tres niveles de permisos: Admin, Editor, Viewer
+  - Página `/invitations` para gestionar invitaciones recibidas
+  - Página `/webhooks/{id}/collaborators` para gestionar acceso al webhook
+  - Aceptar, rechazar y cancelar invitaciones
+  - Cambiar permisos de colaboradores existentes
+  - Remover colaboradores con confirmación
+  - Notificaciones por email al recibir invitaciones
+
+- **Mejoras de UI/UX**:
+  - Diseño consistente en página de invitaciones (layout moderno, breadcrumbs)
+  - Diseño consistente en página de colaboradores (layout moderno, breadcrumbs)
+  - Modales de confirmación en lugar de alerts nativos
+  - Componente ConfirmDialog reutilizable para acciones destructivas
+
+#### 🐛 Correcciones
+- **Validación de Webhooks**:
+  - Soporte para URLs con dominio `discordapp.com` además de `discord.com`
+  - Regex actualizada en `DiscordWebhookService` para ambos dominios
+  - Validación de Laravel actualizada para aceptar ambos formatos
+
+- **Sistema de Invitaciones**:
+  - Corregido error 500 al cancelar invitaciones
+  - Actualizado enum de status en base de datos: `['pending', 'accepted', 'declined', 'cancelled']`
+  - Migración creada para actualizar bases de datos existentes
+  - Verificación de relación webhook antes de acceder a propiedades
+
+#### 🛠️ Cambios Técnicos
+- **Base de Datos**:
+  - Migración `2025_12_18_165918_update_invitations_status_enum.php`
+  - Actualizado constraint de status en tabla invitations
+  - Soporte para estados: pending, accepted, declined, cancelled
+
+- **Controladores**:
+  - Mejorado `InvitationController::cancel` con verificaciones de seguridad
+  - Actualizado `DiscordWebhookService` para soportar ambos dominios de Discord
 
 ### Versión 1.2.0 (2025-12-17)
 **Editor de Embeds Completo y Mejoras de UX**
