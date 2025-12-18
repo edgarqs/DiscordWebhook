@@ -14,7 +14,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         $user = auth()->user();
         $totalWebhooks = $user->webhooks()->count();
-        $activeWebhooks = $user->webhooks()->where('is_active', true)->count();
+        $activeWebhooks = $totalWebhooks; // All webhooks are active
         $totalMessages = \App\Models\MessageHistory::whereIn('webhook_id', $user->webhooks()->pluck('id'))->count();
         $recentWebhooks = $user->webhooks()->latest()->limit(5)->get();
 
@@ -38,6 +38,39 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Quick send routes
     Route::get('send', [\App\Http\Controllers\WebhookController::class, 'quickSend'])->name('send');
     Route::post('send/temporary', [\App\Http\Controllers\WebhookController::class, 'sendTemporary'])->name('send.temporary');
+
+    // Admin routes
+    Route::middleware('admin')->group(function () {
+        Route::get('admin', function () {
+            $totalUsers = \App\Models\User::count();
+            $adminUsers = \App\Models\User::where('role', 'admin')->count();
+            $totalWebhooks = \App\Models\Webhook::count();
+            $totalMessages = \App\Models\MessageHistory::count();
+            $recentUsers = \App\Models\User::latest()->limit(10)->get();
+
+            return Inertia::render('admin/index', [
+                'stats' => [
+                    'totalUsers' => $totalUsers,
+                    'adminUsers' => $adminUsers,
+                    'totalWebhooks' => $totalWebhooks,
+                    'totalMessages' => $totalMessages,
+                ],
+                'recentUsers' => $recentUsers,
+            ]);
+        })->name('admin');
+
+        Route::post('admin/settings', function (\Illuminate\Http\Request $request) {
+            $request->validate([
+                'registration_enabled' => 'required|boolean',
+                'password_reset_enabled' => 'required|boolean',
+            ]);
+
+            \App\Models\Setting::set('registration_enabled', $request->registration_enabled, 'boolean');
+            \App\Models\Setting::set('password_reset_enabled', $request->password_reset_enabled, 'boolean');
+
+            return redirect()->back()->with('success', 'Settings updated successfully.');
+        })->name('admin.settings.update');
+    });
 });
 
 require __DIR__.'/settings.php';

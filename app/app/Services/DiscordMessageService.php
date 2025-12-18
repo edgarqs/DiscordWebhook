@@ -151,11 +151,6 @@ class DiscordMessageService
             $payload['embeds'] = $messageData['embeds'];
         }
 
-        // Add components (buttons) if present
-        if (!empty($messageData['components'])) {
-            $payload['components'] = $messageData['components'];
-        }
-
         // Add username override if present
         if (!empty($messageData['username'])) {
             $payload['username'] = $messageData['username'];

@@ -3,7 +3,7 @@ import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, CheckCircle2, XCircle } from 'lucide-react';
-import { Webhook, MessageHistory as MessageHistoryType } from '@/types';
+import { Webhook, MessageHistory as MessageHistoryType, type BreadcrumbItem } from '@/types';
 
 interface HistoryProps {
     webhook: Webhook;
@@ -17,8 +17,27 @@ interface HistoryProps {
 }
 
 export default function WebhookHistory({ webhook, messages }: HistoryProps) {
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: 'Dashboard',
+            href: '/dashboard',
+        },
+        {
+            title: 'Webhooks',
+            href: '/webhooks',
+        },
+        {
+            title: webhook.name,
+            href: `/webhooks/${webhook.id}/edit`,
+        },
+        {
+            title: 'History',
+            href: `/webhooks/${webhook.id}/history`,
+        },
+    ];
+
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Message History - ${webhook.name}`} />
 
             <div className="p-6 space-y-6">

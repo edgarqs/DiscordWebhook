@@ -21,6 +21,12 @@ export default defineConfig({
             formVariants: true,
         }),
     ],
+    server: {
+        host: '127.0.0.1', // Force IPv4 to avoid Windows Firewall issues
+        hmr: {
+            host: '127.0.0.1',
+        },
+    },
     esbuild: {
         jsx: 'automatic',
     },

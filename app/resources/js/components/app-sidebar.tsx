@@ -12,32 +12,9 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Webhook, Send, Plus } from 'lucide-react';
+import { Link, usePage } from '@inertiajs/react';
+import { BookOpen, Folder, LayoutGrid, Webhook, Send, Plus, Shield } from 'lucide-react';
 import AppLogo from './app-logo';
-
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Webhooks',
-        href: '/webhooks',
-        icon: Webhook,
-    },
-    {
-        title: 'Quick Send',
-        href: '/send',
-        icon: Send,
-    },
-    {
-        title: 'Create Webhook',
-        href: '/webhooks/create',
-        icon: Plus,
-    },
-];
 
 const footerNavItems: NavItem[] = [
     {
@@ -53,6 +30,38 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { auth } = usePage<any>().props;
+    const user = auth?.user;
+
+    const mainNavItems: NavItem[] = [
+        {
+            title: 'Dashboard',
+            href: dashboard(),
+            icon: LayoutGrid,
+        },
+        {
+            title: 'Webhooks',
+            href: '/webhooks',
+            icon: Webhook,
+        },
+        {
+            title: 'Quick Send',
+            href: '/send',
+            icon: Send,
+        },
+        {
+            title: 'Create Webhook',
+            href: '/webhooks/create',
+            icon: Plus,
+        },
+        // Show Admin Panel only for admin users
+        ...(user?.role === 'admin' ? [{
+            title: 'Admin Panel',
+            href: '/admin',
+            icon: Shield,
+        }] : []),
+    ];
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>

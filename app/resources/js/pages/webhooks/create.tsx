@@ -12,8 +12,12 @@ import { type BreadcrumbItem } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Webhooks > Webhooks Create',
-        href: '/webhooks/create',
+        title: 'Webhooks',
+        href: '/webhooks',
+    },
+    {
+        title: 'Create',
+        href: '/create',
     },
 ];
 

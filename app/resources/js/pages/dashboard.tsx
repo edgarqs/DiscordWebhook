@@ -26,7 +26,6 @@ interface WebhookData {
     id: number;
     name: string;
     avatar_url?: string;
-    is_active: boolean;
     created_at: string;
 }
 
@@ -46,7 +45,7 @@ export default function Dashboard({ stats, recentWebhooks }: DashboardProps) {
         } else if (page.props.flash?.error) {
             setNotification({ message: page.props.flash.error, type: 'error' });
         }
-    }, [page.props.flash]);
+    }, [page.props.flash?.success, page.props.flash?.error]);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -184,9 +183,6 @@ export default function Dashboard({ stats, recentWebhooks }: DashboardProps) {
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-3">
-                                            <Badge variant={webhook.is_active ? 'default' : 'secondary'}>
-                                                {webhook.is_active ? 'Active' : 'Inactive'}
-                                            </Badge>
                                             <Link href={`/webhooks/${webhook.id}/edit`}>
                                                 <Button variant="ghost" size="sm">
                                                     Manage

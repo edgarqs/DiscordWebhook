@@ -17,12 +17,10 @@ class Webhook extends Model
         'avatar_url',
         'description',
         'tags',
-        'is_active',
     ];
 
     protected $casts = [
         'tags' => 'array',
-        'is_active' => 'boolean',
     ];
 
     // Relationships

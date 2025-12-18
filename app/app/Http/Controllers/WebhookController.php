@@ -8,6 +8,7 @@ use App\Services\DiscordWebhookService;
 use App\Services\DiscordMessageService;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class WebhookController extends Controller
@@ -104,7 +105,6 @@ class WebhookController extends Controller
             'description' => 'nullable|string|max:1000',
             'tags' => 'nullable|array',
             'tags.*' => 'string|max:50',
-            'is_active' => 'boolean',
         ]);
 
         // If webhook URL changed, validate with Discord API
@@ -189,16 +189,12 @@ class WebhookController extends Controller
             'embeds.*.fields.*.name' => 'required|string|max:256',
             'embeds.*.fields.*.value' => 'required|string|max:1024',
             'embeds.*.fields.*.inline' => 'nullable|boolean',
-            'components' => 'nullable|array|max:5',
-            'components.*.type' => 'required|integer',
-            'components.*.components' => 'required|array|max:5',
         ]);
 
         // Build message payload for Discord API
         $messageData = [
             'content' => $validated['content'] ?? null,
             'embeds' => $validated['embeds'] ?? [],
-            'components' => $validated['components'] ?? [],
         ];
 
         // Send message to Discord

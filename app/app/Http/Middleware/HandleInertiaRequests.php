@@ -45,7 +45,15 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            'settings' => [
+                'registration_enabled' => \App\Models\Setting::isRegistrationEnabled(),
+                'password_reset_enabled' => \App\Models\Setting::isPasswordResetEnabled(),
+            ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'flash' => [
+                'success' => $request->session()->get('success'),
+                'error' => $request->session()->get('error'),
+            ],
         ];
     }
 }

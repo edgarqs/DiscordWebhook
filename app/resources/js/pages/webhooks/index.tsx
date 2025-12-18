@@ -22,7 +22,6 @@ interface WebhookData {
     avatar_url?: string;
     description?: string;
     tags?: string[];
-    is_active: boolean;
     message_history_count: number;
     created_at: string;
 }
@@ -111,11 +110,6 @@ export default function WebhooksIndex({ webhooks }: Props) {
                                             )}
                                             <div>
                                                 <CardTitle className="text-lg">{webhook.name}</CardTitle>
-                                                <div className="flex items-center gap-2 mt-1">
-                                                    <Badge variant={webhook.is_active ? 'default' : 'secondary'}>
-                                                        {webhook.is_active ? 'Active' : 'Inactive'}
-                                                    </Badge>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -142,9 +136,6 @@ export default function WebhooksIndex({ webhooks }: Props) {
                                             <ExternalLink className="h-4 w-4" />
                                             <span>{webhook.message_history_count || 0} messages</span>
                                         </div>
-                                        <Badge variant={webhook.is_active ? 'default' : 'secondary'}>
-                                            {webhook.is_active ? 'Active' : 'Inactive'}
-                                        </Badge>
                                     </div>
 
                                     {/* Action Buttons */}

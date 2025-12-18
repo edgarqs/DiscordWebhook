@@ -11,6 +11,34 @@ import { Link, usePage } from '@inertiajs/react';
 
 export function NavMain({ items = [] }: { items: NavItem[] }) {
     const page = usePage();
+
+    // Function to determine if a nav item is active
+    const isItemActive = (itemHref: NonNullable<NavItem['href']>) => {
+        const currentUrl = page.url;
+        const resolvedHref = resolveUrl(itemHref);
+
+        // Exact match
+        if (currentUrl === resolvedHref) {
+            return true;
+        }
+
+        // For parent routes, only mark as active if there's no more specific match
+        // Check if current URL starts with this href
+        if (currentUrl.startsWith(resolvedHref)) {
+            // Check if any other item has a more specific match
+            const hasMoreSpecificMatch = items.some(otherItem => {
+                const otherHref = resolveUrl(otherItem.href);
+                return otherHref !== resolvedHref &&
+                    otherHref.startsWith(resolvedHref) &&
+                    currentUrl.startsWith(otherHref);
+            });
+
+            return !hasMoreSpecificMatch;
+        }
+
+        return false;
+    };
+
     return (
         <SidebarGroup className="px-2 py-0">
             <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -19,9 +47,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                     <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton
                             asChild
-                            isActive={page.url.startsWith(
-                                resolveUrl(item.href),
-                            )}
+                            isActive={isItemActive(item.href)}
                             tooltip={{ children: item.title }}
                         >
                             <Link href={item.href} prefetch>

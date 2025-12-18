@@ -8,6 +8,18 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, Send } from 'lucide-react';
 import { Webhook } from '@/types';
+import { BreadcrumbItem } from '@/types';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Webhooks',
+        href: '/webhooks',
+    },
+    {
+        title: 'Send',
+        href: '/send',
+    },
+];
 
 interface SendProps {
     webhook: Webhook;
@@ -17,10 +29,9 @@ export default function WebhookSend({ webhook }: SendProps) {
     const { data, setData, post, processing, errors } = useForm({
         content: '',
         embeds: [] as any[],
-        components: [] as any[],
     });
 
-    const [activeTab, setActiveTab] = useState<'content' | 'embeds' | 'buttons'>('content');
+    const [activeTab, setActiveTab] = useState<'content' | 'embeds'>('content');
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -51,7 +62,7 @@ export default function WebhookSend({ webhook }: SendProps) {
     };
 
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Send Message - ${webhook.name}`} />
 
             <div className="p-6 space-y-6">
@@ -101,16 +112,6 @@ export default function WebhookSend({ webhook }: SendProps) {
                                         }`}
                                 >
                                     Embeds ({data.embeds.length})
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setActiveTab('buttons')}
-                                    className={`px-4 py-2 font-medium transition-colors ${activeTab === 'buttons'
-                                        ? 'border-b-2 border-primary text-primary'
-                                        : 'text-muted-foreground hover:text-foreground'
-                                        }`}
-                                >
-                                    Buttons
                                 </button>
                             </div>
 
@@ -216,16 +217,6 @@ export default function WebhookSend({ webhook }: SendProps) {
                                             )}
                                         </>
                                     )}
-                                </div>
-                            )}
-
-                            {/* Buttons Tab */}
-                            {activeTab === 'buttons' && (
-                                <div className="text-center py-8 text-muted-foreground">
-                                    <p>Button support coming soon</p>
-                                    <p className="text-sm mt-2">
-                                        For now, you can send messages with content and embeds
-                                    </p>
                                 </div>
                             )}
 

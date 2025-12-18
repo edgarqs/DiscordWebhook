@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Send, Webhook as WebhookIcon } from 'lucide-react';
-import { Webhook } from '@/types';
+import { Webhook, type BreadcrumbItem } from '@/types';
 import { Toast } from '@/components/ui/toast';
 
 interface SendProps {
@@ -15,6 +15,17 @@ interface SendProps {
 }
 
 export default function QuickSend({ webhooks }: SendProps) {
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: 'Dashboard',
+            href: '/dashboard',
+        },
+        {
+            title: 'Quick Send',
+            href: '/send',
+        },
+    ];
+
     const page = usePage<any>();
     const [mode, setMode] = useState<'existing' | 'temporary'>('existing');
     const [selectedWebhookId, setSelectedWebhookId] = useState<number | null>(
@@ -22,13 +33,20 @@ export default function QuickSend({ webhooks }: SendProps) {
     );
     const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors, reset } = useForm<{
+        webhook_id: number | null;
+        temporary_webhook_url: string;
+        temporary_name: string;
+        temporary_avatar: string;
+        content: string;
+        embeds: any[];
+    }>({
         webhook_id: webhooks.length > 0 ? webhooks[0].id : null,
         temporary_webhook_url: '',
         temporary_name: '',
         temporary_avatar: '',
         content: '',
-        embeds: [] as any[],
+        embeds: [],
     });
 
     const [activeTab, setActiveTab] = useState<'content' | 'embeds'>('content');
@@ -43,11 +61,12 @@ export default function QuickSend({ webhooks }: SendProps) {
         } else if (page.props.flash?.error) {
             setNotification({ message: page.props.flash.error, type: 'error' });
         }
-    }, [page.props.flash]);
+    }, [page.props.flash?.success, page.props.flash?.error]);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
+        // @ts-ignore - Type instantiation depth issue with Inertia.js
         if (mode === 'existing' && selectedWebhookId) {
             post(`/webhooks/${selectedWebhookId}/send`);
         } else if (mode === 'temporary' && data.temporary_webhook_url) {
@@ -78,7 +97,7 @@ export default function QuickSend({ webhooks }: SendProps) {
     };
 
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Quick Send Message" />
 
             {/* Toast Notification */}

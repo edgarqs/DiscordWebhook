@@ -39,7 +39,7 @@ Integración de IA para la generación automática de contenido de mensajes, sug
   - Avatar personalizado (URL)
   - URL del webhook de Discord (validado)
   - Descripción y etiquetas (tags)
-  - Estado activo/inactivo
+  - ~~Estado activo/inactivo~~ **ELIMINADO** - Todos los webhooks están siempre activos
   - Metadatos de Discord (guild_id, channel_id)
 - **Compartir webhooks** con otros usuarios (con diferentes niveles de permisos)
 - **Historial de envíos** por webhook ✅
@@ -54,16 +54,20 @@ Integración de IA para la generación automática de contenido de mensajes, sug
 - **Dos modos de envío**: ✅
   - **Webhook existente**: Selección desde dropdown con preview
   - **Webhook temporal**: URL directa sin guardar, con nombre y avatar personalizables
-- **Componentes soportados**: ✅ PARCIAL
+- **Componentes soportados**: ✅ COMPLETO
   - Contenido de texto simple (máx. 2000 caracteres) ✅
-  - Embeds personalizables (máx. 10): ✅
+  - Embeds personalizables (máx. 10): ✅ COMPLETO
     - Título (máx. 256 caracteres) ✅
+    - Título URL (para hacer el título clickeable) ✅
     - Descripción (máx. 4096 caracteres) ✅
-    - Color personalizable ✅
-    - Campos (inline y normales) 🔄 PENDIENTE
-    - Autor, footer, timestamp 🔄 PENDIENTE
-    - Imágenes y thumbnails 🔄 PENDIENTE
-    - URLs
+    - Color personalizable con selector visual ✅
+    - Author (nombre, URL, icono) ✅
+    - Footer (texto, icono) ✅
+    - Timestamp (fecha/hora actual) ✅
+    - Image (imagen grande) ✅
+    - Thumbnail (imagen pequeña en esquina superior derecha) ✅
+    - Fields (nombre, valor, inline) - Máx. 25 por embed ✅
+    - Secciones colapsables para mejor organización ✅
   - Botones interactivos (Action Rows): 🔄 PENDIENTE
     - Botones de enlace
     - Botones personalizados
@@ -71,17 +75,22 @@ Integración de IA para la generación automática de contenido de mensajes, sug
   - Simulación exacta del aspecto en Discord
   - Actualización instantánea al editar
   - Muestra avatar y nombre del webhook
-  - Renderizado de embeds con colores
+  - Renderizado completo de embeds con todos los campos
+  - Posicionamiento correcto de thumbnails
+  - Preview sticky que permanece visible al hacer scroll
 - **Validación en tiempo real** contra límites de Discord API ✅
   - Contador de caracteres en tiempo real
   - Validación de límites (2000 chars contenido, 256 título, 4096 descripción)
   - Máximo 10 embeds por mensaje
+  - Máximo 25 fields por embed
   - Mensajes de error descriptivos
 - **Notificaciones de envío** ✅
-  - Banner de éxito/error visible
+  - Toast notifications en esquina superior derecha
+  - Mensajes de éxito (verde) y error (rojo)
   - Auto-desaparece después de 5 segundos
   - Botón para cerrar manualmente
-  - Limpieza automática del formulario tras éxito verá el mensaje en Discord
+  - Sistema de flash messages integrado con Inertia.js
+  - Limpieza automática del formulario tras éxito
 
 ### 4. Sistema de Plantillas
 - **Guardar mensajes como plantillas** reutilizables
@@ -140,6 +149,30 @@ Integración de IA para la generación automática de contenido de mensajes, sug
 - **Filtros y búsqueda** avanzada
 - **Exportar historial** a CSV/JSON
 
+### 9. Experiencia de Usuario (UX/UI) ✅ IMPLEMENTADO
+- **Sistema de Breadcrumbs** ✅
+  - Navegación jerárquica visible en todas las páginas
+  - Breadcrumbs clickeables para navegación rápida
+  - Contexto visual claro de ubicación en la aplicación
+  - Implementado en:
+    - Dashboard
+    - Webhooks (Index, Create, Edit, Send, History)
+    - Quick Send
+    - Settings (Profile, Password, Appearance, Two-Factor)
+- **Navegación del Sidebar Mejorada** ✅
+  - Detección inteligente de página activa
+  - Solo el item más específico se ilumina (evita iluminación múltiple)
+  - Soporte para rutas anidadas
+  - Indicadores visuales claros de la página actual
+- **Sistema de Notificaciones** ✅
+  - Toast notifications modernas y no intrusivas
+  - Posicionamiento en esquina superior derecha
+  - Animaciones suaves de entrada/salida
+  - Auto-cierre configurable (5 segundos por defecto)
+  - Cierre manual disponible
+  - Soporte para mensajes de éxito y error
+  - Integración completa con sistema de flash messages de Laravel
+
 ---
 
 ## 🏗️ Arquitectura Técnica
@@ -176,7 +209,8 @@ Integración de IA para la generación automática de contenido de mensajes, sug
 - id, name, email, password, email_verified_at, timezone, created_at, updated_at
 
 **webhooks**
-- id, user_id (owner), name, webhook_url, avatar_url, description, tags (JSON), is_active, created_at, updated_at
+- id, user_id (owner), name, webhook_url, avatar_url, description, tags (JSON), guild_id, channel_id, created_at, updated_at
+- **NOTA**: La columna `is_active` fue eliminada - todos los webhooks están siempre activos
 
 **webhook_collaborators**
 - id, webhook_id, user_id, permission_level (admin/editor/viewer), invited_by, invited_at, accepted_at
@@ -417,7 +451,6 @@ Cuando la IA trabaje en este proyecto, debe:
 ### 🔄 En Progreso
 - Sistema de plantillas reutilizables
 - Programación de mensajes
-- Campos de embed adicionales (author, footer, fields, images)
 - Botones interactivos (Action Rows)
 
 ### 📋 Pendiente
@@ -442,9 +475,63 @@ Cuando la IA trabaje en este proyecto, debe:
 - Se descubran nuevos requisitos
 - Se complete una fase del roadmap
 
-**Última actualización**: 2025-12-16  
-**Versión**: 1.0.0  
-**Estado del proyecto**: Planificación inicial
+**Última actualización**: 2025-12-17  
+**Versión**: 1.2.0  
+**Estado del proyecto**: Desarrollo activo - Editor de embeds completo
+
+---
+
+## 📝 Changelog
+
+### Versión 1.2.0 (2025-12-17)
+**Editor de Embeds Completo y Mejoras de UX**
+
+#### ✨ Nuevas Funcionalidades
+- **Editor de Embeds Completo**:
+  - Soporte para todos los campos de Discord: Title URL, Author, Footer, Timestamp, Image, Thumbnail, Fields
+  - Máximo 25 fields por embed con soporte inline
+  - Secciones colapsables para mejor organización (Author, Footer, Images)
+  - Preview mejorado con posicionamiento correcto de thumbnails
+  - Preview sticky que permanece visible al hacer scroll
+
+- **Sistema de Breadcrumbs**:
+  - Navegación jerárquica en todas las páginas principales
+  - Breadcrumbs clickeables para navegación rápida
+  - Implementado en Dashboard, Webhooks, Quick Send y Settings
+
+- **Sistema de Notificaciones Flash**:
+  - Toast notifications modernas en esquina superior derecha
+  - Mensajes de éxito/error con auto-cierre
+  - Integración completa con Inertia.js middleware
+
+#### 🔧 Mejoras
+- **Navegación del Sidebar**:
+  - Detección inteligente de página activa
+  - Solo el item más específico se ilumina (evita iluminación múltiple)
+  - Mejor soporte para rutas anidadas
+
+#### 🛠️ Cambios Técnicos
+- **Eliminación de `is_active`**:
+  - Removida columna `is_active` de la tabla webhooks
+  - Todos los webhooks están siempre activos
+  - Limpieza de código frontend y backend
+
+- **Middleware de Inertia**:
+  - Agregado soporte para flash messages en `HandleInertiaRequests`
+  - Compartir automático de mensajes success/error
+
+#### 🐛 Correcciones
+- Corregido posicionamiento de thumbnails en preview de embeds
+- Corregida detección de página activa en sidebar para rutas anidadas
+- Mejorada inferencia de tipos en TypeScript para evitar errores de profundidad
+
+### Versión 1.1.0 (2025-12-16)
+**Funcionalidades Básicas Implementadas**
+- Sistema de autenticación completo
+- CRUD de webhooks con validación Discord API
+- Editor básico de mensajes con embeds
+- Historial de mensajes enviados
+- Quick Send con webhooks temporales
 
 ---
 

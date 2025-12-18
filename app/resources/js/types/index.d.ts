@@ -52,7 +52,6 @@ export interface Webhook {
     tags?: string[];
     guild_id?: string;
     channel_id?: string;
-    is_active: boolean;
     created_at: string;
     updated_at: string;
     message_history_count?: number;

@@ -6,8 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
 import { ArrowLeft, Webhook } from 'lucide-react';
+import { type BreadcrumbItem } from '@/types';
 
 interface WebhookData {
     id: number;
@@ -16,7 +16,6 @@ interface WebhookData {
     avatar_url?: string;
     description?: string;
     tags?: string[];
-    is_active: boolean;
 }
 
 interface Props {
@@ -24,13 +23,27 @@ interface Props {
 }
 
 export default function WebhooksEdit({ webhook }: Props) {
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: 'Dashboard',
+            href: '/dashboard',
+        },
+        {
+            title: 'Webhooks',
+            href: '/webhooks',
+        },
+        {
+            title: 'Edit',
+            href: `/webhooks/${webhook.id}/edit`,
+        },
+    ];
+
     const { data, setData, put, processing, errors } = useForm({
         name: webhook.name,
         webhook_url: webhook.webhook_url,
         avatar_url: webhook.avatar_url || '',
         description: webhook.description || '',
         tags: webhook.tags || [],
-        is_active: webhook.is_active,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -44,7 +57,7 @@ export default function WebhooksEdit({ webhook }: Props) {
     };
 
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Edit ${webhook.name}`} />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-6">
@@ -169,23 +182,6 @@ export default function WebhooksEdit({ webhook }: Props) {
                                     <p className="text-sm text-muted-foreground">
                                         Separate tags with commas
                                     </p>
-                                </div>
-
-                                {/* Active Status - Spans both columns */}
-                                <div className="lg:col-span-2">
-                                    <div className="flex items-center justify-between rounded-lg border-2 border-primary/20 bg-primary/5 p-4">
-                                        <div className="space-y-0.5">
-                                            <Label htmlFor="is_active" className="text-base font-semibold">Active Status</Label>
-                                            <p className="text-sm text-muted-foreground">
-                                                Enable or disable this webhook
-                                            </p>
-                                        </div>
-                                        <Switch
-                                            id="is_active"
-                                            checked={data.is_active}
-                                            onCheckedChange={(checked: boolean) => setData('is_active', checked)}
-                                        />
-                                    </div>
                                 </div>
                             </div>
 

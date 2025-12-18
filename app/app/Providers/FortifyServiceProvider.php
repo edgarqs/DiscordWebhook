@@ -31,6 +31,7 @@ class FortifyServiceProvider extends ServiceProvider
         $this->configureActions();
         $this->configureViews();
         $this->configureRateLimiting();
+        $this->configureMiddleware();
     }
 
     /**
@@ -48,8 +49,8 @@ class FortifyServiceProvider extends ServiceProvider
     private function configureViews(): void
     {
         Fortify::loginView(fn (Request $request) => Inertia::render('auth/login', [
-            'canResetPassword' => Features::enabled(Features::resetPasswords()),
-            'canRegister' => Features::enabled(Features::registration()),
+            'canResetPassword' => Features::enabled(Features::resetPasswords()) && \App\Models\Setting::isPasswordResetEnabled(),
+            'canRegister' => Features::enabled(Features::registration()) && \App\Models\Setting::isRegistrationEnabled(),
             'status' => $request->session()->get('status'),
         ]));
 
@@ -86,6 +87,32 @@ class FortifyServiceProvider extends ServiceProvider
             $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
 
             return Limit::perMinute(5)->by($throttleKey);
+        });
+    }
+
+    /**
+     * Configure middleware for Fortify routes.
+     */
+    private function configureMiddleware(): void
+    {
+        // Override register view to check if registration is enabled
+        Fortify::registerView(function () {
+            if (!\App\Models\Setting::isRegistrationEnabled()) {
+                return redirect()->route('login')
+                    ->with('error', 'User registration is currently disabled.');
+            }
+            return Inertia::render('auth/register');
+        });
+
+        // Override password reset view to check if password reset is enabled
+        Fortify::requestPasswordResetLinkView(function (Request $request) {
+            if (!\App\Models\Setting::isPasswordResetEnabled()) {
+                return redirect()->route('login')
+                    ->with('error', 'Password reset is currently disabled.');
+            }
+            return Inertia::render('auth/forgot-password', [
+                'status' => $request->session()->get('status'),
+            ]);
         });
     }
 }
