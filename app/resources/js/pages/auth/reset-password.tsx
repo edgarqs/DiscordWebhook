@@ -119,7 +119,7 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
 
                     {/* Footer */}
                     <p className="text-center text-slate-500 text-sm mt-6">
-                        © 2024 Discord Webhook Manager. All rights reserved.
+                        © {new Date().getFullYear()} Discord Webhook Manager. All rights reserved.
                     </p>
                 </div>
             </div>
