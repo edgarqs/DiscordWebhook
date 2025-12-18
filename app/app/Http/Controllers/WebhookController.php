@@ -16,16 +16,39 @@ class WebhookController extends Controller
     use AuthorizesRequests;
     public function index()
     {
-        $webhooks = auth()->user()->webhooks()
+        $user = auth()->user();
+        
+        // Webhooks propios
+        $ownedWebhooks = $user->webhooks()
             ->with('messageHistory')
             ->withCount('messageHistory')
             ->latest()
-            ->get();
+            ->get()
+            ->map(function ($webhook) {
+                $webhook->is_owner = true;
+                $webhook->permission_level = 'owner';
+                return $webhook;
+            });
+        
+        // Webhooks compartidos (como colaborador)
+        $sharedWebhooks = $user->collaboratedWebhooks()
+            ->with(['messageHistory', 'owner:id,name,email'])
+            ->withCount('messageHistory')
+            ->latest()
+            ->get()
+            ->map(function ($webhook) {
+                $webhook->is_owner = false;
+                $webhook->permission_level = $webhook->pivot->permission_level;
+                return $webhook;
+            });
+        
+        $webhooks = $ownedWebhooks->merge($sharedWebhooks);
 
         return Inertia::render('webhooks/index', [
             'webhooks' => $webhooks,
         ]);
     }
+
 
     public function create()
     {
@@ -80,6 +103,9 @@ class WebhookController extends Controller
             $query->latest()->limit(10);
         }]);
 
+        $webhook->permission_level = $webhook->getUserPermissionLevel();
+        $webhook->is_owner = $webhook->isOwnedBy();
+
         return Inertia::render('webhooks/show', [
             'webhook' => $webhook,
         ]);
@@ -88,6 +114,9 @@ class WebhookController extends Controller
     public function edit(Webhook $webhook)
     {
         $this->authorize('update', $webhook);
+
+        $webhook->permission_level = $webhook->getUserPermissionLevel();
+        $webhook->is_owner = $webhook->isOwnedBy();
 
         return Inertia::render('webhooks/edit', [
             'webhook' => $webhook,
@@ -152,7 +181,10 @@ class WebhookController extends Controller
      */
     public function sendForm(Webhook $webhook)
     {
-        $this->authorize('view', $webhook);
+        $this->authorize('send', $webhook);
+
+        $webhook->permission_level = $webhook->getUserPermissionLevel();
+        $webhook->is_owner = $webhook->isOwnedBy();
 
         return Inertia::render('webhooks/send', [
             'webhook' => $webhook,
@@ -164,7 +196,7 @@ class WebhookController extends Controller
      */
     public function send(Request $request, Webhook $webhook, DiscordMessageService $messageService)
     {
-        $this->authorize('view', $webhook);
+        $this->authorize('send', $webhook);
 
         $validated = $request->validate([
             'content' => 'nullable|string|max:2000',

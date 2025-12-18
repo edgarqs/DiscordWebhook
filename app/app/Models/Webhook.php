@@ -53,4 +53,33 @@ class Webhook extends Model
     {
         return $this->hasMany(Invitation::class);
     }
+
+    // Helper methods
+    public function getUserPermissionLevel(?int $userId = null): string
+    {
+        $userId = $userId ?? auth()->id();
+        
+        if (!$userId) {
+            return 'none';
+        }
+
+        // Check if user is owner
+        if ($this->user_id === $userId) {
+            return 'owner';
+        }
+
+        // Check if user is a collaborator
+        $collaborator = $this->collaborators()
+            ->where('user_id', $userId)
+            ->whereNotNull('accepted_at')
+            ->first();
+
+        return $collaborator ? $collaborator->permission_level : 'none';
+    }
+
+    public function isOwnedBy(?int $userId = null): bool
+    {
+        $userId = $userId ?? auth()->id();
+        return $this->user_id === $userId;
+    }
 }

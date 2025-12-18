@@ -21,7 +21,16 @@ class WebhookPolicy
      */
     public function view(User $user, Webhook $webhook): bool
     {
-        return $user->id === $webhook->user_id;
+        // Owner can always view
+        if ($user->id === $webhook->user_id) {
+            return true;
+        }
+
+        // Check if user is a collaborator
+        return $webhook->collaborators()
+            ->where('user_id', $user->id)
+            ->whereNotNull('accepted_at')
+            ->exists();
     }
 
     /**
@@ -37,7 +46,18 @@ class WebhookPolicy
      */
     public function update(User $user, Webhook $webhook): bool
     {
-        return $user->id === $webhook->user_id;
+        // Owner can always update
+        if ($user->id === $webhook->user_id) {
+            return true;
+        }
+
+        // Check if user is a collaborator with admin or editor permission
+        $collaborator = $webhook->collaborators()
+            ->where('user_id', $user->id)
+            ->whereNotNull('accepted_at')
+            ->first();
+
+        return $collaborator && in_array($collaborator->permission_level, ['admin', 'editor']);
     }
 
     /**
@@ -45,7 +65,18 @@ class WebhookPolicy
      */
     public function delete(User $user, Webhook $webhook): bool
     {
-        return $user->id === $webhook->user_id;
+        // Owner can always delete
+        if ($user->id === $webhook->user_id) {
+            return true;
+        }
+
+        // Check if user is a collaborator with admin permission
+        $collaborator = $webhook->collaborators()
+            ->where('user_id', $user->id)
+            ->whereNotNull('accepted_at')
+            ->first();
+
+        return $collaborator && $collaborator->permission_level === 'admin';
     }
 
     /**
@@ -62,5 +93,43 @@ class WebhookPolicy
     public function forceDelete(User $user, Webhook $webhook): bool
     {
         return $user->id === $webhook->user_id;
+    }
+
+    /**
+     * Determine if the user can manage collaborators.
+     */
+    public function manageCollaborators(User $user, Webhook $webhook): bool
+    {
+        // Owner can always manage collaborators
+        if ($user->id === $webhook->user_id) {
+            return true;
+        }
+
+        // Check if user is a collaborator with admin permission
+        $collaborator = $webhook->collaborators()
+            ->where('user_id', $user->id)
+            ->whereNotNull('accepted_at')
+            ->first();
+
+        return $collaborator && $collaborator->permission_level === 'admin';
+    }
+
+    /**
+     * Determine if the user can send messages via the webhook.
+     */
+    public function send(User $user, Webhook $webhook): bool
+    {
+        // Owner can always send
+        if ($user->id === $webhook->user_id) {
+            return true;
+        }
+
+        // Check if user is a collaborator with admin or editor permission
+        $collaborator = $webhook->collaborators()
+            ->where('user_id', $user->id)
+            ->whereNotNull('accepted_at')
+            ->first();
+
+        return $collaborator && in_array($collaborator->permission_level, ['admin', 'editor']);
     }
 }

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ConfirmDialog } from '@/components/confirm-dialog';
-import { PlusIcon, Webhook, Trash2, Edit, ExternalLink, Send } from 'lucide-react';
+import { PlusIcon, Webhook, Trash2, Edit, ExternalLink, Send, Users, Crown } from 'lucide-react';
 import { type BreadcrumbItem } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -24,6 +24,13 @@ interface WebhookData {
     tags?: string[];
     message_history_count: number;
     created_at: string;
+    is_owner?: boolean;
+    permission_level?: string;
+    owner?: {
+        id: number;
+        name: string;
+        email: string;
+    };
 }
 
 interface Props {
@@ -110,7 +117,25 @@ export default function WebhooksIndex({ webhooks }: Props) {
                                             )}
                                             <div>
                                                 <CardTitle className="text-lg">{webhook.name}</CardTitle>
+                                                {!webhook.is_owner && webhook.owner && (
+                                                    <p className="text-xs text-muted-foreground mt-1">
+                                                        Owner: {webhook.owner.name}
+                                                    </p>
+                                                )}
                                             </div>
+                                        </div>
+                                        <div className="flex flex-col gap-1">
+                                            {webhook.is_owner ? (
+                                                <Badge variant="default" className="gap-1">
+                                                    <Crown className="h-3 w-3" />
+                                                    Owner
+                                                </Badge>
+                                            ) : (
+                                                <Badge variant="secondary" className="gap-1">
+                                                    <Users className="h-3 w-3" />
+                                                    {webhook.permission_level}
+                                                </Badge>
+                                            )}
                                         </div>
                                     </div>
                                 </CardHeader>
@@ -140,25 +165,38 @@ export default function WebhooksIndex({ webhooks }: Props) {
 
                                     {/* Action Buttons */}
                                     <div className="flex gap-2 pt-2">
-                                        <Link href={`/webhooks/${webhook.id}/send`} className="flex-1">
-                                            <Button className="w-full gap-2" size="lg">
-                                                <Send className="h-4 w-4" />
-                                                Send Message
-                                            </Button>
-                                        </Link>
-                                        <Link href={`/webhooks/${webhook.id}/edit`}>
-                                            <Button variant="outline" size="lg">
-                                                <Edit className="h-4 w-4" />
-                                            </Button>
-                                        </Link>
-                                        <Button
-                                            variant="outline"
-                                            size="lg"
-                                            onClick={() => handleDeleteClick(webhook.id)}
-                                            disabled={deletingId === webhook.id}
-                                        >
-                                            <Trash2 className="h-4 w-4 text-destructive" />
-                                        </Button>
+                                        {(webhook.is_owner || ['admin', 'editor'].includes(webhook.permission_level || '')) && (
+                                            <Link href={`/webhooks/${webhook.id}/send`} className="flex-1">
+                                                <Button className="w-full gap-2" size="lg">
+                                                    <Send className="h-4 w-4" />
+                                                    Send Message
+                                                </Button>
+                                            </Link>
+                                        )}
+                                        {(webhook.is_owner || ['admin', 'editor'].includes(webhook.permission_level || '')) && (
+                                            <Link href={`/webhooks/${webhook.id}/edit`}>
+                                                <Button variant="outline" size="lg">
+                                                    <Edit className="h-4 w-4" />
+                                                </Button>
+                                            </Link>
+                                        )}
+                                        {(webhook.is_owner || webhook.permission_level === 'admin') && (
+                                            <>
+                                                <Link href={`/webhooks/${webhook.id}/collaborators`}>
+                                                    <Button variant="outline" size="lg">
+                                                        <Users className="h-4 w-4" />
+                                                    </Button>
+                                                </Link>
+                                                <Button
+                                                    variant="outline"
+                                                    size="lg"
+                                                    onClick={() => handleDeleteClick(webhook.id)}
+                                                    disabled={deletingId === webhook.id}
+                                                >
+                                                    <Trash2 className="h-4 w-4 text-destructive" />
+                                                </Button>
+                                            </>
+                                        )}
                                     </div>
                                 </CardContent>
                             </Card>

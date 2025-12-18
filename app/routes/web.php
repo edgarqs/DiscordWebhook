@@ -39,8 +39,30 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('send', [\App\Http\Controllers\WebhookController::class, 'quickSend'])->name('send');
     Route::post('send/temporary', [\App\Http\Controllers\WebhookController::class, 'sendTemporary'])->name('send.temporary');
 
+    // Webhook collaborator routes
+    Route::get('webhooks/{webhook}/collaborators', [\App\Http\Controllers\CollaboratorController::class, 'index'])
+        ->name('webhooks.collaborators.index');
+    Route::post('webhooks/{webhook}/collaborators', [\App\Http\Controllers\CollaboratorController::class, 'store'])
+        ->name('webhooks.collaborators.store');
+    Route::patch('webhooks/{webhook}/collaborators/{collaborator}', [\App\Http\Controllers\CollaboratorController::class, 'update'])
+        ->name('webhooks.collaborators.update');
+    Route::delete('webhooks/{webhook}/collaborators/{collaborator}', [\App\Http\Controllers\CollaboratorController::class, 'destroy'])
+        ->name('webhooks.collaborators.destroy');
+
+    // Invitation routes
+    Route::get('invitations', [\App\Http\Controllers\InvitationController::class, 'index'])
+        ->name('invitations.index');
+    Route::get('invitations/{token}', [\App\Http\Controllers\InvitationController::class, 'show'])
+        ->name('invitations.show');
+    Route::post('invitations/{token}/accept', [\App\Http\Controllers\InvitationController::class, 'accept'])
+        ->name('invitations.accept');
+    Route::post('invitations/{token}/decline', [\App\Http\Controllers\InvitationController::class, 'decline'])
+        ->name('invitations.decline');
+    Route::delete('invitations/{invitation}', [\App\Http\Controllers\InvitationController::class, 'cancel'])
+        ->name('invitations.cancel');
+
     // Admin routes
-    Route::middleware('admin')->group(function () {
+    Route::middleware(['admin', 'password.confirm'])->group(function () {
         Route::get('admin', function () {
             $totalUsers = \App\Models\User::count();
             $adminUsers = \App\Models\User::where('role', 'admin')->count();
