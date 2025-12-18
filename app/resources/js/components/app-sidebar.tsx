@@ -13,7 +13,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Webhook, Send, Plus, Shield } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, Webhook, Send, Plus, Shield, Mail } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const footerNavItems: NavItem[] = [
@@ -32,6 +32,7 @@ const footerNavItems: NavItem[] = [
 export function AppSidebar() {
     const { auth } = usePage<any>().props;
     const user = auth?.user;
+    const pendingInvitationsCount = auth?.pendingInvitationsCount || 0;
 
     const mainNavItems: NavItem[] = [
         {
@@ -43,6 +44,12 @@ export function AppSidebar() {
             title: 'Webhooks',
             href: '/webhooks',
             icon: Webhook,
+        },
+        {
+            title: 'Invitations',
+            href: '/invitations',
+            icon: Mail,
+            badge: pendingInvitationsCount > 0 ? pendingInvitationsCount.toString() : undefined,
         },
         {
             title: 'Quick Send',

@@ -12,9 +12,10 @@ class DiscordMessageService
      *
      * @param string $webhookUrl
      * @param array $messageData
+     * @param array $files Optional array of file paths to attach
      * @return array ['success' => bool, 'response' => array|null, 'error' => string|null]
      */
-    public function sendMessage(string $webhookUrl, array $messageData): array
+    public function sendMessage(string $webhookUrl, array $messageData, array $files = []): array
     {
         try {
             // Validate message content before sending
@@ -31,10 +32,35 @@ class DiscordMessageService
             $payload = $this->formatMessagePayload($messageData);
 
             // Send to Discord
-            // Disable SSL verification for Windows compatibility
-            $response = Http::withoutVerifying()
-                ->timeout(10)
-                ->post($webhookUrl, $payload);
+            $http = Http::withoutVerifying()->timeout(10);
+
+            // If files are present, use multipart/form-data
+            if (!empty($files)) {
+                $multipart = [
+                    [
+                        'name' => 'payload_json',
+                        'contents' => json_encode($payload),
+                    ]
+                ];
+
+                // Add files to multipart
+                // Discord expects fields named 'file', 'file1', 'file2', etc.
+                foreach ($files as $index => $file) {
+                    if (file_exists($file)) {
+                        $fieldName = $index === 0 ? 'file' : "file{$index}";
+                        $multipart[] = [
+                            'name' => $fieldName,
+                            'contents' => fopen($file, 'r'),
+                            'filename' => basename($file),
+                        ];
+                    }
+                }
+
+                $response = $http->asMultipart()->post($webhookUrl, $multipart);
+            } else {
+                // Regular JSON request
+                $response = $http->post($webhookUrl, $payload);
+            }
 
             if ($response->successful()) {
                 return [

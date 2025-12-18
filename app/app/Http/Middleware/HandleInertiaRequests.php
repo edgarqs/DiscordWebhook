@@ -44,6 +44,12 @@ class HandleInertiaRequests extends Middleware
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
                 'user' => $request->user(),
+                'pendingInvitationsCount' => $request->user() 
+                    ? \App\Models\Invitation::where('invitee_email', $request->user()->email)
+                        ->where('status', 'pending')
+                        ->where('expires_at', '>', now())
+                        ->count()
+                    : 0,
             ],
             'settings' => [
                 'registration_enabled' => \App\Models\Setting::isRegistrationEnabled(),

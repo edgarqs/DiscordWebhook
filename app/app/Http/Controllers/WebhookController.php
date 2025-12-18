@@ -221,6 +221,8 @@ class WebhookController extends Controller
             'embeds.*.fields.*.name' => 'required|string|max:256',
             'embeds.*.fields.*.value' => 'required|string|max:1024',
             'embeds.*.fields.*.inline' => 'nullable|boolean',
+            'files' => 'nullable|array|max:10',
+            'files.*' => 'file|mimes:jpg,jpeg,png,gif,webp,mp4,mov,avi|max:10240', // 10MB max
         ]);
 
         // Build message payload for Discord API
@@ -229,8 +231,46 @@ class WebhookController extends Controller
             'embeds' => $validated['embeds'] ?? [],
         ];
 
+        // Handle file attachments
+        $filePaths = [];
+        if ($request->hasFile('files')) {
+            $tempDir = storage_path('app' . DIRECTORY_SEPARATOR . 'temp');
+            
+            // Ensure temp directory exists
+            if (!is_dir($tempDir)) {
+                mkdir($tempDir, 0755, true);
+            }
+            
+            foreach ($request->file('files') as $index => $file) {
+                try {
+                    // Generate unique filename
+                    $filename = uniqid() . '_' . $file->getClientOriginalName();
+                    $destination = $tempDir . DIRECTORY_SEPARATOR . $filename;
+                    
+                    // Move uploaded file
+                    $file->move($tempDir, $filename);
+                    
+                    if (file_exists($destination)) {
+                        $filePaths[] = $destination;
+                    }
+                } catch (\Exception $e) {
+                    \Log::error('File upload error', [
+                        'error' => $e->getMessage(),
+                        'file' => $file->getClientOriginalName()
+                    ]);
+                }
+            }
+        }
+
         // Send message to Discord
-        $result = $messageService->sendMessage($webhook->webhook_url, $messageData);
+        $result = $messageService->sendMessage($webhook->webhook_url, $messageData, $filePaths);
+
+        // Clean up temporary files
+        foreach ($filePaths as $filePath) {
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+        }
 
         if ($result['success']) {
             // Log message in history

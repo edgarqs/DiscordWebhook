@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Send } from 'lucide-react';
+import { ArrowLeft, Send, Upload, X } from 'lucide-react';
 import { Webhook } from '@/types';
 import { BreadcrumbItem } from '@/types';
 
@@ -29,13 +29,16 @@ export default function WebhookSend({ webhook }: SendProps) {
     const { data, setData, post, processing, errors } = useForm({
         content: '',
         embeds: [] as any[],
+        files: [] as File[],
     });
 
-    const [activeTab, setActiveTab] = useState<'content' | 'embeds'>('content');
+    const [activeTab, setActiveTab] = useState<'content' | 'embeds' | 'files'>('content');
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(`/webhooks/${webhook.id}/send`);
+        post(`/webhooks/${webhook.id}/send`, {
+            forceFormData: true,
+        });
     };
 
     const addEmbed = () => {
@@ -59,6 +62,18 @@ export default function WebhookSend({ webhook }: SendProps) {
         const newEmbeds = [...data.embeds];
         newEmbeds[index] = { ...newEmbeds[index], [field]: value };
         setData('embeds', newEmbeds);
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const newFiles = Array.from(e.target.files);
+            setData('files', [...data.files, ...newFiles]);
+        }
+    };
+
+    const removeFile = (index: number) => {
+        const newFiles = data.files.filter((_, i) => i !== index);
+        setData('files', newFiles);
     };
 
     return (
@@ -112,6 +127,16 @@ export default function WebhookSend({ webhook }: SendProps) {
                                         }`}
                                 >
                                     Embeds ({data.embeds.length})
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setActiveTab('files')}
+                                    className={`px-4 py-2 font-medium transition-colors ${activeTab === 'files'
+                                        ? 'border-b-2 border-primary text-primary'
+                                        : 'text-muted-foreground hover:text-foreground'
+                                        }`}
+                                >
+                                    Files ({data.files.length})
                                 </button>
                             </div>
 
@@ -220,6 +245,78 @@ export default function WebhookSend({ webhook }: SendProps) {
                                 </div>
                             )}
 
+                            {/* Files Tab */}
+                            {activeTab === 'files' && (
+                                <div className="space-y-4">
+                                    <div>
+                                        <Label htmlFor="file-upload">Upload Files</Label>
+                                        <div className="mt-2">
+                                            <label
+                                                htmlFor="file-upload"
+                                                className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
+                                            >
+                                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                                    <Upload className="h-8 w-8 text-muted-foreground mb-2" />
+                                                    <p className="text-sm text-muted-foreground">
+                                                        <span className="font-semibold">Click to upload</span> or drag and drop
+                                                    </p>
+                                                    <p className="text-xs text-muted-foreground mt-1">
+                                                        Images, videos (max 10MB each, up to 10 files)
+                                                    </p>
+                                                </div>
+                                                <input
+                                                    id="file-upload"
+                                                    type="file"
+                                                    className="hidden"
+                                                    multiple
+                                                    accept="image/*,video/*"
+                                                    onChange={handleFileChange}
+                                                />
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    {/* File List */}
+                                    {data.files.length > 0 && (
+                                        <div className="space-y-2">
+                                            <Label>Attached Files</Label>
+                                            <div className="space-y-2">
+                                                {data.files.map((file, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className="flex items-center gap-3 p-3 bg-muted rounded-lg"
+                                                    >
+                                                        {file.type.startsWith('image/') && (
+                                                            <img
+                                                                src={URL.createObjectURL(file)}
+                                                                alt={file.name}
+                                                                className="w-16 h-16 object-cover rounded"
+                                                            />
+                                                        )}
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="text-sm font-medium truncate">
+                                                                {file.name}
+                                                            </p>
+                                                            <p className="text-xs text-muted-foreground">
+                                                                {(file.size / 1024 / 1024).toFixed(2)} MB
+                                                            </p>
+                                                        </div>
+                                                        <Button
+                                                            type="button"
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            onClick={() => removeFile(index)}
+                                                        >
+                                                            <X className="h-4 w-4" />
+                                                        </Button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
                             {/* Error Message */}
                             {(errors as any).message && (
                                 <div className="p-4 bg-destructive/10 text-destructive rounded-lg">
@@ -311,6 +408,6 @@ export default function WebhookSend({ webhook }: SendProps) {
                     </Card>
                 </form>
             </div>
-        </AppLayout>
+        </AppLayout >
     );
 }

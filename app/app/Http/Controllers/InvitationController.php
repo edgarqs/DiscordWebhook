@@ -134,6 +134,9 @@ class InvitationController extends Controller
      */
     public function cancel(Invitation $invitation)
     {
+        // Load webhook relationship
+        $invitation->load('webhook');
+        
         // Only the inviter or webhook owner can cancel
         if ($invitation->inviter_id !== auth()->id() && $invitation->webhook->user_id !== auth()->id()) {
             abort(403, 'You are not authorized to cancel this invitation.');

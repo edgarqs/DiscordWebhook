@@ -34,20 +34,18 @@ class WebhookInvitationNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $url = url("/invitations/{$this->invitation->token}");
+        $dashboardUrl = url('/invitations');
         $webhookName = $this->invitation->webhook->name;
         $inviterName = $this->invitation->inviter->name;
         $permissionLevel = ucfirst($this->invitation->permission_level);
-        $expiresAt = $this->invitation->expires_at->format('F j, Y');
 
         return (new MailMessage)
-            ->subject("You've been invited to collaborate on a webhook")
+            ->subject("New Webhook Collaboration Invitation")
             ->greeting("Hello!")
-            ->line("{$inviterName} has invited you to collaborate on the webhook \"{$webhookName}\".")
-            ->line("**Permission Level:** {$permissionLevel}")
-            ->line($this->getPermissionDescription($this->invitation->permission_level))
-            ->action('View Invitation', $url)
-            ->line("This invitation will expire on {$expiresAt}.")
+            ->line("{$inviterName} has invited you to collaborate on the webhook \"{$webhookName}\" as {$permissionLevel}.")
+            ->line("You have a new invitation waiting for you in your dashboard.")
+            ->action('View Your Invitations', $dashboardUrl)
+            ->line('You can accept or decline this invitation from your dashboard.')
             ->line('If you did not expect this invitation, you can safely ignore this email.');
     }
 
