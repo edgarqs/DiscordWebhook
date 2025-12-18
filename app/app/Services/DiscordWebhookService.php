@@ -18,12 +18,13 @@ class DiscordWebhookService
         try {
             // Extract webhook ID and token from URL
             // Format: https://discord.com/api/webhooks/{webhook_id}/{webhook_token}
-            if (!preg_match('#https://discord\.com/api/webhooks/(\d+)/([a-zA-Z0-9_-]+)#', $webhookUrl, $matches)) {
+            // Also supports: https://discordapp.com/api/webhooks/{webhook_id}/{webhook_token}
+            if (!preg_match('#https://(discord|discordapp)\.com/api/webhooks/(\d+)/([a-zA-Z0-9_-]+)#', $webhookUrl, $matches)) {
                 return null;
             }
 
-            $webhookId = $matches[1];
-            $webhookToken = $matches[2];
+            $webhookId = $matches[2];
+            $webhookToken = $matches[3];
 
             // Make GET request to Discord API
             // Disable SSL verification for development (Windows certificate issues)

@@ -10,6 +10,14 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Mail, Check, X, Clock } from 'lucide-react';
+import { type BreadcrumbItem } from '@/types';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Invitations',
+        href: '/invitations',
+    },
+];
 
 interface Webhook {
     id: number;
@@ -70,107 +78,104 @@ export default function Invitations({ invitations }: Props) {
     };
 
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Webhook Invitations" />
 
-            <div className="py-12">
-                <div className="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <div className="flex h-full flex-1 flex-col gap-6 p-6">
+                {/* Header */}
+                <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                            Webhook Invitations
-                        </h2>
-                        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                        <h1 className="text-3xl font-bold tracking-tight">Webhook Invitations</h1>
+                        <p className="text-muted-foreground mt-1">
                             You have been invited to collaborate on the following webhooks
                         </p>
                     </div>
-
-                    {invitations.length === 0 ? (
-                        <Card>
-                            <CardContent className="py-12">
-                                <div className="text-center">
-                                    <Mail className="mx-auto h-12 w-12 text-gray-400" />
-                                    <h3 className="mt-2 text-sm font-semibold text-gray-900 dark:text-gray-100">
-                                        No pending invitations
-                                    </h3>
-                                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                                        You don't have any pending webhook invitations at the moment.
-                                    </p>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ) : (
-                        <div className="space-y-4">
-                            {invitations.map((invitation) => (
-                                <Card key={invitation.id}>
-                                    <CardHeader>
-                                        <div className="flex items-start justify-between">
-                                            <div>
-                                                <CardTitle>{invitation.webhook.name}</CardTitle>
-                                                <CardDescription className="mt-1">
-                                                    {invitation.webhook.description ||
-                                                        'No description provided'}
-                                                </CardDescription>
-                                            </div>
-                                            {getPermissionBadge(invitation.permission_level)}
-                                        </div>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="space-y-4">
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                                                <div>
-                                                    <p className="text-gray-500 dark:text-gray-400">
-                                                        Invited by
-                                                    </p>
-                                                    <p className="font-medium text-gray-900 dark:text-gray-100">
-                                                        {invitation.inviter.name}
-                                                    </p>
-                                                </div>
-                                                <div>
-                                                    <p className="text-gray-500 dark:text-gray-400">
-                                                        Permission Level
-                                                    </p>
-                                                    <p className="font-medium text-gray-900 dark:text-gray-100">
-                                                        {getPermissionDescription(
-                                                            invitation.permission_level
-                                                        )}
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                                                <Clock className="h-4 w-4" />
-                                                <span>
-                                                    Expires on{' '}
-                                                    {new Date(
-                                                        invitation.expires_at
-                                                    ).toLocaleDateString()}
-                                                </span>
-                                            </div>
-
-                                            <div className="flex gap-3 pt-2">
-                                                <Button
-                                                    onClick={() => handleAccept(invitation.token)}
-                                                    className="flex-1"
-                                                >
-                                                    <Check className="h-4 w-4 mr-2" />
-                                                    Accept Invitation
-                                                </Button>
-                                                <Button
-                                                    variant="outline"
-                                                    onClick={() => handleDecline(invitation.token)}
-                                                    className="flex-1"
-                                                >
-                                                    <X className="h-4 w-4 mr-2" />
-                                                    Decline
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            ))}
-                        </div>
-                    )}
                 </div>
+
+                {invitations.length === 0 ? (
+                    <Card className="border-dashed">
+                        <CardContent className="flex flex-col items-center justify-center py-16">
+                            <Mail className="h-16 w-16 text-muted-foreground mb-4" />
+                            <h3 className="text-xl font-semibold mb-2">
+                                No pending invitations
+                            </h3>
+                            <p className="text-muted-foreground text-center max-w-md">
+                                You don't have any pending webhook invitations at the moment.
+                            </p>
+                        </CardContent>
+                    </Card>
+                ) : (
+                    <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
+                        {invitations.map((invitation) => (
+                            <Card key={invitation.id}>
+                                <CardHeader>
+                                    <div className="flex items-start justify-between">
+                                        <div>
+                                            <CardTitle>{invitation.webhook.name}</CardTitle>
+                                            <CardDescription className="mt-1">
+                                                {invitation.webhook.description ||
+                                                    'No description provided'}
+                                            </CardDescription>
+                                        </div>
+                                        {getPermissionBadge(invitation.permission_level)}
+                                    </div>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                            <div>
+                                                <p className="text-muted-foreground">
+                                                    Invited by
+                                                </p>
+                                                <p className="font-medium">
+                                                    {invitation.inviter.name}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p className="text-muted-foreground">
+                                                    Permission Level
+                                                </p>
+                                                <p className="font-medium">
+                                                    {getPermissionDescription(
+                                                        invitation.permission_level
+                                                    )}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                            <Clock className="h-4 w-4" />
+                                            <span>
+                                                Expires on{' '}
+                                                {new Date(
+                                                    invitation.expires_at
+                                                ).toLocaleDateString()}
+                                            </span>
+                                        </div>
+
+                                        <div className="flex gap-3 pt-4">
+                                            <Button
+                                                onClick={() => handleAccept(invitation.token)}
+                                                className="flex-1"
+                                            >
+                                                <Check className="h-4 w-4 mr-2" />
+                                                Accept Invitation
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                onClick={() => handleDecline(invitation.token)}
+                                                className="flex-1"
+                                            >
+                                                <X className="h-4 w-4 mr-2" />
+                                                Decline
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+                )}
             </div>
         </AppLayout>
     );

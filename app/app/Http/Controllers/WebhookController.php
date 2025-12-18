@@ -59,7 +59,7 @@ class WebhookController extends Controller
     {
         $validated = $request->validate([
             'name' => 'nullable|string|max:255',
-            'webhook_url' => 'required|url|starts_with:https://discord.com/api/webhooks/',
+            'webhook_url' => 'required|url|starts_with:https://discord.com/api/webhooks/,https://discordapp.com/api/webhooks/',
             'avatar_url' => 'nullable|url',
             'description' => 'nullable|string|max:1000',
             'tags' => 'nullable|array',
@@ -129,7 +129,7 @@ class WebhookController extends Controller
 
         $validated = $request->validate([
             'name' => 'nullable|string|max:255',
-            'webhook_url' => 'required|url|starts_with:https://discord.com/api/webhooks/',
+            'webhook_url' => 'required|url|starts_with:https://discord.com/api/webhooks/,https://discordapp.com/api/webhooks/',
             'avatar_url' => 'nullable|url',
             'description' => 'nullable|string|max:1000',
             'tags' => 'nullable|array',
@@ -336,7 +336,7 @@ class WebhookController extends Controller
     public function sendTemporary(Request $request, DiscordMessageService $messageService)
     {
         $validated = $request->validate([
-            'temporary_webhook_url' => 'required|url|starts_with:https://discord.com/api/webhooks/',
+            'temporary_webhook_url' => 'required|url|starts_with:https://discord.com/api/webhooks/,https://discordapp.com/api/webhooks/',
             'temporary_name' => 'nullable|string|max:80',
             'temporary_avatar' => 'nullable|url',
             'content' => 'nullable|string|max:2000',
@@ -381,7 +381,7 @@ class WebhookController extends Controller
     public function validateWebhook(Request $request, DiscordWebhookService $discordService)
     {
         $request->validate([
-            'webhook_url' => 'required|url|starts_with:https://discord.com/api/webhooks/',
+            'webhook_url' => 'required|url|starts_with:https://discord.com/api/webhooks/,https://discordapp.com/api/webhooks/',
         ]);
 
         $discordData = $discordService->validateWebhook($request->webhook_url);
