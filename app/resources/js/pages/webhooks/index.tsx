@@ -165,7 +165,8 @@ export default function WebhooksIndex({ webhooks }: Props) {
 
                                     {/* Action Buttons */}
                                     <div className="flex gap-2 pt-2">
-                                        {(webhook.is_owner || ['admin', 'editor'].includes(webhook.permission_level || '')) && (
+                                        {/* All collaborators can send messages */}
+                                        {(webhook.is_owner || webhook.permission_level) && (
                                             <Link href={`/webhooks/${webhook.id}/send`} className="flex-1">
                                                 <Button className="w-full gap-2" size="lg">
                                                     <Send className="h-4 w-4" />

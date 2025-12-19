@@ -330,7 +330,23 @@ class WebhookController extends Controller
      */
     public function quickSend()
     {
-        $webhooks = auth()->user()->webhooks()->get();
+        $user = auth()->user();
+        
+        // Get owned webhooks
+        $ownedWebhooks = $user->webhooks()->get();
+        
+        // Get shared webhooks (where user is a collaborator)
+        $sharedWebhooks = $user->collaboratedWebhooks()
+            ->with('owner:id,name,email')
+            ->get()
+            ->map(function ($webhook) {
+                $webhook->is_owner = false;
+                $webhook->permission_level = $webhook->pivot->permission_level;
+                return $webhook;
+            });
+        
+        // Merge both collections
+        $webhooks = $ownedWebhooks->merge($sharedWebhooks);
 
         // Get user's templates
         $templates = auth()->user()->templates()
@@ -358,6 +374,7 @@ class WebhookController extends Controller
             'embeds.*.title' => 'nullable|string|max:256',
             'embeds.*.description' => 'nullable|string|max:4096',
             'embeds.*.color' => 'nullable|integer',
+            'files.*' => 'nullable|file|max:10240|mimes:jpg,jpeg,png,gif,webp,mp4,mov,avi',
         ]);
 
         // Build message payload
@@ -376,8 +393,46 @@ class WebhookController extends Controller
             $messageData['avatar_url'] = $validated['temporary_avatar'];
         }
 
+        // Handle file attachments
+        $filePaths = [];
+        if ($request->hasFile('files')) {
+            $tempDir = storage_path('app' . DIRECTORY_SEPARATOR . 'temp');
+            
+            // Ensure temp directory exists
+            if (!is_dir($tempDir)) {
+                mkdir($tempDir, 0755, true);
+            }
+            
+            foreach ($request->file('files') as $index => $file) {
+                try {
+                    // Generate unique filename
+                    $filename = uniqid() . '_' . $file->getClientOriginalName();
+                    $destination = $tempDir . DIRECTORY_SEPARATOR . $filename;
+                    
+                    // Move uploaded file
+                    $file->move($tempDir, $filename);
+                    
+                    if (file_exists($destination)) {
+                        $filePaths[] = $destination;
+                    }
+                } catch (\Exception $e) {
+                    \Log::error('File upload error', [
+                        'error' => $e->getMessage(),
+                        'file' => $file->getClientOriginalName()
+                    ]);
+                }
+            }
+        }
+
         // Send message to Discord using temporary webhook
-        $result = $messageService->sendMessage($validated['temporary_webhook_url'], $messageData);
+        $result = $messageService->sendMessage($validated['temporary_webhook_url'], $messageData, $filePaths);
+
+        // Clean up temporary files
+        foreach ($filePaths as $filePath) {
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+        }
 
         if ($result['success']) {
             return redirect()->route('dashboard')

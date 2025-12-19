@@ -1,12 +1,13 @@
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useState } from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
+import axios from 'axios';
 import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Webhook } from 'lucide-react';
+import { ArrowLeft, Webhook, RefreshCw } from 'lucide-react';
 import { type BreadcrumbItem } from '@/types';
 
 interface WebhookData {
@@ -46,6 +47,10 @@ export default function WebhooksEdit({ webhook }: Props) {
         tags: webhook.tags || [],
     });
 
+    const [isWebhookUrlFocused, setIsWebhookUrlFocused] = useState(false);
+    const [fetching, setFetching] = useState(false);
+    const [fetchError, setFetchError] = useState<string | null>(null);
+
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         put(`/webhooks/${webhook.id}`);
@@ -54,6 +59,41 @@ export default function WebhooksEdit({ webhook }: Props) {
     const handleTagsChange = (value: string) => {
         const tags = value.split(',').map(tag => tag.trim()).filter(tag => tag);
         setData('tags', tags);
+    };
+
+    const fetchFromDiscord = async () => {
+        if (!data.webhook_url) {
+            setFetchError('Please enter a webhook URL first');
+            return;
+        }
+
+        setFetching(true);
+        setFetchError(null);
+
+        try {
+            const response = await axios.post('/webhooks/validate', {
+                webhook_url: data.webhook_url
+            });
+
+            if (response.data.success) {
+                // Update name and avatar from Discord
+                if (response.data.data.name) {
+                    setData('name', response.data.data.name);
+                }
+                if (response.data.data.avatar_url) {
+                    setData('avatar_url', response.data.data.avatar_url);
+                }
+                setFetchError(null);
+            } else {
+                setFetchError(response.data.message || 'Failed to validate webhook');
+            }
+        } catch (error: any) {
+            console.error('Validation error:', error);
+            const message = error.response?.data?.message || error.message || 'Failed to validate webhook';
+            setFetchError(message);
+        } finally {
+            setFetching(false);
+        }
     };
 
     return (
@@ -139,17 +179,43 @@ export default function WebhooksEdit({ webhook }: Props) {
                                 {/* Webhook URL - Spans both columns */}
                                 <div className="space-y-2 lg:col-span-2">
                                     <Label htmlFor="webhook_url">Discord Webhook URL *</Label>
-                                    <Input
-                                        id="webhook_url"
-                                        type="url"
-                                        value={data.webhook_url}
-                                        onChange={(e) => setData('webhook_url', e.target.value)}
-                                        placeholder="https://discord.com/api/webhooks/..."
-                                        className={errors.webhook_url ? 'border-destructive' : ''}
-                                        required
-                                    />
+                                    <div className="flex gap-2">
+                                        <Input
+                                            id="webhook_url"
+                                            type="url"
+                                            value={data.webhook_url}
+                                            onChange={(e) => setData('webhook_url', e.target.value)}
+                                            onFocus={() => setIsWebhookUrlFocused(true)}
+                                            onBlur={() => setIsWebhookUrlFocused(false)}
+                                            placeholder="https://discord.com/api/webhooks/..."
+                                            className={errors.webhook_url ? 'border-destructive' : ''}
+                                            style={{
+                                                filter: isWebhookUrlFocused ? 'none' : 'blur(4px)',
+                                                transition: 'filter 0.2s ease-in-out',
+                                            }}
+                                            required
+                                        />
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            onClick={fetchFromDiscord}
+                                            disabled={fetching || !data.webhook_url}
+                                            className="gap-2 whitespace-nowrap"
+                                        >
+                                            <RefreshCw className={`h-4 w-4 ${fetching ? 'animate-spin' : ''}`} />
+                                            {fetching ? 'Fetching...' : 'Fetch from Discord'}
+                                        </Button>
+                                    </div>
                                     {errors.webhook_url && (
                                         <p className="text-sm text-destructive">{errors.webhook_url}</p>
+                                    )}
+                                    {fetchError && (
+                                        <p className="text-sm text-destructive">{fetchError}</p>
+                                    )}
+                                    {!isWebhookUrlFocused && (
+                                        <p className="text-xs text-muted-foreground">
+                                            🔒 Webhook URL is blurred for security. Click to reveal.
+                                        </p>
                                     )}
                                 </div>
 

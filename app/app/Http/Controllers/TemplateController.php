@@ -22,44 +22,29 @@ class TemplateController extends Controller
 
         $user = auth()->user();
 
-        // Own templates
-        $ownedQuery = $user->templates()->with('webhook:id,name');
-        
-        // Shared templates (as collaborator)
-        $sharedQuery = $user->collaboratedTemplates()->with('webhook:id,name');
+        // Own templates only (templates don't have collaborators)
+        $query = $user->templates()->with('webhook:id,name');
 
-        // Apply filters to both queries
+        // Apply filters
         if ($request->filled('category')) {
-            $ownedQuery->where('category', $request->category);
-            $sharedQuery->where('category', $request->category);
+            $query->where('category', $request->category);
         }
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $ownedQuery->where('name', 'like', "%{$search}%");
-            $sharedQuery->where('name', 'like', "%{$search}%");
+            $query->where('name', 'like', "%{$search}%");
         }
 
-        // Get owned templates
-        $ownedTemplates = $ownedQuery->latest()->get()->map(function ($template) {
+        // Get templates
+        $templates = $query->latest()->get()->map(function ($template) {
             $template->is_owner = true;
             $template->permission_level = 'owner';
             return $template;
         });
 
-        // Get shared templates
-        $sharedTemplates = $sharedQuery->latest()->get()->map(function ($template) {
-            $template->is_owner = false;
-            $template->permission_level = $template->pivot->permission_level;
-            return $template;
-        });
-
-        // Merge and paginate manually
-        $allTemplates = $ownedTemplates->merge($sharedTemplates)->sortByDesc('created_at')->values();
-
         return Inertia::render('templates/index', [
             'templates' => [
-                'data' => $allTemplates,
+                'data' => $templates,
             ],
             'filters' => [
                 'category' => $request->category,

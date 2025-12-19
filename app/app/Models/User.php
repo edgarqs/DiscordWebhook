@@ -89,11 +89,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\Template::class);
     }
-
-    public function collaboratedTemplates()
-    {
-        return $this->belongsToMany(\App\Models\Template::class, 'template_collaborators')
-            ->withPivot('permission_level')
-            ->withTimestamps();
-    }
 }

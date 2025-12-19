@@ -124,12 +124,10 @@ class WebhookPolicy
             return true;
         }
 
-        // Check if user is a collaborator with admin or editor permission
-        $collaborator = $webhook->collaborators()
+        // Any accepted collaborator can send (including viewers)
+        return $webhook->collaborators()
             ->where('user_id', $user->id)
             ->whereNotNull('accepted_at')
-            ->first();
-
-        return $collaborator && in_array($collaborator->permission_level, ['admin', 'editor']);
+            ->exists();
     }
 }

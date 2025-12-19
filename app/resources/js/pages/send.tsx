@@ -95,9 +95,13 @@ export default function QuickSend({ webhooks, templates }: SendProps) {
 
         // @ts-ignore - Type instantiation depth issue with Inertia.js
         if (mode === 'existing' && selectedWebhookId) {
-            post(`/webhooks/${selectedWebhookId}/send`);
+            post(`/webhooks/${selectedWebhookId}/send`, {
+                forceFormData: true,
+            });
         } else if (mode === 'temporary' && data.temporary_webhook_url) {
-            post('/send/temporary');
+            post('/send/temporary', {
+                forceFormData: true,
+            });
         }
     };
 
