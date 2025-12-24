@@ -101,6 +101,12 @@ Integración de IA para la generación automática de contenido de mensajes, sug
   - 9 variables disponibles: {{date}}, {{time}}, {{datetime}}, {{username}}, {{user_email}}, {{webhook_name}}, {{day}}, {{month}}, {{year}}
   - Reemplazo automático al usar plantillas
   - Componente VariableHelper con UI para copiar variables
+- **Página de detalles de template** ✅
+  - Preview del mensaje estilo Discord con fondo oscuro
+  - Renderizado completo de embeds (colores, títulos, descripciones, fields, imágenes)
+  - Metadata del template (autor, fecha, categoría)
+  - Acciones rápidas según permisos (Use, Edit, Duplicate, Share, Delete/Leave)
+  - Cards clickeables para navegación rápida
 - **Importar/exportar plantillas** en formato JSON 🔄 PENDIENTE
 
 ### 5. Programación y Automatización
