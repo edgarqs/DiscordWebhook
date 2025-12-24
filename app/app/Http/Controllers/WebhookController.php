@@ -103,15 +103,32 @@ class WebhookController extends Controller
     {
         $this->authorize('view', $webhook);
 
+        // Load recent message history
         $webhook->load(['messageHistory' => function ($query) {
             $query->latest()->limit(10);
         }]);
+
+        // Calculate statistics
+        $totalMessages = $webhook->messageHistory()->count();
+        $successMessages = $webhook->messageHistory()->where('status', 'success')->count();
+        $errorMessages = $webhook->messageHistory()->where('status', 'failed')->count();
+        
+        // Get recent activity (last 7 days)
+        $recentActivity = $webhook->messageHistory()
+            ->where('sent_at', '>=', now()->subDays(7))
+            ->count();
 
         $webhook->permission_level = $webhook->getUserPermissionLevel();
         $webhook->is_owner = $webhook->isOwnedBy();
 
         return Inertia::render('webhooks/show', [
             'webhook' => $webhook,
+            'stats' => [
+                'total' => $totalMessages,
+                'success' => $successMessages,
+                'error' => $errorMessages,
+                'recent' => $recentActivity,
+            ],
         ]);
     }
 

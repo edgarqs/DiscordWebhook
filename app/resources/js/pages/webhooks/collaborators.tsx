@@ -182,7 +182,7 @@ export default function Collaborators({
                             Owner: <span className="font-medium">{webhook.owner.name}</span>
                         </p>
                     </div>
-                    <Link href={`/webhooks/${webhook.id}/edit`}>
+                    <Link href={`/webhooks/${webhook.id}`}>
                         <Button variant="outline" className="gap-2">
                             <ArrowLeft className="h-4 w-4" />
                             Back to Webhook

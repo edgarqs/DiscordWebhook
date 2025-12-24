@@ -202,134 +202,140 @@ export default function WebhooksIndex({ webhooks, filters }: Props) {
                 ) : (
                     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                         {filteredWebhooks.map((webhook) => (
-                            <Card key={webhook.id} className="group hover:shadow-lg transition-all duration-200 flex flex-col">
-                                <CardHeader className="pb-2">
-                                    <div className="flex items-start justify-between gap-2">
-                                        <div className="flex items-center gap-2 min-w-0 flex-1">
-                                            {webhook.avatar_url ? (
-                                                <img
-                                                    src={webhook.avatar_url}
-                                                    alt={webhook.name}
-                                                    className="h-8 w-8 rounded-full shrink-0"
-                                                />
+                            <Link key={webhook.id} href={`/webhooks/${webhook.id}`}>
+                                <Card className="group hover:shadow-lg transition-all duration-200 flex flex-col cursor-pointer">
+                                    <CardHeader className="pb-2">
+                                        <div className="flex items-start justify-between gap-2">
+                                            <div className="flex items-center gap-2 min-w-0 flex-1">
+                                                {webhook.avatar_url ? (
+                                                    <img
+                                                        src={webhook.avatar_url}
+                                                        alt={webhook.name}
+                                                        className="h-8 w-8 rounded-full shrink-0"
+                                                    />
+                                                ) : (
+                                                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shrink-0">
+                                                        <Webhook className="h-4 w-4 text-white" />
+                                                    </div>
+                                                )}
+                                                <div className="flex-1 min-w-0">
+                                                    <Link href={`/webhooks/${webhook.id}`}>
+                                                        <CardTitle className="text-sm truncate leading-tight hover:text-primary transition-colors cursor-pointer">
+                                                            {webhook.name}
+                                                        </CardTitle>
+                                                    </Link>
+                                                    {!webhook.is_owner && webhook.owner && (
+                                                        <p className="text-[10px] text-muted-foreground leading-tight">
+                                                            by {webhook.owner.name}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            {webhook.is_owner ? (
+                                                <Badge variant="default" className="gap-0.5 shrink-0 text-[10px] h-5 px-1.5">
+                                                    <Crown className="h-2.5 w-2.5" />
+                                                    Owner
+                                                </Badge>
                                             ) : (
-                                                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shrink-0">
-                                                    <Webhook className="h-4 w-4 text-white" />
+                                                <Badge variant="secondary" className="shrink-0 text-[10px] h-5 px-1.5">
+                                                    {webhook.permission_level === 'edit' ? 'Editor' : 'Viewer'}
+                                                </Badge>
+                                            )}
+                                        </div>
+                                        {webhook.description && (
+                                            <p className="text-[11px] text-muted-foreground line-clamp-1 mt-1">
+                                                {webhook.description}
+                                            </p>
+                                        )}
+                                    </CardHeader>
+                                    <CardContent className="flex flex-col flex-1 pt-0">
+                                        <div className="space-y-2 flex-1">
+                                            {webhook.tags && webhook.tags.length > 0 && (
+                                                <div className="flex flex-wrap gap-1">
+                                                    {webhook.tags.map((tag: string, index: number) => (
+                                                        <Badge key={index} variant="outline" className="text-xs px-2 py-0.5">
+                                                            {tag}
+                                                        </Badge>
+                                                    ))}
                                                 </div>
                                             )}
-                                            <div className="flex-1 min-w-0">
-                                                <CardTitle className="text-sm truncate leading-tight">{webhook.name}</CardTitle>
-                                                {!webhook.is_owner && webhook.owner && (
-                                                    <p className="text-[10px] text-muted-foreground leading-tight">
-                                                        by {webhook.owner.name}
-                                                    </p>
+
+                                            <div className="flex items-center gap-1 text-[11px] text-muted-foreground border-t pt-2">
+                                                <Send className="h-3 w-3" />
+                                                <span>{webhook.message_history_count} messages</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Actions - Always at bottom */}
+                                        <TooltipProvider delayDuration={300}>
+                                            <div className="flex gap-1.5 mt-2">
+                                                <Link href={`/webhooks/${webhook.id}/send`} className="flex-1" onClick={(e) => e.stopPropagation()}>
+                                                    <Button variant="default" size="sm" className="w-full h-8 gap-1.5">
+                                                        <Send className="h-3.5 w-3.5" />
+                                                        <span className="text-xs">Send</span>
+                                                    </Button>
+                                                </Link>
+
+                                                {(webhook.is_owner || webhook.permission_level === 'edit') && (
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <Link href={`/webhooks/${webhook.id}/edit`} onClick={(e) => e.stopPropagation()}>
+                                                                <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                                                                    <Edit className="h-3.5 w-3.5" />
+                                                                </Button>
+                                                            </Link>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>Edit Webhook</TooltipContent>
+                                                    </Tooltip>
+                                                )}
+
+                                                {webhook.is_owner && (
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <Link href={`/webhooks/${webhook.id}/collaborators`} onClick={(e) => e.stopPropagation()}>
+                                                                <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                                                                    <Users className="h-3.5 w-3.5" />
+                                                                </Button>
+                                                            </Link>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>Share Webhook</TooltipContent>
+                                                    </Tooltip>
+                                                )}
+
+                                                {webhook.is_owner ? (
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                onClick={(e) => { e.stopPropagation(); handleDeleteClick(webhook.id); }}
+                                                                className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                                            >
+                                                                <Trash2 className="h-3.5 w-3.5" />
+                                                            </Button>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>Delete Webhook</TooltipContent>
+                                                    </Tooltip>
+                                                ) : (
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                onClick={(e) => { e.stopPropagation(); handleLeaveClick(webhook.id); }}
+                                                                className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                                            >
+                                                                <LogOut className="h-3.5 w-3.5" />
+                                                            </Button>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>Leave Webhook</TooltipContent>
+                                                    </Tooltip>
                                                 )}
                                             </div>
-                                        </div>
-                                        {webhook.is_owner ? (
-                                            <Badge variant="default" className="gap-0.5 shrink-0 text-[10px] h-5 px-1.5">
-                                                <Crown className="h-2.5 w-2.5" />
-                                                Owner
-                                            </Badge>
-                                        ) : (
-                                            <Badge variant="secondary" className="shrink-0 text-[10px] h-5 px-1.5">
-                                                {webhook.permission_level === 'edit' ? 'Editor' : 'Viewer'}
-                                            </Badge>
-                                        )}
-                                    </div>
-                                    {webhook.description && (
-                                        <p className="text-[11px] text-muted-foreground line-clamp-1 mt-1">
-                                            {webhook.description}
-                                        </p>
-                                    )}
-                                </CardHeader>
-                                <CardContent className="flex flex-col flex-1 pt-0">
-                                    <div className="space-y-2 flex-1">
-                                        {webhook.tags && webhook.tags.length > 0 && (
-                                            <div className="flex flex-wrap gap-1">
-                                                {webhook.tags.map((tag: string, index: number) => (
-                                                    <Badge key={index} variant="outline" className="text-xs px-2 py-0.5">
-                                                        {tag}
-                                                    </Badge>
-                                                ))}
-                                            </div>
-                                        )}
-
-                                        <div className="flex items-center gap-1 text-[11px] text-muted-foreground border-t pt-2">
-                                            <Send className="h-3 w-3" />
-                                            <span>{webhook.message_history_count} messages</span>
-                                        </div>
-                                    </div>
-
-                                    {/* Actions - Always at bottom */}
-                                    <TooltipProvider delayDuration={300}>
-                                        <div className="flex gap-1.5 mt-2">
-                                            <Link href={`/webhooks/${webhook.id}/send`} className="flex-1">
-                                                <Button variant="default" size="sm" className="w-full h-8 gap-1.5">
-                                                    <Send className="h-3.5 w-3.5" />
-                                                    <span className="text-xs">Send</span>
-                                                </Button>
-                                            </Link>
-
-                                            {(webhook.is_owner || webhook.permission_level === 'edit') && (
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <Link href={`/webhooks/${webhook.id}/edit`}>
-                                                            <Button variant="outline" size="sm" className="h-8 w-8 p-0">
-                                                                <Edit className="h-3.5 w-3.5" />
-                                                            </Button>
-                                                        </Link>
-                                                    </TooltipTrigger>
-                                                    <TooltipContent>Edit Webhook</TooltipContent>
-                                                </Tooltip>
-                                            )}
-
-                                            {webhook.is_owner && (
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <Link href={`/webhooks/${webhook.id}/collaborators`}>
-                                                            <Button variant="outline" size="sm" className="h-8 w-8 p-0">
-                                                                <Users className="h-3.5 w-3.5" />
-                                                            </Button>
-                                                        </Link>
-                                                    </TooltipTrigger>
-                                                    <TooltipContent>Share Webhook</TooltipContent>
-                                                </Tooltip>
-                                            )}
-
-                                            {webhook.is_owner ? (
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            onClick={() => handleDeleteClick(webhook.id)}
-                                                            className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
-                                                        >
-                                                            <Trash2 className="h-3.5 w-3.5" />
-                                                        </Button>
-                                                    </TooltipTrigger>
-                                                    <TooltipContent>Delete Webhook</TooltipContent>
-                                                </Tooltip>
-                                            ) : (
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            onClick={() => handleLeaveClick(webhook.id)}
-                                                            className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
-                                                        >
-                                                            <LogOut className="h-3.5 w-3.5" />
-                                                        </Button>
-                                                    </TooltipTrigger>
-                                                    <TooltipContent>Leave Webhook</TooltipContent>
-                                                </Tooltip>
-                                            )}
-                                        </div>
-                                    </TooltipProvider>
-                                </CardContent>
-                            </Card>
+                                        </TooltipProvider>
+                                    </CardContent>
+                                </Card>
+                            </Link>
                         ))}
                     </div>
                 )}

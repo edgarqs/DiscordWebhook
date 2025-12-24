@@ -103,7 +103,7 @@ export default function WebhooksEdit({ webhook }: Props) {
             <div className="flex h-full flex-1 flex-col gap-6 p-6">
                 {/* Header */}
                 <div className="flex items-center gap-4">
-                    <Link href="/webhooks">
+                    <Link href={`/webhooks/${webhook.id}`}>
                         <Button variant="ghost" size="icon">
                             <ArrowLeft className="h-5 w-5" />
                         </Button>
@@ -256,7 +256,7 @@ export default function WebhooksEdit({ webhook }: Props) {
                                 <Button type="submit" disabled={processing} size="lg" className="flex-1">
                                     {processing ? 'Saving...' : 'Save Changes'}
                                 </Button>
-                                <Link href="/webhooks">
+                                <Link href={`/webhooks/${webhook.id}`}>
                                     <Button type="button" variant="outline" size="lg">
                                         Cancel
                                     </Button>

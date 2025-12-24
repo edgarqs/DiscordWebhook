@@ -92,13 +92,16 @@ Integración de IA para la generación automática de contenido de mensajes, sug
   - Sistema de flash messages integrado con Inertia.js
   - Limpieza automática del formulario tras éxito
 
-### 4. Sistema de Plantillas
-- **Guardar mensajes como plantillas** reutilizables
-- **Biblioteca de plantillas** personales
-- **Categorización de plantillas** (anuncios, notificaciones, alertas, etc.)
-- **Plantillas compartidas** entre colaboradores
-- **Variables dinámicas** en plantillas (fecha, hora, nombre de usuario, etc.)
-- **Importar/exportar plantillas** en formato JSON
+### 4. Sistema de Plantillas ✅ IMPLEMENTADO
+- **Guardar mensajes como plantillas** reutilizables ✅
+- **Biblioteca de plantillas** personales ✅
+- **Categorización de plantillas** (anuncios, notificaciones, alertas, etc.) ✅
+- **Plantillas compartidas** entre colaboradores ✅
+- **Variables dinámicas** en plantillas (fecha, hora, nombre de usuario, etc.) ✅
+  - 9 variables disponibles: {{date}}, {{time}}, {{datetime}}, {{username}}, {{user_email}}, {{webhook_name}}, {{day}}, {{month}}, {{year}}
+  - Reemplazo automático al usar plantillas
+  - Componente VariableHelper con UI para copiar variables
+- **Importar/exportar plantillas** en formato JSON 🔄 PENDIENTE
 
 ### 5. Programación y Automatización
 - **Programar envíos únicos**:
@@ -207,6 +210,12 @@ Integración de IA para la generación automática de contenido de mensajes, sug
   - Confirmación antes de abandonar
   - Redirección automática tras abandonar
   - Diferenciación visual entre Delete (owner) y Leave (colaborador)
+- **Modal "What's New"** ✅
+  - Modal automático en dashboard mostrando últimas actualizaciones
+  - Lista de novedades con iconos y badges (Nuevo/Mejora)
+  - Checkbox "No volver a mostrar" con persistencia en localStorage
+  - Versionado para mostrar solo una vez por versión
+  - Diseño moderno y atractivo
 
 ---
 
