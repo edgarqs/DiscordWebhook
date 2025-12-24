@@ -25,4 +25,18 @@ Route::middleware('auth')->group(function () {
 
     Route::get('settings/two-factor', [TwoFactorAuthenticationController::class, 'show'])
         ->name('two-factor.show');
+
+    // User preferences
+    Route::post('settings/preferences', function (\Illuminate\Http\Request $request) {
+        $user = auth()->user();
+        
+        // Store preference in user's metadata or session
+        if ($request->has('whats_new_dismissed')) {
+            // For now, we'll just return success as localStorage handles it
+            // In the future, this could be stored in a user_preferences table
+            return response()->json(['success' => true]);
+        }
+        
+        return response()->json(['success' => false], 400);
+    })->name('preferences.update');
 });

@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Webhook, MessageSquare, Activity, PlusIcon, ArrowRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Toast } from '@/components/ui/toast';
+import { WhatsNewModal } from '@/components/whats-new-modal';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -58,6 +59,9 @@ export default function Dashboard({ stats, recentWebhooks }: DashboardProps) {
                     onClose={() => setNotification(null)}
                 />
             )}
+
+            {/* What's New Modal */}
+            <WhatsNewModal version="1.1.0" />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-6">
                 {/* Header */}

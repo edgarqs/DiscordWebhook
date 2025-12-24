@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Template;
 use App\Models\Webhook;
 use App\Http\Requests\TemplateRequest;
+use App\Services\VariableReplacerService;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Inertia\Inertia;
@@ -177,5 +178,30 @@ class TemplateController extends Controller
 
         return redirect()->route('templates.edit', $newTemplate)
             ->with('success', 'Template duplicated successfully!');
+    }
+
+    /**
+     * Get template with variables replaced
+     */
+    public function getWithVariables(Template $template, Request $request)
+    {
+        $this->authorize('view', $template);
+
+        $webhookId = $request->query('webhook_id');
+        $webhook = $webhookId ? Webhook::find($webhookId) : null;
+
+        $variableReplacer = new VariableReplacerService();
+        
+        // Replace variables in the template content
+        $replacedPayload = $variableReplacer->replaceInPayload(
+            $template->content,
+            auth()->user(),
+            $webhook
+        );
+
+        return response()->json([
+            'payload' => $replacedPayload,
+            'availableVariables' => $variableReplacer->getAvailableVariables(),
+        ]);
     }
 }

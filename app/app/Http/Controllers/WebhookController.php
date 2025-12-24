@@ -6,6 +6,7 @@ use App\Models\Webhook;
 use App\Models\MessageHistory;
 use App\Services\DiscordWebhookService;
 use App\Services\DiscordMessageService;
+use App\Services\VariableReplacerService;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Log;
@@ -244,11 +245,19 @@ class WebhookController extends Controller
             'files.*' => 'file|mimes:jpg,jpeg,png,gif,webp,mp4,mov,avi|max:10240', // 10MB max
         ]);
 
-        // Build message payload for Discord API
-        $messageData = [
-            'content' => $validated['content'] ?? null,
-            'embeds' => $validated['embeds'] ?? [],
-        ];
+    // Replace variables in message data
+    $variableReplacer = new VariableReplacerService();
+    $validated = $variableReplacer->replaceInPayload(
+        $validated,
+        auth()->user(),
+        $webhook
+    );
+
+    // Build message payload for Discord API
+    $messageData = [
+        'content' => $validated['content'] ?? null,
+        'embeds' => $validated['embeds'] ?? [],
+    ];
 
         // Handle file attachments
         $filePaths = [];
@@ -397,6 +406,14 @@ class WebhookController extends Controller
             'embeds.*.color' => 'nullable|integer',
             'files.*' => 'nullable|file|max:10240|mimes:jpg,jpeg,png,gif,webp,mp4,mov,avi',
         ]);
+
+        // Replace variables in message data
+        $variableReplacer = new VariableReplacerService();
+        $validated = $variableReplacer->replaceInPayload(
+            $validated,
+            auth()->user(),
+            null // No webhook for temporary sends
+        );
 
         // Build message payload
         $messageData = [
