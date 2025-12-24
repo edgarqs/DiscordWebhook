@@ -37,6 +37,12 @@ export function WhatsNewModal({ version = '1.1.0' }: WhatsNewModalProps) {
 
     const updates = [
         {
+            icon: <Sparkles className="h-5 w-5 text-purple-500" />,
+            title: 'Mensajes Programados',
+            description: 'Programa mensajes para enviar en una fecha específica o de forma recurrente (diario, semanal, mensual). Incluye soporte para archivos adjuntos.',
+            type: 'feature',
+        },
+        {
             icon: <Zap className="h-5 w-5 text-yellow-500" />,
             title: 'Variables Dinámicas',
             description: 'Usa variables como {{date}}, {{time}}, {{username}} en tus plantillas. Se reemplazan automáticamente al enviar.',
