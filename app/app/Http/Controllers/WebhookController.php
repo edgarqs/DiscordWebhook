@@ -14,7 +14,7 @@ use Inertia\Inertia;
 class WebhookController extends Controller
 {
     use AuthorizesRequests;
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user();
         
@@ -46,6 +46,9 @@ class WebhookController extends Controller
 
         return Inertia::render('webhooks/index', [
             'webhooks' => $webhooks,
+            'filters' => [
+                'ownership' => $request->ownership,
+            ],
         ]);
     }
 
@@ -186,11 +189,20 @@ class WebhookController extends Controller
         $webhook->permission_level = $webhook->getUserPermissionLevel();
         $webhook->is_owner = $webhook->isOwnedBy();
 
-        // Get user's templates
-        $templates = auth()->user()->templates()
+        // Get user's personal templates
+        $personalTemplates = auth()->user()->templates()
             ->select('id', 'name', 'category', 'content')
             ->latest()
             ->get();
+
+        // Get templates shared with the user
+        $sharedTemplates = auth()->user()->sharedTemplates()
+            ->select('templates.id', 'templates.name', 'templates.category', 'templates.content')
+            ->orderBy('templates.created_at', 'desc')
+            ->get();
+
+        // Merge both collections
+        $templates = $personalTemplates->merge($sharedTemplates);
 
         return Inertia::render('webhooks/send', [
             'webhook' => $webhook,
@@ -348,11 +360,20 @@ class WebhookController extends Controller
         // Merge both collections
         $webhooks = $ownedWebhooks->merge($sharedWebhooks);
 
-        // Get user's templates
-        $templates = auth()->user()->templates()
+        // Get user's personal templates
+        $personalTemplates = auth()->user()->templates()
             ->select('id', 'name', 'category', 'content')
             ->latest()
             ->get();
+
+        // Get templates shared with the user
+        $sharedTemplates = auth()->user()->sharedTemplates()
+            ->select('templates.id', 'templates.name', 'templates.category', 'templates.content')
+            ->orderBy('templates.created_at', 'desc')
+            ->get();
+
+        // Merge both collections
+        $templates = $personalTemplates->merge($sharedTemplates);
 
         return Inertia::render('send', [
             'webhooks' => $webhooks,

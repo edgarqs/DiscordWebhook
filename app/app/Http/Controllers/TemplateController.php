@@ -22,33 +22,48 @@ class TemplateController extends Controller
 
         $user = auth()->user();
 
-        // Own templates only (templates don't have collaborators)
-        $query = $user->templates()->with('webhook:id,name');
+        // Get owned templates
+        $ownedTemplates = $user->templates()
+            ->with('webhook:id,name')
+            ->get()
+            ->map(function ($template) {
+                $template->is_owner = true;
+                $template->permission_level = 'owner';
+                return $template;
+            });
 
-        // Apply filters
-        if ($request->filled('category')) {
-            $query->where('category', $request->category);
-        }
+        // Get shared templates (where user is a collaborator)
+        $sharedTemplates = Template::whereHas('collaborators', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->with(['webhook:id,name', 'collaborators' => function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            }])
+            ->get()
+            ->map(function ($template) {
+                $template->is_owner = false;
+                // Get the permission level from the pivot table
+                $collaborator = $template->collaborators->first();
+                $template->permission_level = $collaborator?->pivot->permission_level ?? 'view';
+                // Remove the collaborators collection to avoid sending unnecessary data
+                unset($template->collaborators);
+                return $template;
+            });
 
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where('name', 'like', "%{$search}%");
-        }
+        // Merge owned and shared templates
+        $allTemplates = $ownedTemplates->merge($sharedTemplates);
 
-        // Get templates
-        $templates = $query->latest()->get()->map(function ($template) {
-            $template->is_owner = true;
-            $template->permission_level = 'owner';
-            return $template;
-        });
+        // Sort by latest (created_at descending)
+        $allTemplates = $allTemplates->sortByDesc('created_at')->values();
 
         return Inertia::render('templates/index', [
             'templates' => [
-                'data' => $templates,
+                'data' => $allTemplates,
             ],
             'filters' => [
                 'category' => $request->category,
                 'search' => $request->search,
+                'ownership' => $request->ownership,
             ],
         ]);
     }
@@ -60,12 +75,7 @@ class TemplateController extends Controller
     {
         $this->authorize('create', Template::class);
 
-        // Get user's webhooks for optional association
-        $webhooks = auth()->user()->webhooks()->get(['id', 'name']);
-
-        return Inertia::render('templates/create', [
-            'webhooks' => $webhooks,
-        ]);
+        return Inertia::render('templates/create');
     }
 
     /**
@@ -80,8 +90,6 @@ class TemplateController extends Controller
             'description' => $request->description,
             'category' => $request->category,
             'content' => $request->content,
-            'webhook_id' => $request->webhook_id,
-            'is_shared' => $request->boolean('is_shared', false),
         ]);
 
         return redirect()->route('templates.index')
@@ -114,12 +122,9 @@ class TemplateController extends Controller
         // Add ownership flag
         $template->is_owner = $template->isOwnedBy();
         
-        // Get user's webhooks for optional association
-        $webhooks = auth()->user()->webhooks()->get(['id', 'name']);
 
         return Inertia::render('templates/edit', [
             'template' => $template,
-            'webhooks' => $webhooks,
         ]);
     }
 
@@ -135,8 +140,6 @@ class TemplateController extends Controller
             'description' => $request->description,
             'category' => $request->category,
             'content' => $request->content,
-            'webhook_id' => $request->webhook_id,
-            'is_shared' => $request->boolean('is_shared', false),
         ]);
 
         return redirect()->route('templates.index')

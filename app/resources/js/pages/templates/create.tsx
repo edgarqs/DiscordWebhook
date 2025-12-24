@@ -40,10 +40,10 @@ interface Webhook {
 }
 
 interface Props {
-    webhooks: Webhook[];
+    // No props needed
 }
 
-export default function CreateTemplate({ webhooks }: Props) {
+export default function CreateTemplate() {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
         description: '',
@@ -53,8 +53,6 @@ export default function CreateTemplate({ webhooks }: Props) {
             content: '',
             embeds: [] as any[],
         },
-        webhook_id: 'none',
-        is_shared: false,
     });
 
     const [activeTab, setActiveTab] = useState<'content' | 'embeds'>('content');
@@ -68,8 +66,6 @@ export default function CreateTemplate({ webhooks }: Props) {
             description: data.description,
             category: data.category === 'custom' && data.customCategory ? data.customCategory : data.category,
             content: data.content,
-            webhook_id: data.webhook_id,
-            is_shared: data.is_shared,
         };
 
         router.post('/templates', formData);
@@ -191,41 +187,6 @@ export default function CreateTemplate({ webhooks }: Props) {
                                 />
                                 {errors.description && (
                                     <p className="text-sm text-destructive">{errors.description}</p>
-                                )}
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="webhook_id">Associate with Webhook (Optional)</Label>
-                                    <Select
-                                        value={data.webhook_id}
-                                        onValueChange={(value) => setData('webhook_id', value)}
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="None" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="none">None</SelectItem>
-                                            {webhooks.map((webhook) => (
-                                                <SelectItem key={webhook.id} value={webhook.id.toString()}>
-                                                    {webhook.name}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-
-                                {data.webhook_id && data.webhook_id !== 'none' && (
-                                    <div className="flex items-center space-x-2 pt-8">
-                                        <Checkbox
-                                            id="is_shared"
-                                            checked={data.is_shared}
-                                            onCheckedChange={(checked) => setData('is_shared', checked as boolean)}
-                                        />
-                                        <Label htmlFor="is_shared" className="cursor-pointer">
-                                            Share with webhook collaborators
-                                        </Label>
-                                    </div>
                                 )}
                             </div>
                         </CardContent>

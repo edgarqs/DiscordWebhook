@@ -79,6 +79,32 @@ export default function QuickSend({ webhooks, templates }: SendProps) {
         }
     }, [page.props.flash?.success, page.props.flash?.error]);
 
+    // Auto-load template from query parameter
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const templateId = urlParams.get('template');
+        
+        if (templateId && templates.length > 0) {
+            const template = templates.find(t => t.id.toString() === templateId);
+            if (template) {
+                setData({
+                    ...data,
+                    content: template.content.content || '',
+                    embeds: template.content.embeds || [],
+                });
+                
+                // Show notification that template was loaded
+                setNotification({ 
+                    message: `Template "${template.name}" loaded successfully!`, 
+                    type: 'success' 
+                });
+                
+                // Remove template parameter from URL to avoid reloading on refresh
+                window.history.replaceState({}, '', '/send');
+            }
+        }
+    }, []); // Run only once on mount
+
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const newFiles = Array.from(e.target.files);

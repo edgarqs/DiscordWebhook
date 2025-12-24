@@ -48,6 +48,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('webhooks.collaborators.update');
     Route::delete('webhooks/{webhook}/collaborators/{collaborator}', [\App\Http\Controllers\CollaboratorController::class, 'destroy'])
         ->name('webhooks.collaborators.destroy');
+    
+    // Leave webhook (for collaborators)
+    Route::post('webhooks/{webhook}/leave', [\App\Http\Controllers\CollaboratorController::class, 'leave'])
+        ->name('webhooks.leave');
+
 
     // Invitation routes
     Route::get('invitations', [\App\Http\Controllers\InvitationController::class, 'index'])

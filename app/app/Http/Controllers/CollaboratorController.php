@@ -128,6 +128,7 @@ class CollaboratorController extends Controller
         return back()->with('success', 'Permission level updated successfully!');
     }
 
+
     /**
      * Remove a collaborator.
      */
@@ -143,5 +144,32 @@ class CollaboratorController extends Controller
         $collaborator->delete();
 
         return back()->with('success', 'Collaborator removed successfully!');
+    }
+
+    /**
+     * Leave a webhook (remove yourself as collaborator)
+     */
+    public function leave(Webhook $webhook)
+    {
+        $user = auth()->user();
+
+        // Check if user is a collaborator
+        $collaborator = $webhook->collaborators()
+            ->where('user_id', $user->id)
+            ->first();
+
+        if (!$collaborator) {
+            return back()->withErrors(['error' => 'You are not a collaborator of this webhook.']);
+        }
+
+        // Prevent owner from leaving
+        if ($webhook->user_id === $user->id) {
+            return back()->withErrors(['error' => 'Webhook owner cannot leave.']);
+        }
+
+        $collaborator->delete();
+
+        return redirect()->route('webhooks.index')
+            ->with('success', 'You have left the webhook successfully!');
     }
 }
