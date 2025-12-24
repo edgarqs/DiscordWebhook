@@ -80,6 +80,22 @@ class Template extends Model
         return $this->getCollaboratorPermission($user) === 'edit';
     }
 
+    public function getUserPermissionLevel(?int $userId = null): string
+    {
+        $userId = $userId ?? auth()->id();
+        
+        if ($this->isOwnedBy($userId)) {
+            return 'owner';
+        }
+        
+        $user = User::find($userId);
+        if (!$user) {
+            return 'view';
+        }
+        
+        return $this->getCollaboratorPermission($user) ?? 'view';
+    }
+
     // Relationships
     public function collaborators()
     {

@@ -105,6 +105,10 @@ class TemplateController extends Controller
         $this->authorize('view', $template);
 
         $template->load(['user:id,name', 'webhook:id,name']);
+        
+        // Add permission flags
+        $template->is_owner = $template->isOwnedBy();
+        $template->permission_level = $template->getUserPermissionLevel();
 
         return Inertia::render('templates/show', [
             'template' => $template,
