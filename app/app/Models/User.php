@@ -96,4 +96,9 @@ class User extends Authenticatable
             ->withPivot('permission_level')
             ->withTimestamps();
     }
+
+    public function scheduledMessages()
+    {
+        return $this->hasMany(\App\Models\ScheduledMessage::class);
+    }
 }

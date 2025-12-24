@@ -13,7 +13,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutGrid, Webhook, Send, Plus, Shield, Mail, FileText } from 'lucide-react';
+import { LayoutGrid, Webhook, Send, Plus, Shield, Mail, FileText, CalendarClock } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const footerNavItems: NavItem[] = [];
@@ -43,6 +43,11 @@ export function AppSidebar() {
             title: 'Templates',
             href: '/templates',
             icon: FileText,
+        },
+        {
+            title: 'Scheduled Messages',
+            href: '/scheduled',
+            icon: CalendarClock,
         },
         {
             title: 'Create Webhook',

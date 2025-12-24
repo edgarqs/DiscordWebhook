@@ -74,8 +74,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('templates', \App\Http\Controllers\TemplateController::class);
     Route::post('templates/{template}/duplicate', [\App\Http\Controllers\TemplateController::class, 'duplicate'])
         ->name('templates.duplicate');
-    Route::get('templates/{template}/with-variables', [\App\Http\Controllers\TemplateController::class, 'getWithVariables'])
-        ->name('templates.with-variables');
+    
+    // Scheduled messages routes
+    Route::post('scheduled/{scheduled}/pause', [\App\Http\Controllers\ScheduledMessageController::class, 'pause'])
+        ->name('scheduled.pause');
+    Route::post('scheduled/{scheduled}/resume', [\App\Http\Controllers\ScheduledMessageController::class, 'resume'])
+        ->name('scheduled.resume');
+    Route::resource('scheduled', \App\Http\Controllers\ScheduledMessageController::class);
     
     // Template collaborators
     Route::prefix('templates/{template}/collaborators')->group(function () {

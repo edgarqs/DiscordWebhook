@@ -83,7 +83,7 @@ export default function QuickSend({ webhooks, templates }: SendProps) {
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const templateId = urlParams.get('template');
-        
+
         if (templateId && templates.length > 0) {
             const template = templates.find(t => t.id.toString() === templateId);
             if (template) {
@@ -92,13 +92,13 @@ export default function QuickSend({ webhooks, templates }: SendProps) {
                     content: template.content.content || '',
                     embeds: template.content.embeds || [],
                 });
-                
+
                 // Show notification that template was loaded
-                setNotification({ 
-                    message: `Template "${template.name}" loaded successfully!`, 
-                    type: 'success' 
+                setNotification({
+                    message: `Template "${template.name}" loaded successfully!`,
+                    type: 'success'
                 });
-                
+
                 // Remove template parameter from URL to avoid reloading on refresh
                 window.history.replaceState({}, '', '/send');
             }
