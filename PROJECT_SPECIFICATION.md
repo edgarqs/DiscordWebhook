@@ -187,6 +187,26 @@ Integración de IA para la generación automática de contenido de mensajes, sug
   - Reemplazo de alerts nativos del navegador
   - Variantes para acciones destructivas
   - Implementado en eliminación de webhooks, colaboradores e invitaciones
+- **Diseño de Cards Compacto** ✅
+  - Cards de webhooks y templates con diseño ultra-compacto
+  - Tamaños reducidos: avatares 8x8, texto text-sm, iconos 3.5x3.5
+  - Badges pequeños: text-[10px], h-5
+  - Layout flex con botones siempre en la parte inferior
+  - Botón principal con texto + iconos secundarios con tooltips
+  - Tooltips informativos en hover (delay 300ms)
+  - Espaciado mínimo para máxima densidad de información
+- **Sistema de Filtrado y Búsqueda** ✅
+  - Búsqueda en tiempo real (frontend)
+  - Webhooks: búsqueda por nombre y tags
+  - Templates: búsqueda por nombre y categoría
+  - Filtros por propiedad (All/My/Shared)
+  - Filtros persistentes incluso sin resultados
+  - Estados vacíos descriptivos según contexto
+- **Funcionalidad de Abandonar Recursos Compartidos** ✅
+  - Botón "Leave" para webhooks y templates compartidos
+  - Confirmación antes de abandonar
+  - Redirección automática tras abandonar
+  - Diferenciación visual entre Delete (owner) y Leave (colaborador)
 
 ---
 

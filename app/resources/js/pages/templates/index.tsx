@@ -33,8 +33,15 @@ import {
     Tag,
     Crown,
     Users,
-    LogOut
+    LogOut,
+    Zap
 } from 'lucide-react';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { type BreadcrumbItem } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -262,97 +269,118 @@ export default function TemplatesIndex({ templates, filters }: Props) {
                 ) : (
                     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                         {filteredTemplates.map((template) => (
-                            <Card key={template.id} className="hover:shadow-lg transition-shadow">
-                                <CardHeader>
+                            <Card key={template.id} className="hover:shadow-lg transition-shadow flex flex-col">
+                                <CardHeader className="pb-2">
                                     <div className="flex items-start justify-between gap-2">
-                                        <div className="flex items-center gap-2 flex-wrap">
-                                            {getCategoryIcon(template.category)}
-                                            <Badge
-                                                variant="outline"
-                                                className={categoryColors[template.category]}
-                                            >
-                                                {template.category}
+                                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                                            <div className="shrink-0">
+                                                {getCategoryIcon(template.category)}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <CardTitle className="text-sm truncate leading-tight">{template.name}</CardTitle>
+                                                <Badge
+                                                    variant="outline"
+                                                    className={`${categoryColors[template.category]} text-[10px] h-4 px-1.5 mt-0.5`}
+                                                >
+                                                    {template.category}
+                                                </Badge>
+                                            </div>
+                                        </div>
+                                        {template.is_owner ? (
+                                            <Badge variant="default" className="gap-0.5 shrink-0 text-[10px] h-5 px-1.5">
+                                                <Crown className="h-2.5 w-2.5" />
+                                                Owner
                                             </Badge>
-                                        </div>
-                                        <div className="flex flex-col gap-1">
-                                            {template.is_owner ? (
-                                                <Badge variant="default" className="gap-1">
-                                                    <Crown className="h-3 w-3" />
-                                                    Owner
-                                                </Badge>
-                                            ) : (
-                                                <Badge variant="secondary" className="gap-1">
-                                                    <Users className="h-3 w-3" />
-                                                    {template.permission_level === 'edit' ? 'Can Edit' : 'View Only'}
-                                                </Badge>
-                                            )}
-                                        </div>
+                                        ) : (
+                                            <Badge variant="secondary" className="shrink-0 text-[10px] h-5 px-1.5">
+                                                {template.permission_level === 'edit' ? 'Editor' : 'Viewer'}
+                                            </Badge>
+                                        )}
                                     </div>
-                                    <CardTitle className="line-clamp-1">{template.name}</CardTitle>
                                     {template.description && (
-                                        <CardDescription className="line-clamp-2">
+                                        <p className="text-[11px] text-muted-foreground line-clamp-1 mt-1">
                                             {template.description}
-                                        </CardDescription>
+                                        </p>
                                     )}
                                 </CardHeader>
-                                <CardContent className="space-y-4">
-                                    {/* Preview */}
-                                    <div
-                                        className="h-2 rounded-full"
-                                        style={{ backgroundColor: getEmbedPreviewColor(template) }}
-                                    />
-
-                                    {/* Actions */}
-                                    <div className="flex gap-2">
-                                        {(template.is_owner || template.permission_level === 'edit') ? (
-                                            <Link href={`/templates/${template.id}/edit`} className="flex-1">
-                                                <Button variant="outline" size="sm" className="w-full gap-2">
-                                                    <Edit className="h-4 w-4" />
-                                                    Edit
-                                                </Button>
-                                            </Link>
-                                        ) : (
-                                            <Link href={`/send?template=${template.id}`} className="flex-1">
-                                                <Button variant="outline" size="sm" className="w-full gap-2">
-                                                    <FileText className="h-4 w-4" />
-                                                    Use Template
-                                                </Button>
-                                            </Link>
-                                        )}
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => handleDuplicate(template.id)}
-                                        >
-                                            <Copy className="h-4 w-4" />
-                                        </Button>
-                                        {template.is_owner ? (
-                                            <>
-                                                <Link href={`/templates/${template.id}/collaborators`}>
-                                                    <Button variant="outline" size="sm">
-                                                        <Users className="h-4 w-4" />
+                                <CardContent className="flex flex-col flex-1 pt-0 pb-3">
+                                    <div className="flex-1"></div>
+                                    <TooltipProvider delayDuration={300}>
+                                        <div className="flex gap-1.5">
+                                            {(template.is_owner || template.permission_level === 'edit') ? (
+                                                <Link href={`/templates/${template.id}/edit`} className="flex-1">
+                                                    <Button variant="default" size="sm" className="w-full h-8 gap-1.5">
+                                                        <Edit className="h-3.5 w-3.5" />
+                                                        <span className="text-xs">Edit</span>
                                                     </Button>
                                                 </Link>
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={() => handleDeleteClick(template.id)}
-                                                >
-                                                    <Trash2 className="h-4 w-4 text-destructive" />
-                                                </Button>
-                                            </>
-                                        ) : template.permission_level && (
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => handleLeaveClick(template.id)}
-                                                className="gap-2"
-                                            >
-                                                <LogOut className="h-4 w-4" />
-                                                Leave
-                                            </Button>
-                                        )}
-                                    </div>
+                                            ) : (
+                                                <Link href={`/send?template=${template.id}`} className="flex-1">
+                                                    <Button variant="default" size="sm" className="w-full h-8 gap-1.5">
+                                                        <FileText className="h-3.5 w-3.5" />
+                                                        <span className="text-xs">Use</span>
+                                                    </Button>
+                                                </Link>
+                                            )}
+
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => handleDuplicate(template.id)}
+                                                        className="h-8 w-8 p-0"
+                                                    >
+                                                        <Copy className="h-3.5 w-3.5" />
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>Duplicate Template</TooltipContent>
+                                            </Tooltip>
+
+                                            {template.is_owner && (
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <Link href={`/templates/${template.id}/collaborators`}>
+                                                            <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                                                                <Users className="h-3.5 w-3.5" />
+                                                            </Button>
+                                                        </Link>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>Share Template</TooltipContent>
+                                                </Tooltip>
+                                            )}
+
+                                            {template.is_owner ? (
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            onClick={() => handleDeleteClick(template.id)}
+                                                            className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                                        >
+                                                            <Trash2 className="h-3.5 w-3.5" />
+                                                        </Button>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>Delete Template</TooltipContent>
+                                                </Tooltip>
+                                            ) : template.permission_level && (
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            onClick={() => handleLeaveClick(template.id)}
+                                                            className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                                        >
+                                                            <LogOut className="h-3.5 w-3.5" />
+                                                        </Button>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>Leave Template</TooltipContent>
+                                                </Tooltip>
+                                            )}
+                                        </div>
+                                    </TooltipProvider>
                                 </CardContent>
                             </Card>
                         ))}
