@@ -277,7 +277,7 @@ export default function WebhooksIndex({ webhooks, filters }: Props) {
                                                     </Button>
                                                 </Link>
 
-                                                {(webhook.is_owner || webhook.permission_level === 'edit') && (
+                                                {(webhook.is_owner || webhook.permission_level === 'editor' || webhook.permission_level === 'admin') && (
                                                     <Tooltip>
                                                         <TooltipTrigger asChild>
                                                             <Link href={`/webhooks/${webhook.id}/edit`} onClick={(e) => e.stopPropagation()}>
@@ -290,7 +290,7 @@ export default function WebhooksIndex({ webhooks, filters }: Props) {
                                                     </Tooltip>
                                                 )}
 
-                                                {webhook.is_owner && (
+                                                {(webhook.is_owner || webhook.permission_level === 'admin') && (
                                                     <Tooltip>
                                                         <TooltipTrigger asChild>
                                                             <Link href={`/webhooks/${webhook.id}/collaborators`} onClick={(e) => e.stopPropagation()}>

@@ -29,7 +29,7 @@ interface Webhook {
     webhook_url: string;
     tags?: string[];
     is_owner: boolean;
-    permission_level: 'owner' | 'edit' | 'view';
+    permission_level: 'admin' | 'editor' | 'viewer';
     created_at: string;
     message_history: MessageHistory[];
 }
@@ -115,7 +115,7 @@ export default function ShowWebhook({ webhook, stats }: Props) {
                                     <Badge variant="default">Owner</Badge>
                                 ) : (
                                     <Badge variant="secondary">
-                                        {webhook.permission_level === 'edit' ? 'Editor' : 'Viewer'}
+                                        {webhook.permission_level === 'admin' ? 'Admin' : webhook.permission_level === 'editor' ? 'Editor' : 'Viewer'}
                                     </Badge>
                                 )}
                             </div>
@@ -142,7 +142,7 @@ export default function ShowWebhook({ webhook, stats }: Props) {
                                 Send Message
                             </Button>
                         </Link>
-                        {(webhook.is_owner || webhook.permission_level === 'edit') && (
+                        {(webhook.is_owner || webhook.permission_level === 'editor' || webhook.permission_level === 'admin') && (
                             <Link href={`/webhooks/${webhook.id}/edit`}>
                                 <Button variant="outline" className="gap-2">
                                     <Edit className="h-4 w-4" />
@@ -150,7 +150,7 @@ export default function ShowWebhook({ webhook, stats }: Props) {
                                 </Button>
                             </Link>
                         )}
-                        {webhook.is_owner && (
+                        {(webhook.is_owner || webhook.permission_level === 'admin') && (
                             <>
                                 <Link href={`/webhooks/${webhook.id}/collaborators`}>
                                     <Button variant="outline" className="gap-2">
