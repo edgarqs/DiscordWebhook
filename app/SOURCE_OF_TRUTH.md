@@ -48,6 +48,25 @@ A Laravel-based web application for managing Discord webhooks with advanced feat
 - Password reset
 - Admin controls
 
+### 7. Changelog Page ⭐ NEW
+- **Version History**: Chronological display of all updates
+- **Categorized Updates**: Features, Improvements, Bug Fixes
+- **Timeline Design**: Visual timeline with version markers
+- **Accessible from What's New modal**: Direct link to full history
+
+## Changelog Maintenance
+
+**IMPORTANT**: After each update, improvement, or new feature:
+
+1. **Update changelog data**: Edit `resources/js/data/changelog.ts`
+2. **Add to appropriate version**: Create new version or add to existing
+3. **Categorize correctly**:
+   - `features`: New functionality
+   - `improvements`: Enhancements to existing features
+   - `fixes`: Bug corrections
+4. **Update What's New modal**: Edit `resources/js/components/whats-new-modal.tsx` if needed
+5. **Increment version**: Update version number in modal if major release
+
 ## Technical Stack
 
 ### Backend
@@ -137,8 +156,12 @@ app/
 │   └── js/
 │       ├── components/
 │       │   ├── schedule-picker.tsx ⭐
+│       │   ├── whats-new-modal.tsx
 │       │   └── ...
+│       ├── data/
+│       │   └── changelog.ts ⭐ NEW
 │       ├── Pages/
+│       │   ├── changelog.tsx ⭐ NEW
 │       │   ├── scheduled/
 │       │   │   ├── index.tsx ⭐
 │       │   │   ├── create.tsx ⭐

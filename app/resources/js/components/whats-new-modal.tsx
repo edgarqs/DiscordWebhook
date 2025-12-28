@@ -127,6 +127,15 @@ export function WhatsNewModal({ version = '1.1.0' }: WhatsNewModalProps) {
                             No volver a mostrar
                         </label>
                     </div>
+                    <Button
+                        variant="outline"
+                        onClick={() => {
+                            handleClose();
+                            router.visit('/changelog');
+                        }}
+                    >
+                        Ver Historial Completo
+                    </Button>
                     <Button onClick={handleClose}>
                         ¡Entendido!
                     </Button>

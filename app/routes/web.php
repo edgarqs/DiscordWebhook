@@ -43,6 +43,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('send', [\App\Http\Controllers\WebhookController::class, 'quickSend'])->name('send');
     Route::post('send/temporary', [\App\Http\Controllers\WebhookController::class, 'sendTemporary'])->name('send.temporary');
 
+    // Changelog
+    Route::get('changelog', function () {
+        return inertia('changelog');
+    })->name('changelog');
+
     // Webhook collaborator routes
     Route::get('webhooks/{webhook}/collaborators', [\App\Http\Controllers\CollaboratorController::class, 'index'])
         ->name('webhooks.collaborators.index');

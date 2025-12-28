@@ -71,6 +71,7 @@ export default function WebhooksIndex({ webhooks, filters }: Props) {
     const handleConfirmDelete = () => {
         if (webhookToDelete) {
             setDeletingId(webhookToDelete);
+            setDeleteDialogOpen(false);
             router.delete(`/webhooks/${webhookToDelete}`, {
                 onFinish: () => {
                     setDeletingId(null);
@@ -308,7 +309,11 @@ export default function WebhooksIndex({ webhooks, filters }: Props) {
                                                             <Button
                                                                 variant="ghost"
                                                                 size="sm"
-                                                                onClick={(e) => { e.stopPropagation(); handleDeleteClick(webhook.id); }}
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    e.preventDefault();
+                                                                    handleDeleteClick(webhook.id);
+                                                                }}
                                                                 className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
                                                             >
                                                                 <Trash2 className="h-3.5 w-3.5" />
@@ -322,7 +327,11 @@ export default function WebhooksIndex({ webhooks, filters }: Props) {
                                                             <Button
                                                                 variant="ghost"
                                                                 size="sm"
-                                                                onClick={(e) => { e.stopPropagation(); handleLeaveClick(webhook.id); }}
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    e.preventDefault();
+                                                                    handleLeaveClick(webhook.id);
+                                                                }}
                                                                 className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
                                                             >
                                                                 <LogOut className="h-3.5 w-3.5" />
