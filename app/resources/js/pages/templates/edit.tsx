@@ -23,7 +23,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import { ArrowLeft, Save, Trash2, UserPlus, LogOut } from 'lucide-react';
 import { type BreadcrumbItem } from '@/types';
-import { VariableHelper } from '@/components/variable-helper';
 
 interface Webhook {
     id: number;
@@ -144,7 +143,6 @@ export default function EditTemplate({ template }: Props) {
                         </p>
                     </div>
                     <div className="flex gap-2">
-                        <VariableHelper />
                         {template.is_owner && (
                             <Link href={`/templates/${template.id}/collaborators`}>
                                 <Button variant="outline" className="gap-2">

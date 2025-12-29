@@ -22,7 +22,6 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, Save } from 'lucide-react';
 import { type BreadcrumbItem } from '@/types';
-import { VariableHelper } from '@/components/variable-helper';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -111,15 +110,12 @@ export default function CreateTemplate() {
                             Save a reusable message template
                         </p>
                     </div>
-                    <div className="flex gap-2">
-                        <VariableHelper />
-                        <Link href="/templates">
-                            <Button variant="outline" className="gap-2">
-                                <ArrowLeft className="h-4 w-4" />
-                                Back
-                            </Button>
-                        </Link>
-                    </div>
+                    <Link href="/templates">
+                        <Button variant="outline" className="gap-2">
+                            <ArrowLeft className="h-4 w-4" />
+                            Back
+                        </Button>
+                    </Link>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
