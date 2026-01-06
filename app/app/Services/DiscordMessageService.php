@@ -187,6 +187,11 @@ class DiscordMessageService
             $payload['avatar_url'] = $messageData['avatar_url'];
         }
 
+        // Add allowed mentions to enable user, role and @everyone mentions
+        $payload['allowed_mentions'] = [
+            'parse' => ['users', 'roles', 'everyone'],
+        ];
+
         return $payload;
     }
 
