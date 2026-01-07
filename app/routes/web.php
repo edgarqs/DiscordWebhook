@@ -127,10 +127,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
             $request->validate([
                 'registration_enabled' => 'required|boolean',
                 'password_reset_enabled' => 'required|boolean',
+                'ai_provider' => 'required|string|in:openai,gemini',
+                'openai_api_key' => 'nullable|string',
+                'gemini_api_key' => 'nullable|string',
+                'ai_daily_limit' => 'required|integer|min:1',
             ]);
 
             \App\Models\Setting::set('registration_enabled', $request->registration_enabled, 'boolean');
             \App\Models\Setting::set('password_reset_enabled', $request->password_reset_enabled, 'boolean');
+            \App\Models\Setting::set('ai_provider', $request->ai_provider, 'string');
+
+            if ($request->has('openai_api_key')) {
+                \App\Models\Setting::set('openai_api_key', $request->openai_api_key, 'string');
+            }
+
+            if ($request->has('gemini_api_key')) {
+                \App\Models\Setting::set('gemini_api_key', $request->gemini_api_key, 'string');
+            }
+
+            \App\Models\Setting::set('ai_daily_limit', $request->ai_daily_limit, 'integer');
 
             return redirect()->back()->with('success', 'Settings updated successfully.');
         })->name('admin.settings.update');
@@ -148,7 +163,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
             return redirect()->back()->with('success', 'User deleted successfully.');
         })->name('admin.users.destroy');
+
+        Route::post('admin/users/{user}/toggle-ai', [\App\Http\Controllers\AiController::class, 'toggleAccess'])->name('admin.users.toggle-ai');
     });
+
+    // AI Generation Route
+    Route::post('ai/generate', [\App\Http\Controllers\AiController::class, 'generate'])
+        ->middleware('throttle:10,1')
+        ->name('ai.generate');
 });
 
 require __DIR__.'/settings.php';

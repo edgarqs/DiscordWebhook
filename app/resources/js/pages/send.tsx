@@ -10,6 +10,8 @@ import { Send, Upload, X, Save, ChevronDown, ChevronUp, Plus, Trash2, Webhook as
 import { Webhook, type BreadcrumbItem } from '@/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Toast } from '@/components/ui/toast';
+import { AiGenerationDialog } from '@/components/ai-generation-dialog';
+import { Sparkles } from 'lucide-react';
 
 interface Template {
     id: number;
@@ -44,6 +46,10 @@ export default function QuickSend({ webhooks, templates }: SendProps) {
         webhooks.length > 0 ? webhooks[0].id : null
     );
     const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+    const [showAiModal, setShowAiModal] = useState(false);
+
+    const { auth } = usePage<any>().props;
+    const canUseAi = auth.user?.role === 'admin' || auth.user?.can_use_ai;
 
     const { data, setData, post, processing, errors, reset } = useForm<{
         webhook_id: number | null;
@@ -460,20 +466,30 @@ export default function QuickSend({ webhooks, templates }: SendProps) {
                                 {/* Content Tab */}
                                 {activeTab === 'content' && (
                                     <div className="space-y-4">
-                                        <div>
+                                        <div className="flex items-center justify-between">
                                             <Label htmlFor="content">Message Content</Label>
-                                            <Textarea
-                                                id="content"
-                                                value={data.content}
-                                                onChange={(e) => setData('content', e.target.value)}
-                                                placeholder="Enter your message here..."
-                                                rows={8}
-                                                maxLength={2000}
-                                            />
-                                            <p className="text-sm text-muted-foreground mt-1">
-                                                {data.content.length}/2000 characters
-                                            </p>
+                                            {canUseAi && (
+                                                <button
+                                                    type="button"
+                                                    className="btn-ai-minimal"
+                                                    onClick={() => setShowAiModal(true)}
+                                                >
+                                                    <Sparkles className="h-4 w-4 text-[#a855f7]" />
+                                                    <span className="btn-ai-text">Generar con IA</span>
+                                                </button>
+                                            )}
                                         </div>
+                                        <Textarea
+                                            id="content"
+                                            value={data.content}
+                                            onChange={(e) => setData('content', e.target.value)}
+                                            placeholder="Enter your message here..."
+                                            rows={8}
+                                            maxLength={2000}
+                                        />
+                                        <p className="text-sm text-muted-foreground mt-1">
+                                            {data.content.length}/2000 characters
+                                        </p>
                                     </div>
                                 )}
 
@@ -1042,6 +1058,12 @@ export default function QuickSend({ webhooks, templates }: SendProps) {
                         </Card>
                     </div>
                 </form>
+
+                <AiGenerationDialog
+                    open={showAiModal}
+                    onOpenChange={setShowAiModal}
+                    onGenerated={(content: string) => setData('content', content)}
+                />
             </div>
         </AppLayout>
     );

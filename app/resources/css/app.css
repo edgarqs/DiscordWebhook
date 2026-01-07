@@ -141,3 +141,56 @@
         @apply bg-background text-foreground;
     }
 }
+
+/* AI Button Minimalist - Ultra Specific Overrides */
+button.btn-ai-minimal {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+    border-radius: 6px !important;
+    box-shadow: none !important;
+    outline: none !important;
+    margin: 0 !important;
+    padding: 2px 10px !important;
+    height: auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    cursor: pointer !important;
+    transition: transform 0.2s ease !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+}
+
+button.btn-ai-minimal:hover {
+    transform: scale(1.05) !important;
+    background: transparent !important;
+}
+
+button.btn-ai-minimal .btn-ai-text {
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%) !important;
+    background-size: 200% 200% !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    color: transparent !important;
+    font-weight: 600 !important;
+    animation: btn-gradient-shift 3s ease infinite !important;
+    display: inline-block !important;
+}
+
+@keyframes btn-gradient-shift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}

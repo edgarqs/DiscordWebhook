@@ -7,6 +7,8 @@ import { Users, Shield, Webhook as WebhookIcon, MessageSquare, Settings as Setti
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface AdminProps {
     stats: {
@@ -20,6 +22,7 @@ interface AdminProps {
         name: string;
         email: string;
         role: string;
+        can_use_ai: boolean;
         created_at: string;
     }>;
 }
@@ -30,9 +33,13 @@ export default function AdminIndex({ stats, recentUsers }: AdminProps) {
     const { data, setData, post, processing } = useForm({
         registration_enabled: settings.registration_enabled,
         password_reset_enabled: settings.password_reset_enabled,
+        ai_provider: settings.ai_provider || 'openai',
+        openai_api_key: settings.openai_api_key || '',
+        gemini_api_key: settings.gemini_api_key || '',
+        ai_daily_limit: settings.ai_daily_limit || 5,
     });
 
-    const [deleteDTO, setDeleteDTO] = useState<{ open: boolean; user: AdminProps['recentUsers'][0] | null }>({
+    const [deleteDTO, setDeleteDTO] = useState<{ open: boolean; user: any | null }>({
         open: false,
         user: null,
     });
@@ -50,7 +57,13 @@ export default function AdminIndex({ stats, recentUsers }: AdminProps) {
         }
     };
 
-    const openDeleteDialog = (user: AdminProps['recentUsers'][0]) => {
+    const toggleAiAccess = (user: any) => {
+        router.post(`/admin/users/${user.id}/toggle-ai`, {}, {
+            preserveScroll: true,
+        });
+    };
+
+    const openDeleteDialog = (user: any) => {
         setDeleteDTO({ open: true, user });
     };
 
@@ -59,78 +72,47 @@ export default function AdminIndex({ stats, recentUsers }: AdminProps) {
             <Head title="Admin Panel" />
 
             <div className="p-6 space-y-6">
-                {/* Header */}
-                <div>
-                    <h1 className="text-3xl font-bold">Admin Panel</h1>
-                    <p className="text-muted-foreground mt-1">
-                        Manage users and monitor system activity
-                    </p>
-                </div>
-
-                {/* Stats Grid */}
+                {/* Header and Stats */}
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Total Users
-                            </CardTitle>
+                            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
                             <Users className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">{stats.totalUsers}</div>
-                            <p className="text-xs text-muted-foreground">
-                                {stats.adminUsers} admin{stats.adminUsers !== 1 ? 's' : ''}
-                            </p>
                         </CardContent>
                     </Card>
-
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Admin Users
-                            </CardTitle>
+                            <CardTitle className="text-sm font-medium">Admins</CardTitle>
                             <Shield className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">{stats.adminUsers}</div>
-                            <p className="text-xs text-muted-foreground">
-                                System administrators
-                            </p>
                         </CardContent>
                     </Card>
-
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Total Webhooks
-                            </CardTitle>
+                            <CardTitle className="text-sm font-medium">Webhooks</CardTitle>
                             <WebhookIcon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">{stats.totalWebhooks}</div>
-                            <p className="text-xs text-muted-foreground">
-                                Across all users
-                            </p>
                         </CardContent>
                     </Card>
-
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Messages Sent
-                            </CardTitle>
+                            <CardTitle className="text-sm font-medium">Messages</CardTitle>
                             <MessageSquare className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">{stats.totalMessages}</div>
-                            <p className="text-xs text-muted-foreground">
-                                Total messages
-                            </p>
                         </CardContent>
                     </Card>
                 </div>
 
-                {  /* Recent Users */}
+                {/* Recent Users */}
                 <Card>
                     <CardHeader>
                         <CardTitle>Recent Users</CardTitle>
@@ -146,30 +128,43 @@ export default function AdminIndex({ stats, recentUsers }: AdminProps) {
                                     className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0"
                                 >
                                     <div className="space-y-1">
-                                        <p className="text-sm font-medium leading-none">
-                                            {user.name}
-                                        </p>
-                                        <p className="text-sm text-muted-foreground">
+                                        <div className="flex items-center gap-2">
+                                            <p className="text-sm font-medium leading-none">
+                                                {user.name}
+                                            </p>
+                                            {user.role === 'admin' ? (
+                                                <span className="inline-flex items-center rounded-full bg-blue-100 dark:bg-blue-900 px-2 py-0.5 text-[10px] font-medium text-blue-800 dark:text-blue-100">
+                                                    Admin
+                                                </span>
+                                            ) : (
+                                                <div className="flex items-center gap-1">
+                                                    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${user.can_use_ai ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'}`}>
+                                                        AI {user.can_use_ai ? 'On' : 'Off'}
+                                                    </span>
+                                                    <Switch
+                                                        className="scale-[0.6] origin-left"
+                                                        checked={user.can_use_ai}
+                                                        onCheckedChange={() => toggleAiAccess(user)}
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+                                        <p className="text-xs text-muted-foreground">
                                             {user.email}
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        {user.role === 'admin' ? (
-                                            <span className="inline-flex items-center rounded-full bg-blue-100 dark:bg-blue-900 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:text-blue-100">
-                                                <Shield className="mr-1 h-3 w-3" />
-                                                Admin
-                                            </span>
-                                        ) : (
+                                        {user.role !== 'admin' && (
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
                                                 onClick={() => openDeleteDialog(user)}
-                                                className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/10"
+                                                className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/10 h-7 w-7 p-0"
                                             >
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
                                         )}
-                                        <span className="text-xs text-muted-foreground">
+                                        <span className="text-[10px] text-muted-foreground">
                                             {new Date(user.created_at).toLocaleDateString()}
                                         </span>
                                     </div>
@@ -187,46 +182,121 @@ export default function AdminIndex({ stats, recentUsers }: AdminProps) {
                             System Settings
                         </CardTitle>
                         <CardDescription>
-                            Configure registration and password reset features
+                            Configure core features and AI parameters
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleSubmit} className="space-y-6">
-                            <div className="flex items-center justify-between">
-                                <div className="space-y-0.5">
-                                    <Label htmlFor="registration" className="text-base">
-                                        User Registration
-                                    </Label>
-                                    <p className="text-sm text-muted-foreground">
-                                        Allow new users to create accounts
-                                    </p>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div className="space-y-6">
+                                    <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">General Settings</h3>
+                                    <div className="space-y-4">
+                                        <div className="flex items-center justify-between">
+                                            <div className="space-y-0.5">
+                                                <Label htmlFor="registration" className="text-base">
+                                                    User Registration
+                                                </Label>
+                                                <p className="text-sm text-muted-foreground">
+                                                    Allow new users to create accounts
+                                                </p>
+                                            </div>
+                                            <Switch
+                                                id="registration"
+                                                checked={data.registration_enabled}
+                                                onCheckedChange={(checked) => setData('registration_enabled', checked)}
+                                            />
+                                        </div>
+
+                                        <div className="flex items-center justify-between">
+                                            <div className="space-y-0.5">
+                                                <Label htmlFor="password-reset" className="text-base">
+                                                    Password Reset
+                                                </Label>
+                                                <p className="text-sm text-muted-foreground">
+                                                    Allow users to reset their passwords
+                                                </p>
+                                            </div>
+                                            <Switch
+                                                id="password-reset"
+                                                checked={data.password_reset_enabled}
+                                                onCheckedChange={(checked) => setData('password_reset_enabled', checked)}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
-                                <Switch
-                                    id="registration"
-                                    checked={data.registration_enabled}
-                                    onCheckedChange={(checked) => setData('registration_enabled', checked)}
-                                />
+
+                                <div className="space-y-6 border-l pl-8">
+                                    <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">AI Configuration</h3>
+                                    <div className="space-y-4">
+                                        <div className="space-y-2">
+                                            <Label>AI Provider</Label>
+                                            <Select
+                                                value={data.ai_provider}
+                                                onValueChange={(value) => setData('ai_provider', value)}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select AI Provider" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="gemini">Google Gemini</SelectItem>
+                                                    <SelectItem value="openai">OpenAI (ChatGPT)</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        {data.ai_provider === 'openai' ? (
+                                            <div className="space-y-2">
+                                                <Label htmlFor="openai_api_key">OpenAI API Key</Label>
+                                                <Input
+                                                    id="openai_api_key"
+                                                    type="password"
+                                                    value={data.openai_api_key}
+                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData('openai_api_key', e.target.value)}
+                                                    placeholder="sk-..."
+                                                />
+                                                <p className="text-xs text-muted-foreground">
+                                                    Used for content generation via OpenAI
+                                                </p>
+                                            </div>
+                                        ) : (
+                                            <div className="space-y-2">
+                                                <Label htmlFor="gemini_api_key">Gemini API Key</Label>
+                                                <Input
+                                                    id="gemini_api_key"
+                                                    type="password"
+                                                    value={data.gemini_api_key}
+                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData('gemini_api_key', e.target.value)}
+                                                    placeholder="AIza..."
+                                                />
+                                                <p className="text-xs text-muted-foreground">
+                                                    Used for content generation via Google Gemini
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        <div className="space-y-2 pt-4 border-t">
+                                            <Label htmlFor="ai_daily_limit">Daily Usage Limit (Non-Admins)</Label>
+                                            <Input
+                                                id="ai_daily_limit"
+                                                type="number"
+                                                min="1"
+                                                max="1000"
+                                                value={data.ai_daily_limit}
+                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData('ai_daily_limit', parseInt(e.target.value) || 1)}
+                                            />
+                                            <p className="text-xs text-muted-foreground">
+                                                Maximum number of AI generations per user per day.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div className="flex items-center justify-between">
-                                <div className="space-y-0.5">
-                                    <Label htmlFor="password-reset" className="text-base">
-                                        Password Reset
-                                    </Label>
-                                    <p className="text-sm text-muted-foreground">
-                                        Allow users to reset their passwords
-                                    </p>
-                                </div>
-                                <Switch
-                                    id="password-reset"
-                                    checked={data.password_reset_enabled}
-                                    onCheckedChange={(checked) => setData('password_reset_enabled', checked)}
-                                />
+                            <div className="flex justify-end pt-4 border-t">
+                                <Button type="submit" disabled={processing} size="lg">
+                                    {processing ? 'Saving...' : 'Save Settings'}
+                                </Button>
                             </div>
-
-                            <Button type="submit" disabled={processing}>
-                                {processing ? 'Saving...' : 'Save Settings'}
-                            </Button>
                         </form>
                     </CardContent>
                 </Card>

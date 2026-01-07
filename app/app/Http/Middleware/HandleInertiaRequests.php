@@ -54,6 +54,9 @@ class HandleInertiaRequests extends Middleware
             'settings' => [
                 'registration_enabled' => \App\Models\Setting::isRegistrationEnabled(),
                 'password_reset_enabled' => \App\Models\Setting::isPasswordResetEnabled(),
+                'ai_provider' => \App\Models\Setting::get('ai_provider', 'openai'),
+                'openai_api_key' => $request->user()?->isAdmin() ? \App\Models\Setting::get('openai_api_key', '') : null,
+                'gemini_api_key' => $request->user()?->isAdmin() ? \App\Models\Setting::get('gemini_api_key', '') : null,
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'flash' => [

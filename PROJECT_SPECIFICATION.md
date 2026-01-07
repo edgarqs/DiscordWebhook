@@ -84,6 +84,10 @@ Integración de IA para la generación automática de contenido de mensajes, sug
   - Máximo 10 embeds por mensaje
   - Máximo 25 fields por embed
   - Mensajes de error descriptivos
+- **Soporte para Menciones** ✅
+  - Procesamiento de menciones a usuarios (@usuario)
+  - Procesamiento de menciones a roles (@rol)
+  - Soporte para menciones globales (@everyone, @here)
 - **Notificaciones de envío** ✅
   - Toast notifications en esquina superior derecha
   - Mensajes de éxito (verde) y error (rojo)
@@ -472,6 +476,7 @@ Cuando la IA trabaje en este proyecto, debe:
    - Soporte para contenido de texto (máx. 2000 chars)
    - Soporte para embeds (título, descripción, color)
    - Máximo 10 embeds por mensaje
+   - Soporte para menciones (@users, @roles, @everyone)
    - Notificaciones de éxito/error
 
 4. **Quick Send (Envío Rápido)**
@@ -536,9 +541,9 @@ Cuando la IA trabaje en este proyecto, debe:
 - Se descubran nuevos requisitos
 - Se complete una fase del roadmap
 
-**Última actualización**: 2025-12-18  
-**Versión**: 1.3.0  
-**Estado del proyecto**: Desarrollo activo - Sistema de colaboración implementado
+**Última actualización**: 2026-01-06  
+**Versión**: 1.3.1  
+**Estado del proyecto**: Desarrollo activo - Soporte para menciones implementado
 
 ---
 

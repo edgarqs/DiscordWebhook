@@ -13,6 +13,57 @@ export interface ChangelogVersion {
 
 export const changelogData: ChangelogVersion[] = [
     {
+        version: '1.4.0',
+        date: 'Enero 2026',
+        features: [
+            {
+                title: 'Generación con IA',
+                description: 'Crea contenido épico para tus mensajes usando Inteligencia Artificial (OpenAI o Google Gemini). Disponible en todos los editores.',
+            },
+            {
+                title: 'Límite de Uso Diario',
+                description: 'Sistema de control de costes con límites diarios de uso configurables para usuarios (los admins tienen uso ilimitado).',
+            },
+            {
+                title: 'Diseño Minimalista AI',
+                description: 'Botón de IA con estilo ghost premium, degradado animado y bordes refinados para una integración perfecta.',
+            },
+        ],
+        improvements: [
+            {
+                title: 'Configuración de IA en Admin',
+                description: 'Panel completo para elegir proveedor (OpenAI/Gemini), gestionar claves API y configurar límites diarios.',
+            },
+            {
+                title: 'UI sin Interrupciones',
+                description: 'Gestión de errores y límites integrada en los diálogos, eliminando alertas emergentes para una experiencia más fluida.',
+            },
+        ],
+        fixes: [
+            {
+                title: 'Espaciado en Editor',
+                description: 'Corregido el espaciado en la página de envío rápido para mantener consistencia visual con el resto de la app.',
+            },
+        ],
+    },
+    {
+        version: '1.3.0',
+        date: 'Enero 2026',
+        features: [
+            {
+                title: 'Soporte de Menciones',
+                description: 'Menciona usuarios, roles y @everyone directamente desde el editor de mensajes.',
+            },
+        ],
+        improvements: [
+            {
+                title: 'Interfaz Global Pulida',
+                description: 'Mejoras visuales consistentes en toda la aplicación para una navegación más profesional.',
+            },
+        ],
+        fixes: [],
+    },
+    {
         version: '1.2.0',
         date: 'Diciembre 2025',
         features: [

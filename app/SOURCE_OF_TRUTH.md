@@ -12,6 +12,7 @@ A Laravel-based web application for managing Discord webhooks with advanced feat
 - Avatar and description customization
 - Message history tracking
 - Collaboration system (share webhooks with other users)
+- **Mention support** (users, roles, @everyone) ⭐ NEW
 
 ### 2. Quick Send
 - Send messages to any webhook quickly
@@ -42,11 +43,18 @@ A Laravel-based web application for managing Discord webhooks with advanced feat
 - Invitation system
 - Leave shared resources
 
-### 6. User Management
+### 6. AI Generation ⭐ NEW
+- Generate message content using OpenAI or Google Gemini
+- Integrated in all editors (Quick Send, webhooks, templates)
+- Configurable daily usage limits per user
+- Minimalist "ghost" style UI with premium animations
+
+### 7. User Management
 - Authentication (login/register)
 - Profile management
 - Password reset
 - Admin controls
+- **AI Access Control**: Enable/disable IA usage per user
 
 ### 7. Changelog Page ⭐ NEW
 - **Version History**: Chronological display of all updates
@@ -90,12 +98,13 @@ A Laravel-based web application for managing Discord webhooks with advanced feat
 ### Database Schema
 
 #### Core Tables
-- `users`: User accounts
+- `users`: User accounts (including `can_use_ai` flag)
 - `webhooks`: Discord webhook configurations
 - `templates`: Message templates
 - `webhook_history`: Message send history
-- `scheduled_messages`: Scheduled message configurations ⭐
-- `scheduled_message_files`: File attachments for scheduled messages ⭐
+- `scheduled_messages`: Scheduled message configurations
+- `scheduled_message_files`: File attachments for scheduled messages
+- `ai_usages`: Tracking of AI generation attempts vs limits ⭐ NEW
 
 #### Collaboration Tables
 - `webhook_collaborators`: Webhook sharing
@@ -119,6 +128,7 @@ A Laravel-based web application for managing Discord webhooks with advanced feat
 
 #### Services
 - `DiscordMessageService`: Handles Discord API communication
+- `AiService`: Multi-provider AI generation (OpenAI & Gemini) ⭐ NEW
 
 ## File Structure
 
@@ -351,6 +361,8 @@ Files are sent as multipart/form-data.
 - **v1.0**: Initial release with webhooks and templates
 - **v1.1**: Added collaboration system
 - **v1.2**: Added scheduled messages system ⭐
+- **v1.3**: Added mention support and UI improvements
+- **v1.4**: Added AI Content Generation (OpenAI/Gemini) and usage limits ⭐ NEW
 
 ## Documentation
 

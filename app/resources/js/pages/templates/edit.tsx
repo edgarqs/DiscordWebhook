@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import AppLayout from '@/layouts/app-layout';
-import { Head, useForm, Link, router } from '@inertiajs/react';
+import { Head, useForm, Link, router, usePage } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,7 +21,8 @@ import {
 } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ConfirmDialog } from '@/components/confirm-dialog';
-import { ArrowLeft, Save, Trash2, UserPlus, LogOut } from 'lucide-react';
+import { ArrowLeft, Save, Trash2, UserPlus, LogOut, Sparkles } from 'lucide-react';
+import { AiGenerationDialog } from '@/components/ai-generation-dialog';
 import { type BreadcrumbItem } from '@/types';
 
 interface Webhook {
@@ -43,6 +44,17 @@ interface Template {
     is_owner: boolean;
 }
 
+interface TemplateForm {
+    name: string;
+    description: string;
+    category: string;
+    customCategory: string;
+    content: {
+        content: string;
+        embeds: any[];
+    };
+}
+
 interface Props {
     template: Template;
 }
@@ -51,6 +63,10 @@ export default function EditTemplate({ template }: Props) {
     const [deleteDialog, setDeleteDialog] = useState(false);
     const [leaveDialog, setLeaveDialog] = useState(false);
     const [activeTab, setActiveTab] = useState<'content' | 'embeds'>('content');
+    const [showAiModal, setShowAiModal] = useState(false);
+
+    const { auth } = usePage<any>().props;
+    const canUseAi = auth.user?.role === 'admin' || auth.user?.can_use_ai;
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -291,23 +307,33 @@ export default function EditTemplate({ template }: Props) {
                                 {/* Content Tab */}
                                 {activeTab === 'content' && (
                                     <div className="space-y-4">
-                                        <div>
+                                        <div className="flex items-center justify-between">
                                             <Label htmlFor="content">Message Content</Label>
-                                            <Textarea
-                                                id="content"
-                                                value={data.content.content}
-                                                onChange={(e) =>
-                                                    setData('content', { ...data.content, content: e.target.value })
-                                                }
-                                                placeholder="Enter your message here..."
-                                                rows={10}
-                                                maxLength={2000}
-                                                className="resize-none"
-                                            />
-                                            <p className="text-sm text-muted-foreground mt-1">
-                                                {data.content.content.length}/2000 characters
-                                            </p>
+                                            {canUseAi && (
+                                                <button
+                                                    type="button"
+                                                    className="btn-ai-minimal"
+                                                    onClick={() => setShowAiModal(true)}
+                                                >
+                                                    <Sparkles className="h-4 w-4 text-[#a855f7]" />
+                                                    <span className="btn-ai-text">Generar con IA</span>
+                                                </button>
+                                            )}
                                         </div>
+                                        <Textarea
+                                            id="content"
+                                            value={data.content.content}
+                                            onChange={(e) =>
+                                                setData('content', { ...data.content, content: e.target.value })
+                                            }
+                                            placeholder="Enter your message here..."
+                                            rows={10}
+                                            maxLength={2000}
+                                            className="resize-none"
+                                        />
+                                        <p className="text-sm text-muted-foreground mt-1">
+                                            {data.content.content.length}/2000 characters
+                                        </p>
                                     </div>
                                 )}
 
@@ -487,6 +513,12 @@ export default function EditTemplate({ template }: Props) {
                     confirmText="Leave"
                     cancelText="Cancel"
                     variant="destructive"
+                />
+
+                <AiGenerationDialog
+                    open={showAiModal}
+                    onOpenChange={setShowAiModal}
+                    onGenerated={(content: string) => setData('content', { ...data.content, content })}
                 />
             </div>
         </AppLayout>

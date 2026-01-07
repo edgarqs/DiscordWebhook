@@ -9,14 +9,14 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Sparkles, Zap, Bug, Layout } from 'lucide-react';
+import { Sparkles, Zap, Calendar, AtSign, Layout } from 'lucide-react';
 import { router } from '@inertiajs/react';
 
 interface WhatsNewModalProps {
     version?: string;
 }
 
-export function WhatsNewModal({ version = '1.1.0' }: WhatsNewModalProps) {
+export function WhatsNewModal({ version = '1.4.0' }: WhatsNewModalProps) {
     const [open, setOpen] = useState(false);
     const [dontShowAgain, setDontShowAgain] = useState(false);
 
@@ -38,32 +38,26 @@ export function WhatsNewModal({ version = '1.1.0' }: WhatsNewModalProps) {
     const updates = [
         {
             icon: <Sparkles className="h-5 w-5 text-purple-500" />,
-            title: 'Mensajes Programados',
-            description: 'Programa mensajes para enviar en una fecha específica o de forma recurrente (diario, semanal, mensual). Incluye soporte para archivos adjuntos.',
+            title: 'Generación con IA',
+            description: 'Usa IA (OpenAI o Gemini) para redactar tus mensajes automáticamente. ¡Pruébalo en cualquier editor!',
+            type: 'feature',
+        },
+        {
+            icon: <Calendar className="h-5 w-5 text-blue-500" />,
+            title: 'Programación de Mensajes',
+            description: 'Envía mensajes en el momento perfecto. Soporte para envíos únicos y recurrentes.',
+            type: 'feature',
+        },
+        {
+            icon: <AtSign className="h-5 w-5 text-green-500" />,
+            title: 'Soporte de Menciones',
+            description: 'Ahora puedes mencionar usuarios, roles y @everyone directamente desde el editor.',
             type: 'feature',
         },
         {
             icon: <Zap className="h-5 w-5 text-yellow-500" />,
             title: 'Variables Dinámicas',
-            description: 'Usa variables como {{date}}, {{time}}, {{username}} en tus plantillas. Se reemplazan automáticamente al enviar.',
-            type: 'feature',
-        },
-        {
-            icon: <Layout className="h-5 w-5 text-blue-500" />,
-            title: 'Diseño Compacto',
-            description: 'Cards de webhooks y templates rediseñadas con un diseño más compacto y eficiente.',
-            type: 'improvement',
-        },
-        {
-            icon: <Bug className="h-5 w-5 text-green-500" />,
-            title: 'Búsqueda Mejorada',
-            description: 'Ahora puedes buscar webhooks por nombre y etiquetas (tags).',
-            type: 'improvement',
-        },
-        {
-            icon: <Sparkles className="h-5 w-5 text-purple-500" />,
-            title: 'Botón "Leave"',
-            description: 'Los colaboradores ahora pueden abandonar webhooks y templates compartidos fácilmente.',
+            description: 'Usa {{date}}, {{time}}, {{username}} y más en tus plantillas y mensajes programados.',
             type: 'feature',
         },
     ];

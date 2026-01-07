@@ -61,7 +61,7 @@ export default function Dashboard({ stats, recentWebhooks }: DashboardProps) {
             )}
 
             {/* What's New Modal */}
-            <WhatsNewModal version="1.1.0" />
+            <WhatsNewModal version="1.4.0" />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-6">
                 {/* Header */}
