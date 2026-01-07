@@ -25,10 +25,17 @@ interface AdminProps {
         can_use_ai: boolean;
         created_at: string;
     }>;
+    settings: {
+        registration_enabled: boolean;
+        password_reset_enabled: boolean;
+        ai_provider: string;
+        openai_api_key?: string;
+        gemini_api_key?: string;
+        ai_daily_limit: number;
+    };
 }
 
-export default function AdminIndex({ stats, recentUsers }: AdminProps) {
-    const { settings } = usePage<any>().props;
+export default function AdminIndex({ stats, recentUsers, settings }: AdminProps) {
 
     const { data, setData, post, processing } = useForm({
         registration_enabled: settings.registration_enabled,

@@ -120,6 +120,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'totalMessages' => $totalMessages,
                 ],
                 'recentUsers' => $recentUsers,
+                'settings' => [
+                    'registration_enabled' => \App\Models\Setting::isRegistrationEnabled(),
+                    'password_reset_enabled' => \App\Models\Setting::isPasswordResetEnabled(),
+                    'ai_provider' => \App\Models\Setting::get('ai_provider', 'openai'),
+                    'openai_api_key' => \App\Models\Setting::get('openai_api_key', ''),
+                    'gemini_api_key' => \App\Models\Setting::get('gemini_api_key', ''),
+                    'ai_daily_limit' => \App\Models\Setting::get('ai_daily_limit', 5),
+                ],
             ]);
         })->name('admin');
 
@@ -137,11 +145,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             \App\Models\Setting::set('password_reset_enabled', $request->password_reset_enabled, 'boolean');
             \App\Models\Setting::set('ai_provider', $request->ai_provider, 'string');
 
-            if ($request->has('openai_api_key')) {
+            if ($request->filled('openai_api_key')) {
                 \App\Models\Setting::set('openai_api_key', $request->openai_api_key, 'string');
             }
 
-            if ($request->has('gemini_api_key')) {
+            if ($request->filled('gemini_api_key')) {
                 \App\Models\Setting::set('gemini_api_key', $request->gemini_api_key, 'string');
             }
 
