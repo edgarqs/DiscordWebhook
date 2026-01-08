@@ -210,4 +210,15 @@ Añade esta línea al final:
 Las Pull Requests son bienvenidas. Para cambios importantes, abre primero un issue para discutir lo que te gustaría cambiar.
 
 ## 📄 Licencia
-[MIT](https://choosealicense.com/licenses/mit/)
+
+Este proyecto está bajo la licencia **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)**.
+
+### Puedes:
+- **Compartir**: Copiar y redistribuir el material en cualquier medio o formato.
+- **Adaptar**: Remezclar, transformar y crear a partir del material.
+
+### Bajo las siguientes condiciones:
+- **Atribución**: Debes dar crédito de manera adecuada, brindar un enlace a la licencia e indicar si se han realizado cambios.
+- **No Comercial**: No puedes hacer uso del material con propósitos comerciales.
+
+Para más detalles, consulta el archivo [LICENSE](LICENSE).
