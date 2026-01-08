@@ -9,6 +9,8 @@ import { Webhook, MessageSquare, Activity, PlusIcon, ArrowRight } from 'lucide-r
 import { useState, useEffect } from 'react';
 import { Toast } from '@/components/ui/toast';
 import { WhatsNewModal } from '@/components/whats-new-modal';
+import { startDashboardTour, isTourCompleted } from '@/lib/driver-config';
+import { HelpCircle } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -47,6 +49,22 @@ export default function Dashboard({ stats, recentWebhooks }: DashboardProps) {
             setNotification({ message: page.props.flash.error, type: 'error' });
         }
     }, [page.props.flash?.success, page.props.flash?.error]);
+
+    // Track dashboard tour completion
+    const [showTourButton, setShowTourButton] = useState(!isTourCompleted('dashboard'));
+
+    // Listen for tour completion event
+    useEffect(() => {
+        const handleTourCompleted = () => {
+            setShowTourButton(false);
+        };
+        window.addEventListener('dashboard-tour-completed', handleTourCompleted);
+        return () => window.removeEventListener('dashboard-tour-completed', handleTourCompleted);
+    }, []);
+
+    const handleStartTour = () => {
+        startDashboardTour();
+    };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -73,7 +91,7 @@ export default function Dashboard({ stats, recentWebhooks }: DashboardProps) {
                         </p>
                     </div>
                     <Link href="/webhooks/create">
-                        <Button size="lg" className="gap-2">
+                        <Button size="lg" className="gap-2" data-driver="new-webhook-button">
                             <PlusIcon className="h-5 w-5" />
                             New Webhook
                         </Button>
@@ -81,7 +99,7 @@ export default function Dashboard({ stats, recentWebhooks }: DashboardProps) {
                 </div>
 
                 {/* Stats Cards */}
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid gap-4 md:grid-cols-3" data-driver="stats-cards">
                     <Card className="bg-gradient-to-br from-blue-500/10 to-purple-600/10 border-blue-500/20">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">
@@ -129,7 +147,7 @@ export default function Dashboard({ stats, recentWebhooks }: DashboardProps) {
                 </div>
 
                 {/* Recent Webhooks */}
-                <Card>
+                <Card data-driver="recent-webhooks">
                     <CardHeader>
                         <div className="flex items-center justify-between">
                             <div>
@@ -201,7 +219,7 @@ export default function Dashboard({ stats, recentWebhooks }: DashboardProps) {
                 </Card>
 
                 {/* Quick Actions */}
-                <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-4 md:grid-cols-2" data-driver="quick-actions">
                     <Link href="/webhooks">
                         <Card className="group cursor-pointer hover:shadow-lg transition-all duration-200 h-full">
                             <CardHeader>
@@ -243,6 +261,20 @@ export default function Dashboard({ stats, recentWebhooks }: DashboardProps) {
                     </Link>
                 </div>
             </div>
+
+            {/* Floating Help Button */}
+            {showTourButton && (
+                <button
+                    onClick={handleStartTour}
+                    className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 flex items-center justify-center z-50 group"
+                    aria-label="Start dashboard tour"
+                >
+                    <HelpCircle className="h-6 w-6" />
+                    <span className="absolute right-full mr-3 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                        Tour del Dashboard
+                    </span>
+                </button>
+            )}
         </AppLayout>
     );
 }
