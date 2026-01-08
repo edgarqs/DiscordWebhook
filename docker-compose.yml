@@ -8,8 +8,8 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_DB: ${DB_DATABASE:-discord_webhook_manager}
-      POSTGRES_USER: root      # Usuario cambiado a root
-      POSTGRES_PASSWORD: 1234  # Contraseña cambiada a 1234
+      POSTGRES_USER: ${POSTGRES_USER:-root}      # Usuario por defecto root
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-1234}  # Contraseña por defecto 1234
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
