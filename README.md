@@ -8,7 +8,7 @@
 
 ## 🚀 Funcionalidades Principales
 
-*   **Gestión de Webhooks**: Crea, valida y organiza tus webhooks de Discord. Importa avatares automáticamente.
+*   **Gestión de Webhooks**: Crea, valida y organiza tus webhooks de Discord.
 *   **Editor Visual Avanzado**: Diseña mensajes con Embeds, colores, autor, footer, timestamp y menciones (@user, @everyone) con vista previa en tiempo real idéntica a Discord.
 *   **Mensajes Programados**: 
     *   **Envíos Únicos**: Programa mensajes para una fecha exacta.
@@ -16,7 +16,7 @@
     *   **Archivos Adjuntos**: Sube imágenes o videos (hasta 10MB) que se envían y auto-eliminan para ahorrar espacio.
 *   **Plantillas Reutilizables**: Guarda tus diseños frecuentes con variables dinámicas (`{{username}}`, `{{date}}`).
 *   **Colaboración en Equipo**: Invita usuarios a tus webhooks con roles granulares (Admin, Editor, Viewer).
-*   **Generación con IA**: Usa OpenAI o Google Gemini para redactar contenido automáticamente (títulos, descripciones).
+*   **Generación con IA**: Usa OpenAI o Google Gemini para redactar contenido automáticamente.
 *   **Historial de Envíos**: Registro detallado de cada mensaje enviado con estado y respuesta de la API.
 *   **Interfaz Premium**: Diseño moderno con Shadcn UI, modo oscuro, animaciones y glassmorphism.
 
