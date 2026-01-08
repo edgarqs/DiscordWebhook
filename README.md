@@ -2,7 +2,7 @@
 
 **Discord Webhook Manager** es una aplicación web potente y moderna construida con Laravel y React para gestionar, programar y enviar mensajes profesionales a través de Webhooks de Discord. Permite la colaboración en equipos, el uso de plantillas avanzadas y la automatización de envíos.
 
-![Webhook Manager Cover](https://imgur.com/WQeZsX5.png)
+![Webhook Manager Cover](https://imgur.com/pJwgQyL.png)
 
 ---
 
