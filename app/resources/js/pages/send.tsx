@@ -241,10 +241,10 @@ export default function QuickSend({ webhooks, templates }: SendProps) {
                 />
             )}
 
-            <div className="p-6 space-y-6">
+            <div className="space-y-4 p-4 sm:space-y-6 sm:p-6">
                 <div>
-                    <h1 className="text-3xl font-bold">Quick Send</h1>
-                    <p className="text-muted-foreground">
+                    <h1 className="text-2xl font-bold sm:text-3xl">Quick Send</h1>
+                    <p className="text-muted-foreground text-sm sm:text-base">
                         Send a message quickly using an existing webhook or a temporary one
                     </p>
                 </div>
@@ -395,7 +395,7 @@ export default function QuickSend({ webhooks, templates }: SendProps) {
                     </Card>
 
                     {/* Message Editor and Preview - Side by Side */}
-                    <div className="grid lg:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                         {/* Message Editor */}
                         <Card>
                             <CardHeader>
@@ -430,11 +430,11 @@ export default function QuickSend({ webhooks, templates }: SendProps) {
                                 )}
 
                                 {/* Tabs */}
-                                <div className="flex gap-2 border-b">
+                                <div className="flex gap-1 border-b sm:gap-2">
                                     <button
                                         type="button"
                                         onClick={() => setActiveTab('content')}
-                                        className={`px-4 py-2 font-medium transition-colors ${activeTab === 'content'
+                                        className={`px-3 py-2.5 text-sm font-medium transition-colors sm:px-4 sm:text-base ${activeTab === 'content'
                                             ? 'border-b-2 border-primary text-primary'
                                             : 'text-muted-foreground hover:text-foreground'
                                             }`}
@@ -444,7 +444,7 @@ export default function QuickSend({ webhooks, templates }: SendProps) {
                                     <button
                                         type="button"
                                         onClick={() => setActiveTab('embeds')}
-                                        className={`px-4 py-2 font-medium transition-colors ${activeTab === 'embeds'
+                                        className={`px-3 py-2.5 text-sm font-medium transition-colors sm:px-4 sm:text-base ${activeTab === 'embeds'
                                             ? 'border-b-2 border-primary text-primary'
                                             : 'text-muted-foreground hover:text-foreground'
                                             }`}
@@ -454,7 +454,7 @@ export default function QuickSend({ webhooks, templates }: SendProps) {
                                     <button
                                         type="button"
                                         onClick={() => setActiveTab('files')}
-                                        className={`px-4 py-2 font-medium transition-colors ${activeTab === 'files'
+                                        className={`px-3 py-2.5 text-sm font-medium transition-colors sm:px-4 sm:text-base ${activeTab === 'files'
                                             ? 'border-b-2 border-primary text-primary'
                                             : 'text-muted-foreground hover:text-foreground'
                                             }`}

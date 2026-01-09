@@ -166,7 +166,7 @@ export default function WebhookSend({ webhook, templates }: SendProps) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Send Message - ${webhook.name}`} />
 
-            <div className="p-6 space-y-6">
+            <div className="space-y-4 p-4 sm:space-y-6 sm:p-6">
                 <div className="flex items-center gap-4">
                     <Link href={`/webhooks/${webhook.id}`}>
                         <Button variant="ghost" size="icon">
@@ -174,14 +174,14 @@ export default function WebhookSend({ webhook, templates }: SendProps) {
                         </Button>
                     </Link>
                     <div>
-                        <h1 className="text-3xl font-bold">Send Message</h1>
-                        <p className="text-muted-foreground">
+                        <h1 className="text-2xl font-bold sm:text-3xl">Send Message</h1>
+                        <p className="text-muted-foreground text-sm sm:text-base">
                             Send a message to <span className="font-medium">{webhook.name}</span>
                         </p>
                     </div>
                 </div>
 
-                <form onSubmit={submit} className="grid lg:grid-cols-2 gap-6">
+                <form onSubmit={submit} className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                     <Card>
                         <CardHeader>
                             <CardTitle>Message Editor</CardTitle>
@@ -216,11 +216,11 @@ export default function WebhookSend({ webhook, templates }: SendProps) {
                                 </div>
                             )}
 
-                            <div className="flex gap-2 border-b">
+                            <div className="flex gap-1 border-b sm:gap-2">
                                 <button
                                     type="button"
                                     onClick={() => setActiveTab('content')}
-                                    className={`px-4 py-2 font-medium transition-colors ${activeTab === 'content'
+                                    className={`px-3 py-2.5 text-sm font-medium transition-colors sm:px-4 sm:text-base ${activeTab === 'content'
                                         ? 'border-b-2 border-primary text-primary'
                                         : 'text-muted-foreground hover:text-foreground'
                                         }`}
@@ -230,7 +230,7 @@ export default function WebhookSend({ webhook, templates }: SendProps) {
                                 <button
                                     type="button"
                                     onClick={() => setActiveTab('embeds')}
-                                    className={`px-4 py-2 font-medium transition-colors ${activeTab === 'embeds'
+                                    className={`px-3 py-2.5 text-sm font-medium transition-colors sm:px-4 sm:text-base ${activeTab === 'embeds'
                                         ? 'border-b-2 border-primary text-primary'
                                         : 'text-muted-foreground hover:text-foreground'
                                         }`}
@@ -240,7 +240,7 @@ export default function WebhookSend({ webhook, templates }: SendProps) {
                                 <button
                                     type="button"
                                     onClick={() => setActiveTab('files')}
-                                    className={`px-4 py-2 font-medium transition-colors ${activeTab === 'files'
+                                    className={`px-3 py-2.5 text-sm font-medium transition-colors sm:px-4 sm:text-base ${activeTab === 'files'
                                         ? 'border-b-2 border-primary text-primary'
                                         : 'text-muted-foreground hover:text-foreground'
                                         }`}
@@ -590,8 +590,8 @@ export default function WebhookSend({ webhook, templates }: SendProps) {
                                 </div>
                             )}
 
-                            <div className="flex gap-3 pt-4">
-                                <Link href={`/webhooks/${webhook.id}`} className="flex-1">
+                            <div className="flex flex-col gap-3 pt-4 sm:flex-row">
+                                <Link href={`/webhooks/${webhook.id}`} className="flex-1 order-2 sm:order-1">
                                     <Button type="button" variant="outline" className="w-full" size="lg">
                                         Cancel
                                     </Button>
@@ -599,7 +599,7 @@ export default function WebhookSend({ webhook, templates }: SendProps) {
                                 <Button
                                     type="submit"
                                     disabled={processing || (!data.content && data.embeds.length === 0)}
-                                    className="flex-1"
+                                    className="flex-1 order-1 sm:order-2"
                                     size="lg"
                                 >
                                     <Send className="h-4 w-4 mr-2" />

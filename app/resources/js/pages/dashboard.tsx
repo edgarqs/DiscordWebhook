@@ -81,17 +81,17 @@ export default function Dashboard({ stats, recentWebhooks }: DashboardProps) {
             {/* What's New Modal */}
             <WhatsNewModal version="1.4.0" />
 
-            <div className="flex h-full flex-1 flex-col gap-6 p-6">
+            <div className="flex h-full flex-1 flex-col gap-4 p-4 sm:gap-6 sm:p-6">
                 {/* Header */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-                        <p className="text-muted-foreground mt-1">
+                        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Dashboard</h1>
+                        <p className="text-muted-foreground mt-1 text-sm sm:text-base">
                             Welcome back! Here's an overview of your webhooks
                         </p>
                     </div>
-                    <Link href="/webhooks/create">
-                        <Button size="lg" className="gap-2" data-driver="new-webhook-button">
+                    <Link href="/webhooks/create" className="w-full sm:w-auto">
+                        <Button size="lg" className="w-full gap-2 sm:w-auto" data-driver="new-webhook-button">
                             <PlusIcon className="h-5 w-5" />
                             New Webhook
                         </Button>
@@ -99,7 +99,7 @@ export default function Dashboard({ stats, recentWebhooks }: DashboardProps) {
                 </div>
 
                 {/* Stats Cards */}
-                <div className="grid gap-4 md:grid-cols-3" data-driver="stats-cards">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3" data-driver="stats-cards">
                     <Card className="bg-gradient-to-br from-blue-500/10 to-purple-600/10 border-blue-500/20">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">
@@ -219,7 +219,7 @@ export default function Dashboard({ stats, recentWebhooks }: DashboardProps) {
                 </Card>
 
                 {/* Quick Actions */}
-                <div className="grid gap-4 md:grid-cols-2" data-driver="quick-actions">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2" data-driver="quick-actions">
                     <Link href="/webhooks">
                         <Card className="group cursor-pointer hover:shadow-lg transition-all duration-200 h-full">
                             <CardHeader>
@@ -266,11 +266,11 @@ export default function Dashboard({ stats, recentWebhooks }: DashboardProps) {
             {showTourButton && (
                 <button
                     onClick={handleStartTour}
-                    className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 flex items-center justify-center z-50 group"
+                    className="fixed bottom-4 right-4 h-12 w-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 flex items-center justify-center z-50 group sm:bottom-6 sm:right-6 sm:h-14 sm:w-14"
                     aria-label="Start dashboard tour"
                 >
-                    <HelpCircle className="h-6 w-6" />
-                    <span className="absolute right-full mr-3 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                    <HelpCircle className="h-5 w-5 sm:h-6 sm:w-6" />
+                    <span className="absolute right-full mr-3 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none hidden sm:block">
                         Tour del Dashboard
                     </span>
                 </button>

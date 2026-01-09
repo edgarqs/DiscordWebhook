@@ -85,18 +85,18 @@ export default function ScheduledIndex({ messages, filters }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Scheduled Messages" />
 
-            <div className="flex h-full flex-1 flex-col gap-6 p-6">
+            <div className="flex h-full flex-1 flex-col gap-4 p-4 sm:gap-6 sm:p-6">
                 {/* Header */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Scheduled Messages</h1>
-                        <p className="text-muted-foreground mt-1">
+                        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Scheduled Messages</h1>
+                        <p className="text-muted-foreground mt-1 text-sm sm:text-base">
                             Manage your scheduled and recurring messages
                         </p>
                     </div>
-                    <Link href="/scheduled/create">
-                        <Button size="lg">
-                            <Plus className="h-4 w-4 mr-2" />
+                    <Link href="/scheduled/create" className="w-full sm:w-auto">
+                        <Button size="lg" className="w-full gap-2 sm:w-auto">
+                            <Plus className="h-4 w-4" />
                             Schedule Message
                         </Button>
                     </Link>

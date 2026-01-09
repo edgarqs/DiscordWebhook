@@ -191,17 +191,17 @@ export default function TemplatesIndex({ templates, filters }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Templates" />
 
-            <div className="flex h-full flex-1 flex-col gap-6 p-6">
+            <div className="flex h-full flex-1 flex-col gap-4 p-4 sm:gap-6 sm:p-6">
                 {/* Header */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Templates</h1>
-                        <p className="text-muted-foreground mt-1">
+                        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Templates</h1>
+                        <p className="text-muted-foreground mt-1 text-sm sm:text-base">
                             Manage your reusable message templates
                         </p>
                     </div>
-                    <Link href="/templates/create">
-                        <Button size="lg" className="gap-2">
+                    <Link href="/templates/create" className="w-full sm:w-auto">
+                        <Button size="lg" className="w-full gap-2 sm:w-auto">
                             <Plus className="h-5 w-5" />
                             New Template
                         </Button>
@@ -267,7 +267,7 @@ export default function TemplatesIndex({ templates, filters }: Props) {
                         </CardContent>
                     </Card>
                 ) : (
-                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                         {filteredTemplates.map((template) => (
                             <Card
                                 key={template.id}

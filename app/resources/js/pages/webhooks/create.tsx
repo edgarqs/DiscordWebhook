@@ -97,7 +97,7 @@ export default function WebhooksCreate() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Create Webhook" />
 
-            <div className="flex h-full flex-1 flex-col gap-6 p-6">
+            <div className="flex h-full flex-1 flex-col gap-4 p-4 sm:gap-6 sm:p-6">
                 {/* Header */}
                 <div className="flex items-center gap-4">
                     <Link href="/webhooks">
@@ -106,8 +106,8 @@ export default function WebhooksCreate() {
                         </Button>
                     </Link>
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Create Webhook</h1>
-                        <p className="text-muted-foreground mt-1">
+                        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Create Webhook</h1>
+                        <p className="text-muted-foreground mt-1 text-sm sm:text-base">
                             Add a new Discord webhook to your collection
                         </p>
                     </div>
@@ -131,7 +131,7 @@ export default function WebhooksCreate() {
                     <CardContent>
                         <form onSubmit={submit} className="space-y-6">
                             {/* Two Column Grid for All Fields */}
-                            <div className="grid gap-6 lg:grid-cols-2">
+                            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                                 {/* Name */}
                                 <div className="space-y-2">
                                     <Label htmlFor="name">Webhook Name *</Label>
@@ -169,7 +169,7 @@ export default function WebhooksCreate() {
                                 {/* Webhook URL - Spans both columns */}
                                 <div className="space-y-2 lg:col-span-2">
                                     <Label htmlFor="webhook_url">Discord Webhook URL *</Label>
-                                    <div className="flex gap-2">
+                                    <div className="flex flex-col gap-2 sm:flex-row">
                                         <Input
                                             id="webhook_url"
                                             data-driver="webhook-url"
@@ -186,7 +186,7 @@ export default function WebhooksCreate() {
                                             variant="outline"
                                             onClick={fetchFromDiscord}
                                             disabled={fetching || !data.webhook_url}
-                                            className="gap-2 whitespace-nowrap"
+                                            className="w-full gap-2 whitespace-nowrap sm:w-auto"
                                         >
                                             <RefreshCw className={`h-4 w-4 ${fetching ? 'animate-spin' : ''}`} />
                                             {fetching ? 'Fetching...' : 'Fetch from Discord'}
@@ -235,12 +235,12 @@ export default function WebhooksCreate() {
                             </div>
 
                             {/* Actions */}
-                            <div className="flex gap-3 pt-4 border-t">
+                            <div className="flex flex-col gap-3 border-t pt-4 sm:flex-row">
                                 <Button type="submit" data-driver="submit-button" disabled={processing} size="lg" className="flex-1">
                                     {processing ? 'Creating...' : 'Create Webhook'}
                                 </Button>
-                                <Link href="/webhooks">
-                                    <Button type="button" variant="outline" size="lg">
+                                <Link href="/webhooks" className="w-full sm:w-auto">
+                                    <Button type="button" variant="outline" size="lg" className="w-full">
                                         Cancel
                                     </Button>
                                 </Link>
