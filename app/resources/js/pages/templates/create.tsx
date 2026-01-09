@@ -56,7 +56,7 @@ interface Props {
 }
 
 export default function CreateTemplate() {
-    const { data, setData, post, processing, errors } = useForm<TemplateForm>({
+    const { data, setData, errors } = useForm<TemplateForm>({
         name: '',
         description: '',
         category: 'custom',
@@ -69,12 +69,19 @@ export default function CreateTemplate() {
 
     const [activeTab, setActiveTab] = useState<'content' | 'embeds'>('content');
     const [showAiModal, setShowAiModal] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { auth } = usePage<any>().props;
     const canUseAi = auth.user?.role === 'admin' || auth.user?.can_use_ai;
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Prevent spam-clicking by checking if already submitting
+        if (isSubmitting) return;
+
+        // Set submitting state to disable the button
+        setIsSubmitting(true);
 
         // Prepare data with custom category if needed
         const formData = {
@@ -84,7 +91,10 @@ export default function CreateTemplate() {
             content: data.content,
         };
 
-        router.post('/templates', formData);
+        // Use router.post with onFinish callback to re-enable the button
+        router.post('/templates', formData, {
+            onFinish: () => setIsSubmitting(false),
+        });
     };
 
     const addEmbed = () => {
@@ -423,9 +433,9 @@ export default function CreateTemplate() {
                                 Cancel
                             </Button>
                         </Link>
-                        <Button type="submit" disabled={processing} className="gap-2">
+                        <Button type="submit" disabled={isSubmitting} className="gap-2">
                             <Save className="h-4 w-4" />
-                            Save Template
+                            {isSubmitting ? 'Saving...' : 'Save Template'}
                         </Button>
                     </div>
                 </form>
