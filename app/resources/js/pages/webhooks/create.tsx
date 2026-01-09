@@ -1,5 +1,6 @@
-import { FormEventHandler, useState } from 'react';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { FormEventHandler, useState, useEffect } from 'react';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { startWebhookCreationTour, isTourCompleted } from '@/lib/driver-config';
 import axios from 'axios';
 import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
@@ -30,8 +31,22 @@ export default function WebhooksCreate() {
         tags: [] as string[],
     });
 
+    const page = usePage<any>();
     const [fetching, setFetching] = useState(false);
     const [fetchError, setFetchError] = useState<string | null>(null);
+
+    // Auto-start tour for first-time users
+    useEffect(() => {
+        if (!isTourCompleted('webhook-creation')) {
+            // Small delay to ensure DOM is ready
+            const timer = setTimeout(() => {
+                // Check if user has webhooks from page props
+                const hasWebhooks = page.props.auth?.user?.webhooks_count > 0;
+                startWebhookCreationTour(hasWebhooks);
+            }, 500);
+            return () => clearTimeout(timer);
+        }
+    }, []);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -122,6 +137,7 @@ export default function WebhooksCreate() {
                                     <Label htmlFor="name">Webhook Name *</Label>
                                     <Input
                                         id="name"
+                                        data-driver="webhook-name"
                                         type="text"
                                         value={data.name}
                                         onChange={(e) => setData('name', e.target.value)}
@@ -156,6 +172,7 @@ export default function WebhooksCreate() {
                                     <div className="flex gap-2">
                                         <Input
                                             id="webhook_url"
+                                            data-driver="webhook-url"
                                             type="url"
                                             value={data.webhook_url}
                                             onChange={(e) => setData('webhook_url', e.target.value)}
@@ -165,6 +182,7 @@ export default function WebhooksCreate() {
                                         />
                                         <Button
                                             type="button"
+                                            data-driver="fetch-button"
                                             variant="outline"
                                             onClick={fetchFromDiscord}
                                             disabled={fetching || !data.webhook_url}
@@ -218,7 +236,7 @@ export default function WebhooksCreate() {
 
                             {/* Actions */}
                             <div className="flex gap-3 pt-4 border-t">
-                                <Button type="submit" disabled={processing} size="lg" className="flex-1">
+                                <Button type="submit" data-driver="submit-button" disabled={processing} size="lg" className="flex-1">
                                     {processing ? 'Creating...' : 'Create Webhook'}
                                 </Button>
                                 <Link href="/webhooks">
