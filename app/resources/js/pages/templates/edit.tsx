@@ -149,19 +149,19 @@ export default function EditTemplate({ template }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Edit ${template.name}`} />
 
-            <div className="flex h-full flex-1 flex-col gap-6 p-6">
+            <div className="flex h-full flex-1 flex-col gap-4 p-4 sm:gap-6 sm:p-6">
                 {/* Header */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Edit Template</h1>
-                        <p className="text-muted-foreground mt-1">
+                        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Edit Template</h1>
+                        <p className="text-muted-foreground mt-1 text-sm sm:text-base">
                             Update your template
                         </p>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2 sm:flex-nowrap">
                         {template.is_owner && (
-                            <Link href={`/templates/${template.id}/collaborators`}>
-                                <Button variant="outline" className="gap-2">
+                            <Link href={`/templates/${template.id}/collaborators`} className="flex-1 sm:flex-none">
+                                <Button variant="outline" className="w-full gap-2 sm:w-auto">
                                     <UserPlus className="h-4 w-4" />
                                     Manage Collaborators
                                 </Button>
@@ -170,7 +170,7 @@ export default function EditTemplate({ template }: Props) {
                         {template.is_owner ? (
                             <Button
                                 variant="outline"
-                                className="gap-2 text-destructive hover:text-destructive"
+                                className="flex-1 gap-2 text-destructive hover:text-destructive sm:flex-none sm:w-auto"
                                 onClick={() => setDeleteDialog(true)}
                             >
                                 <Trash2 className="h-4 w-4" />
@@ -179,15 +179,15 @@ export default function EditTemplate({ template }: Props) {
                         ) : (
                             <Button
                                 variant="outline"
-                                className="gap-2 text-destructive hover:text-destructive"
+                                className="flex-1 gap-2 text-destructive hover:text-destructive sm:flex-none sm:w-auto"
                                 onClick={() => setLeaveDialog(true)}
                             >
                                 <LogOut className="h-4 w-4" />
                                 Leave Template
                             </Button>
                         )}
-                        <Link href="/templates">
-                            <Button variant="outline" className="gap-2">
+                        <Link href="/templates" className="w-full sm:w-auto">
+                            <Button variant="outline" className="w-full gap-2 sm:w-auto">
                                 <ArrowLeft className="h-4 w-4" />
                                 Back
                             </Button>
@@ -270,7 +270,7 @@ export default function EditTemplate({ template }: Props) {
                     </Card>
 
                     {/* Message Content */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                         {/* Editor */}
                         <Card>
                             <CardHeader>
@@ -281,11 +281,11 @@ export default function EditTemplate({ template }: Props) {
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 {/* Tabs */}
-                                <div className="flex gap-2 border-b">
+                                <div className="flex gap-1 border-b sm:gap-2">
                                     <button
                                         type="button"
                                         onClick={() => setActiveTab('content')}
-                                        className={`px-4 py-2 font-medium transition-colors ${activeTab === 'content'
+                                        className={`px-3 py-2.5 text-sm font-medium transition-colors sm:px-4 sm:text-base ${activeTab === 'content'
                                             ? 'border-b-2 border-primary text-primary'
                                             : 'text-muted-foreground hover:text-foreground'
                                             }`}
@@ -295,7 +295,7 @@ export default function EditTemplate({ template }: Props) {
                                     <button
                                         type="button"
                                         onClick={() => setActiveTab('embeds')}
-                                        className={`px-4 py-2 font-medium transition-colors ${activeTab === 'embeds'
+                                        className={`px-3 py-2.5 text-sm font-medium transition-colors sm:px-4 sm:text-base ${activeTab === 'embeds'
                                             ? 'border-b-2 border-primary text-primary'
                                             : 'text-muted-foreground hover:text-foreground'
                                             }`}
@@ -478,13 +478,13 @@ export default function EditTemplate({ template }: Props) {
                     </div>
 
                     {/* Actions */}
-                    <div className="flex justify-end gap-4">
-                        <Link href="/templates">
-                            <Button type="button" variant="outline">
+                    <div className="flex flex-col gap-3 pt-4 sm:flex-row sm:justify-end">
+                        <Link href="/templates" className="w-full sm:w-auto">
+                            <Button type="button" variant="outline" className="w-full">
                                 Cancel
                             </Button>
                         </Link>
-                        <Button type="submit" disabled={processing} className="gap-2">
+                        <Button type="submit" disabled={processing} className="w-full gap-2 sm:w-auto">
                             <Save className="h-4 w-4" />
                             Update Template
                         </Button>

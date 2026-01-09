@@ -68,8 +68,8 @@ export function SchedulePicker({
                 {/* Schedule Type */}
                 <div className="space-y-2">
                     <Label>Schedule Type</Label>
-                    <div className="grid grid-cols-2 gap-4">
-                        <label className={`flex items-center gap-2 p-4 border rounded-lg cursor-pointer ${scheduleType === 'once' ? 'border-primary bg-primary/5' : 'border-border'}`}>
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <label className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer sm:p-4 ${scheduleType === 'once' ? 'border-primary bg-primary/5' : 'border-border'}`}>
                             <input
                                 type="radio"
                                 name="schedule_type"
@@ -83,7 +83,7 @@ export function SchedulePicker({
                                 <span className="font-medium">One-time</span>
                             </div>
                         </label>
-                        <label className={`flex items-center gap-2 p-4 border rounded-lg cursor-pointer ${scheduleType === 'recurring' ? 'border-primary bg-primary/5' : 'border-border'}`}>
+                        <label className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer sm:p-4 ${scheduleType === 'recurring' ? 'border-primary bg-primary/5' : 'border-border'}`}>
                             <input
                                 type="radio"
                                 name="schedule_type"

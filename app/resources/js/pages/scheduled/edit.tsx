@@ -141,24 +141,26 @@ export default function ScheduledEdit({ scheduledMessage, webhooks, templates }:
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Edit Scheduled Message" />
 
-            <div className="flex h-full flex-1 flex-col gap-6 p-6">
+            <div className="flex h-full flex-1 flex-col gap-4 p-4 sm:gap-6 sm:p-6">
                 {/* Header */}
-                <div className="flex items-center gap-4">
-                    <Link href="/scheduled">
-                        <Button variant="ghost" size="icon">
-                            <ArrowLeft className="h-5 w-5" />
-                        </Button>
-                    </Link>
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Edit Scheduled Message</h1>
-                        <p className="text-muted-foreground mt-1">
-                            Update your scheduled message
-                        </p>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-4">
+                        <Link href="/scheduled">
+                            <Button variant="ghost" size="icon">
+                                <ArrowLeft className="h-5 w-5" />
+                            </Button>
+                        </Link>
+                        <div>
+                            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Edit Scheduled Message</h1>
+                            <p className="text-muted-foreground mt-1 text-sm sm:text-base">
+                                Update your scheduled message
+                            </p>
+                        </div>
                     </div>
                 </div>
 
                 <form onSubmit={submit} className="space-y-6">
-                    <div className="grid gap-6 lg:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                         {/* Left Column */}
                         <div className="space-y-6">
                             <Card>
@@ -313,13 +315,13 @@ export default function ScheduledEdit({ scheduledMessage, webhooks, templates }:
                     </div>
 
                     {/* Actions */}
-                    <div className="flex gap-3 justify-end border-t pt-6">
-                        <Link href="/scheduled">
-                            <Button type="button" variant="outline">
+                    <div className="flex flex-col gap-3 border-t pt-6 sm:flex-row sm:justify-end">
+                        <Link href="/scheduled" className="w-full sm:w-auto">
+                            <Button type="button" variant="outline" className="w-full">
                                 Cancel
                             </Button>
                         </Link>
-                        <Button type="submit" disabled={processing} className="gap-2">
+                        <Button type="submit" disabled={processing} className="w-full gap-2 sm:w-auto">
                             <Send className="h-4 w-4" />
                             {processing ? 'Updating...' : 'Update Message'}
                         </Button>

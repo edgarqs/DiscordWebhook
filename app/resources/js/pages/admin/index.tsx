@@ -78,7 +78,7 @@ export default function AdminIndex({ stats, recentUsers, settings }: AdminProps)
         <AppLayout>
             <Head title="Admin Panel" />
 
-            <div className="p-6 space-y-6">
+            <div className="p-4 sm:p-6 space-y-6">
                 {/* Header and Stats */}
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <Card>
@@ -136,7 +136,7 @@ export default function AdminIndex({ stats, recentUsers, settings }: AdminProps)
                                 >
                                     <div className="space-y-1">
                                         <div className="flex items-center gap-2">
-                                            <p className="text-sm font-medium leading-none">
+                                            <p className="text-sm font-medium leading-none truncate max-w-[120px] sm:max-w-none">
                                                 {user.name}
                                             </p>
                                             {user.role === 'admin' ? (
@@ -146,10 +146,10 @@ export default function AdminIndex({ stats, recentUsers, settings }: AdminProps)
                                             ) : (
                                                 <div className="flex items-center gap-1">
                                                     <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${user.can_use_ai ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'}`}>
-                                                        AI {user.can_use_ai ? 'On' : 'Off'}
+                                                        {user.can_use_ai ? 'AI' : 'No AI'}
                                                     </span>
                                                     <Switch
-                                                        className="scale-[0.6] origin-left"
+                                                        className="scale-[0.8] sm:scale-[0.6] origin-left"
                                                         checked={user.can_use_ai}
                                                         onCheckedChange={() => toggleAiAccess(user)}
                                                     />
@@ -232,7 +232,7 @@ export default function AdminIndex({ stats, recentUsers, settings }: AdminProps)
                                     </div>
                                 </div>
 
-                                <div className="space-y-6 border-l pl-8">
+                                <div className="space-y-6 sm:border-l sm:pl-8">
                                     <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">AI Configuration</h3>
                                     <div className="space-y-4">
                                         <div className="space-y-2">
@@ -300,7 +300,7 @@ export default function AdminIndex({ stats, recentUsers, settings }: AdminProps)
                             </div>
 
                             <div className="flex justify-end pt-4 border-t">
-                                <Button type="submit" disabled={processing} size="lg">
+                                <Button type="submit" disabled={processing} size="lg" className="w-full sm:w-auto">
                                     {processing ? 'Saving...' : 'Save Settings'}
                                 </Button>
                             </div>

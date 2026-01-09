@@ -93,10 +93,10 @@ export default function ShowWebhook({ webhook, stats }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={webhook.name} />
 
-            <div className="flex h-full flex-1 flex-col gap-6 p-6">
+            <div className="flex h-full flex-1 flex-col gap-4 p-4 sm:gap-6 sm:p-6">
                 {/* Header */}
-                <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-4">
+                <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
                         {webhook.avatar_url ? (
                             <img
                                 src={webhook.avatar_url}
@@ -104,13 +104,13 @@ export default function ShowWebhook({ webhook, stats }: Props) {
                                 className="h-16 w-16 rounded-full"
                             />
                         ) : (
-                            <div className="h-16 w-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                            <div className="h-16 w-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shrink-0">
                                 <MessageSquare className="h-8 w-8 text-white" />
                             </div>
                         )}
-                        <div>
-                            <div className="flex items-center gap-2">
-                                <h1 className="text-3xl font-bold tracking-tight">{webhook.name}</h1>
+                        <div className="flex flex-col items-center sm:items-start">
+                            <div className="flex flex-wrap justify-center gap-2 sm:justify-start sm:items-center">
+                                <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{webhook.name}</h1>
                                 {webhook.is_owner ? (
                                     <Badge variant="default">Owner</Badge>
                                 ) : (
@@ -120,10 +120,10 @@ export default function ShowWebhook({ webhook, stats }: Props) {
                                 )}
                             </div>
                             {webhook.description && (
-                                <p className="text-muted-foreground mt-1">{webhook.description}</p>
+                                <p className="text-muted-foreground mt-1 text-sm sm:text-base">{webhook.description}</p>
                             )}
                             {webhook.tags && webhook.tags.length > 0 && (
-                                <div className="flex gap-1 mt-2">
+                                <div className="flex flex-wrap justify-center gap-1 mt-2 sm:justify-start">
                                     {webhook.tags.map((tag, index) => (
                                         <Badge key={index} variant="outline" className="text-xs">
                                             {tag}
@@ -135,16 +135,16 @@ export default function ShowWebhook({ webhook, stats }: Props) {
                     </div>
 
                     {/* Quick Actions */}
-                    <div className="flex gap-2">
-                        <Link href={`/webhooks/${webhook.id}/send`}>
-                            <Button className="gap-2">
+                    <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap lg:justify-end">
+                        <Link href={`/webhooks/${webhook.id}/send`} className="col-span-2 sm:col-auto">
+                            <Button className="w-full gap-2">
                                 <Send className="h-4 w-4" />
                                 Send Message
                             </Button>
                         </Link>
                         {(webhook.is_owner || webhook.permission_level === 'editor' || webhook.permission_level === 'admin') && (
-                            <Link href={`/webhooks/${webhook.id}/edit`}>
-                                <Button variant="outline" className="gap-2">
+                            <Link href={`/webhooks/${webhook.id}/edit`} className="flex-1 sm:flex-none">
+                                <Button variant="outline" className="w-full gap-2">
                                     <Edit className="h-4 w-4" />
                                     Edit
                                 </Button>
@@ -152,15 +152,15 @@ export default function ShowWebhook({ webhook, stats }: Props) {
                         )}
                         {(webhook.is_owner || webhook.permission_level === 'admin') && (
                             <>
-                                <Link href={`/webhooks/${webhook.id}/collaborators`}>
-                                    <Button variant="outline" className="gap-2">
+                                <Link href={`/webhooks/${webhook.id}/collaborators`} className="flex-1 sm:flex-none">
+                                    <Button variant="outline" className="w-full gap-2">
                                         <Users className="h-4 w-4" />
                                         Share
                                     </Button>
                                 </Link>
                                 <Button
                                     variant="outline"
-                                    className="gap-2 text-destructive hover:text-destructive"
+                                    className="col-span-2 w-full gap-2 text-destructive hover:text-destructive sm:col-auto sm:w-auto"
                                     onClick={() => setDeleteDialog(true)}
                                 >
                                     <Trash2 className="h-4 w-4" />
@@ -171,7 +171,7 @@ export default function ShowWebhook({ webhook, stats }: Props) {
                         {!webhook.is_owner && (
                             <Button
                                 variant="outline"
-                                className="gap-2 text-destructive hover:text-destructive"
+                                className="col-span-2 w-full gap-2 text-destructive hover:text-destructive sm:col-auto sm:w-auto"
                                 onClick={() => setLeaveDialog(true)}
                             >
                                 <LogOut className="h-4 w-4" />
@@ -182,7 +182,7 @@ export default function ShowWebhook({ webhook, stats }: Props) {
                 </div>
 
                 {/* Statistics Cards */}
-                <div className="grid gap-4 md:grid-cols-4">
+                <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">

@@ -170,22 +170,22 @@ export default function Collaborators({
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Collaborators - ${webhook.name}`} />
 
-            <div className="flex h-full flex-1 flex-col gap-6 p-6">
+            <div className="flex h-full flex-1 flex-col gap-4 p-4 sm:gap-6 sm:p-6">
                 {/* Header */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Manage Collaborators</h1>
-                        <p className="text-muted-foreground mt-1">
+                        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Manage Collaborators</h1>
+                        <p className="text-muted-foreground mt-1 text-sm">
                             Webhook: <span className="font-medium">{webhook.name}</span>
                         </p>
-                        <p className="text-muted-foreground text-sm">
+                        <p className="text-muted-foreground text-xs sm:text-sm">
                             Owner: <span className="font-medium">{webhook.owner.name}</span>
                         </p>
                     </div>
-                    <Link href={`/webhooks/${webhook.id}`}>
-                        <Button variant="outline" className="gap-2">
+                    <Link href={`/webhooks/${webhook.id}`} className="w-full sm:w-auto">
+                        <Button variant="outline" className="w-full gap-2 sm:w-auto">
                             <ArrowLeft className="h-4 w-4" />
-                            Back to Webhook
+                            Back
                         </Button>
                     </Link>
                 </div>
@@ -247,10 +247,12 @@ export default function Collaborators({
                                 </div>
                             </div>
 
-                            <Button type="submit" disabled={processing}>
-                                <Mail className="h-4 w-4 mr-2" />
-                                Send Invitation
-                            </Button>
+                            <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+                                <Button type="submit" disabled={processing} className="w-full sm:w-auto">
+                                    <Mail className="h-4 w-4 mr-2" />
+                                    Send Invitation
+                                </Button>
+                            </div>
                         </form>
                     </CardContent>
                 </Card>
@@ -268,50 +270,87 @@ export default function Collaborators({
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Email</TableHead>
-                                        <TableHead>Permission</TableHead>
-                                        <TableHead>Sent</TableHead>
-                                        <TableHead>Expires</TableHead>
-                                        <TableHead className="text-right">Actions</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {pendingInvitations.map((invitation) => (
-                                        <TableRow key={invitation.id}>
-                                            <TableCell className="font-medium">
-                                                {invitation.invitee_email}
-                                            </TableCell>
-                                            <TableCell>
-                                                {getPermissionBadge(invitation.permission_level)}
-                                            </TableCell>
-                                            <TableCell>
-                                                {new Date(
-                                                    invitation.created_at
-                                                ).toLocaleDateString()}
-                                            </TableCell>
-                                            <TableCell>
-                                                {new Date(
-                                                    invitation.expires_at
-                                                ).toLocaleDateString()}
-                                            </TableCell>
-                                            <TableCell className="text-right">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() =>
-                                                        handleCancelInvitationClick(invitation.id)
-                                                    }
-                                                >
-                                                    <Trash2 className="h-4 w-4 text-destructive" />
-                                                </Button>
-                                            </TableCell>
+                            {/* Desktop Table */}
+                            <div className="hidden md:block">
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Email</TableHead>
+                                            <TableHead>Permission</TableHead>
+                                            <TableHead>Sent</TableHead>
+                                            <TableHead>Expires</TableHead>
+                                            <TableHead className="text-right">Actions</TableHead>
                                         </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {pendingInvitations.map((invitation) => (
+                                            <TableRow key={invitation.id}>
+                                                <TableCell className="font-medium">
+                                                    {invitation.invitee_email}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {getPermissionBadge(invitation.permission_level)}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {new Date(
+                                                        invitation.created_at
+                                                    ).toLocaleDateString()}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {new Date(
+                                                        invitation.expires_at
+                                                    ).toLocaleDateString()}
+                                                </TableCell>
+                                                <TableCell className="text-right">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() =>
+                                                            handleCancelInvitationClick(invitation.id)
+                                                        }
+                                                    >
+                                                        <Trash2 className="h-4 w-4 text-destructive" />
+                                                    </Button>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </div>
+
+                            {/* Mobile List */}
+                            <div className="space-y-4 md:hidden">
+                                {pendingInvitations.map((invitation) => (
+                                    <div key={invitation.id} className="flex flex-col gap-3 rounded-lg border p-4">
+                                        <div className="flex items-start justify-between">
+                                            <div className="space-y-1">
+                                                <p className="font-medium">{invitation.invitee_email}</p>
+                                                <div className="flex items-center gap-2">
+                                                    {getPermissionBadge(invitation.permission_level)}
+                                                </div>
+                                            </div>
+                                            <Button
+                                                variant="outline"
+                                                size="icon"
+                                                className="h-8 w-8 text-destructive"
+                                                onClick={() => handleCancelInvitationClick(invitation.id)}
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                                            <div>
+                                                <p className="font-semibold text-[10px] uppercase tracking-wider">Sent At</p>
+                                                <p>{new Date(invitation.created_at).toLocaleDateString()}</p>
+                                            </div>
+                                            <div>
+                                                <p className="font-semibold text-[10px] uppercase tracking-wider">Expires</p>
+                                                <p>{new Date(invitation.expires_at).toLocaleDateString()}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </CardContent>
                     </Card>
                 )}
@@ -336,73 +375,131 @@ export default function Collaborators({
                                 </p>
                             </div>
                         ) : (
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Name</TableHead>
-                                        <TableHead>Email</TableHead>
-                                        <TableHead>Permission</TableHead>
-                                        <TableHead>Joined</TableHead>
-                                        <TableHead className="text-right">Actions</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
+                            <>
+                                {/* Desktop Table */}
+                                <div className="hidden md:block">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead>Name</TableHead>
+                                                <TableHead>Email</TableHead>
+                                                <TableHead>Permission</TableHead>
+                                                <TableHead>Joined</TableHead>
+                                                <TableHead className="text-right">Actions</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {collaborators.map((collaborator) => (
+                                                <TableRow key={collaborator.id}>
+                                                    <TableCell className="font-medium">
+                                                        {collaborator.user.name}
+                                                    </TableCell>
+                                                    <TableCell>{collaborator.user.email}</TableCell>
+                                                    <TableCell>
+                                                        <Select
+                                                            value={collaborator.permission_level}
+                                                            onValueChange={(value) =>
+                                                                handleUpdatePermission(
+                                                                    collaborator.id,
+                                                                    value
+                                                                )
+                                                            }
+                                                        >
+                                                            <SelectTrigger className="w-32">
+                                                                <SelectValue />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectItem value="viewer">
+                                                                    Viewer
+                                                                </SelectItem>
+                                                                <SelectItem value="editor">
+                                                                    Editor
+                                                                </SelectItem>
+                                                                <SelectItem value="admin">
+                                                                    Admin
+                                                                </SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {collaborator.accepted_at
+                                                            ? new Date(
+                                                                collaborator.accepted_at
+                                                            ).toLocaleDateString()
+                                                            : 'Pending'}
+                                                    </TableCell>
+                                                    <TableCell className="text-right">
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            onClick={() =>
+                                                                handleRemoveCollaboratorClick(
+                                                                    collaborator.id
+                                                                )
+                                                            }
+                                                        >
+                                                            <Trash2 className="h-4 w-4 text-destructive" />
+                                                        </Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </div>
+
+                                {/* Mobile List */}
+                                <div className="space-y-4 md:hidden">
                                     {collaborators.map((collaborator) => (
-                                        <TableRow key={collaborator.id}>
-                                            <TableCell className="font-medium">
-                                                {collaborator.user.name}
-                                            </TableCell>
-                                            <TableCell>{collaborator.user.email}</TableCell>
-                                            <TableCell>
-                                                <Select
-                                                    value={collaborator.permission_level}
-                                                    onValueChange={(value) =>
-                                                        handleUpdatePermission(
-                                                            collaborator.id,
-                                                            value
-                                                        )
-                                                    }
-                                                >
-                                                    <SelectTrigger className="w-32">
-                                                        <SelectValue />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="viewer">
-                                                            Viewer
-                                                        </SelectItem>
-                                                        <SelectItem value="editor">
-                                                            Editor
-                                                        </SelectItem>
-                                                        <SelectItem value="admin">
-                                                            Admin
-                                                        </SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                            </TableCell>
-                                            <TableCell>
-                                                {collaborator.accepted_at
-                                                    ? new Date(
-                                                        collaborator.accepted_at
-                                                    ).toLocaleDateString()
-                                                    : 'Pending'}
-                                            </TableCell>
-                                            <TableCell className="text-right">
+                                        <div key={collaborator.id} className="flex flex-col gap-4 rounded-lg border p-4">
+                                            <div className="flex items-start justify-between">
+                                                <div className="space-y-1">
+                                                    <p className="font-medium">{collaborator.user.name}</p>
+                                                    <p className="text-sm text-muted-foreground">{collaborator.user.email}</p>
+                                                </div>
                                                 <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() =>
-                                                        handleRemoveCollaboratorClick(
-                                                            collaborator.id
-                                                        )
-                                                    }
+                                                    variant="outline"
+                                                    size="icon"
+                                                    className="h-8 w-8 text-destructive"
+                                                    onClick={() => handleRemoveCollaboratorClick(collaborator.id)}
                                                 >
-                                                    <Trash2 className="h-4 w-4 text-destructive" />
+                                                    <Trash2 className="h-4 w-4" />
                                                 </Button>
-                                            </TableCell>
-                                        </TableRow>
+                                            </div>
+                                            <div className="flex flex-col gap-3">
+                                                <div className="space-y-2">
+                                                    <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">Permission Level</Label>
+                                                    <Select
+                                                        value={collaborator.permission_level}
+                                                        onValueChange={(value) =>
+                                                            handleUpdatePermission(
+                                                                collaborator.id,
+                                                                value
+                                                            )
+                                                        }
+                                                    >
+                                                        <SelectTrigger className="w-full">
+                                                            <SelectValue />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value="viewer">Viewer</SelectItem>
+                                                            <SelectItem value="editor">Editor</SelectItem>
+                                                            <SelectItem value="admin">Admin</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                                    <span>Joined</span>
+                                                    <span>
+                                                        {collaborator.accepted_at
+                                                            ? new Date(collaborator.accepted_at).toLocaleDateString()
+                                                            : 'Pending'}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     ))}
-                                </TableBody>
-                            </Table>
+                                </div>
+                            </>
                         )}
                     </CardContent>
                 </Card>

@@ -56,13 +56,13 @@ export function VariableHelper({ variables }: VariableHelperProps) {
                     {Object.entries(variableList).map(([key, description]) => (
                         <div
                             key={key}
-                            className="flex items-center justify-between p-3 hover:bg-muted rounded-lg transition-colors"
+                            className="flex items-start justify-between gap-3 p-3 hover:bg-muted rounded-lg transition-colors"
                         >
                             <div className="flex-1 min-w-0">
-                                <code className="text-sm font-mono font-semibold text-primary">
+                                <code className="text-sm font-mono font-semibold text-primary break-all">
                                     {key}
                                 </code>
-                                <p className="text-xs text-muted-foreground mt-0.5">
+                                <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5 leading-tight">
                                     {description}
                                 </p>
                             </div>
@@ -70,16 +70,12 @@ export function VariableHelper({ variables }: VariableHelperProps) {
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => handleCopy(key)}
-                                className="ml-2 shrink-0"
+                                className="shrink-0 h-8 w-8 p-0"
                             >
                                 {copiedVariable === key ? (
-                                    <>
-                                        <Check className="h-3.5 w-3.5 text-green-500" />
-                                    </>
+                                    <Check className="h-4 w-4 text-green-500" />
                                 ) : (
-                                    <>
-                                        <Copy className="h-3.5 w-3.5" />
-                                    </>
+                                    <Copy className="h-4 w-4" />
                                 )}
                             </Button>
                         </div>

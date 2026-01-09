@@ -74,11 +74,12 @@ export function AiGenerationDialog({
                         className="resize-none"
                     />
                 </div>
-                <DialogFooter>
+                <DialogFooter className="flex-col-reverse sm:flex-row gap-2">
                     <Button
                         variant="outline"
                         onClick={() => onOpenChange(false)}
                         disabled={generating}
+                        className="w-full sm:w-auto"
                     >
                         Cancelar
                     </Button>
@@ -86,7 +87,7 @@ export function AiGenerationDialog({
                         type="button"
                         onClick={handleGenerate}
                         disabled={generating || !prompt.trim()}
-                        className="btn-ai-minimal min-w-[120px]"
+                        className="btn-ai-minimal w-full sm:min-w-[120px] sm:w-auto"
                     >
                         {generating ? (
                             <>

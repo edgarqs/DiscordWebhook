@@ -139,6 +139,28 @@
 
     body {
         @apply bg-background text-foreground;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Improve touch targets on mobile */
+    @media (max-width: 640px) {
+        button, 
+        [role="button"],
+        input[type="checkbox"],
+        input[type="radio"] {
+            min-height: 44px;
+            min-width: 44px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="url"],
+        textarea,
+        select {
+            font-size: 16px !important; /* Prevent iOS zoom on focus */
+            min-height: 44px;
+        }
     }
 }
 
@@ -146,27 +168,35 @@
 button.btn-ai-minimal {
     background: transparent !important;
     background-color: transparent !important;
-    border: 1px solid rgba(255, 255, 255, 0.6) !important;
-    border-radius: 6px !important;
+    border: 1px solid rgba(168, 85, 247, 0.4) !important;
+    border-radius: 8px !important;
     box-shadow: none !important;
     outline: none !important;
     margin: 0 !important;
-    padding: 2px 10px !important;
+    padding: 8px 16px !important;
     height: auto !important;
     width: auto !important;
     min-width: 0 !important;
     display: inline-flex !important;
     align-items: center !important;
-    gap: 4px !important;
+    justify-content: center !important;
+    gap: 8px !important;
     cursor: pointer !important;
-    transition: transform 0.2s ease !important;
+    transition: all 0.2s ease !important;
     -webkit-appearance: none !important;
     appearance: none !important;
 }
 
+@media (min-width: 640px) {
+    button.btn-ai-minimal {
+        padding: 4px 12px !important;
+    }
+}
+
 button.btn-ai-minimal:hover {
-    transform: scale(1.05) !important;
-    background: transparent !important;
+    transform: scale(1.02) !important;
+    border-color: rgba(168, 85, 247, 0.8) !important;
+    background: rgba(168, 85, 247, 0.05) !important;
 }
 
 button.btn-ai-minimal .btn-ai-text {

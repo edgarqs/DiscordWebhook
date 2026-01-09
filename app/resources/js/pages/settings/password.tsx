@@ -120,6 +120,7 @@ export default function Password() {
                                     <Button
                                         disabled={processing}
                                         data-test="update-password-button"
+                                        className="w-full"
                                     >
                                         Save password
                                     </Button>

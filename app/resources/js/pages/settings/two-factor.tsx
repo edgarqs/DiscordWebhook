@@ -72,8 +72,9 @@ export default function TwoFactor({
                                             variant="destructive"
                                             type="submit"
                                             disabled={processing}
+                                            className="w-full sm:w-auto"
                                         >
-                                            <ShieldBan /> Disable 2FA
+                                            <ShieldBan className="h-4 w-4 mr-2" /> Disable 2FA
                                         </Button>
                                     )}
                                 </Form>
@@ -93,8 +94,9 @@ export default function TwoFactor({
                                 {hasSetupData ? (
                                     <Button
                                         onClick={() => setShowSetupModal(true)}
+                                        className="w-full sm:w-auto"
                                     >
-                                        <ShieldCheck />
+                                        <ShieldCheck className="h-4 w-4 mr-2" />
                                         Continue Setup
                                     </Button>
                                 ) : (
@@ -108,8 +110,9 @@ export default function TwoFactor({
                                             <Button
                                                 type="submit"
                                                 disabled={processing}
+                                                className="w-full sm:w-auto"
                                             >
-                                                <ShieldCheck />
+                                                <ShieldCheck className="h-4 w-4 mr-2" />
                                                 Enable 2FA
                                             </Button>
                                         )}

@@ -45,24 +45,22 @@ export default function Welcome({
                     <div className="flex items-center gap-2">
                         <AppLogo />
                     </div>
-                    <nav className="flex items-center gap-4">
+                    <nav className="flex items-center gap-2 sm:gap-4">
                         {auth.user ? (
-                            <div className="flex items-center gap-4">
-                                <Link href="/dashboard">
-                                    <Button>Go to Dashboard</Button>
-                                </Link>
-                            </div>
+                            <Link href="/dashboard">
+                                <Button size="sm" className="sm:inline-flex">Dashboard</Button>
+                            </Link>
                         ) : (
-                            <div className="flex items-center gap-4">
+                            <>
                                 <Link href="/login">
-                                    <Button variant="ghost">Log in</Button>
+                                    <Button variant="ghost" size="sm">Log in</Button>
                                 </Link>
                                 {canRegister && (
                                     <Link href="/register">
-                                        <Button>Get Started</Button>
+                                        <Button size="sm">Get Started</Button>
                                     </Link>
                                 )}
-                            </div>
+                            </>
                         )}
                     </nav>
                 </div>
@@ -72,30 +70,30 @@ export default function Welcome({
                 {/* Hero Section */}
                 <section className="py-24 px-4 bg-muted/30">
                     <div className="container mx-auto text-center max-w-3xl space-y-6">
-                        <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
-                            Simplify Your Discord <br />
+                        <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold tracking-tight">
+                            Simplify Your Discord <br className="hidden sm:block" />
                             <span className="text-blue-600">Webhooks</span>
                         </h1>
-                        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                        <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto px-4 sm:px-0">
                             The ultimate tool to manage, template, and send Discord messages with ease.
                             Professional formatting without the hassle.
                         </p>
-                        <div className="flex items-center justify-center gap-4 pt-4">
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-4 px-6 sm:px-0">
                             {auth.user ? (
-                                <Link href="/dashboard">
-                                    <Button size="lg" className="h-12 px-8 text-lg">
+                                <Link href="/dashboard" className="w-full sm:w-auto">
+                                    <Button size="lg" className="w-full h-12 px-8 text-lg">
                                         Open Dashboard <LayoutGrid className="ml-2 h-5 w-5" />
                                     </Button>
                                 </Link>
                             ) : (
                                 <>
-                                    <Link href="/register">
-                                        <Button size="lg" className="h-12 px-8 text-lg">
+                                    <Link href="/register" className="w-full sm:w-auto">
+                                        <Button size="lg" className="w-full h-12 px-8 text-lg">
                                             Start for Free <Zap className="ml-2 h-5 w-5" />
                                         </Button>
                                     </Link>
-                                    <Link href="/login">
-                                        <Button variant="outline" size="lg" className="h-12 px-8 text-lg">
+                                    <Link href="/login" className="w-full sm:w-auto">
+                                        <Button variant="outline" size="lg" className="w-full h-12 px-8 text-lg">
                                             Log in
                                         </Button>
                                     </Link>
@@ -114,7 +112,7 @@ export default function Welcome({
                                 Powerful features to enhance your Discord workflow
                             </p>
                         </div>
-                        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                             {features.map((feature) => (
                                 <Card key={feature.title} className="border-none shadow-sm bg-muted/30 hover:bg-muted/50 transition-colors">
                                     <CardHeader>

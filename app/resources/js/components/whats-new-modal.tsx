@@ -75,24 +75,37 @@ export function WhatsNewModal({ version = '1.4.0' }: WhatsNewModalProps) {
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="space-y-4 py-4">
+                <div className="space-y-3 py-4 max-h-[60vh] overflow-y-auto pr-2">
                     {updates.map((update, index) => (
                         <div
                             key={index}
-                            className="flex gap-4 p-4 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                            className="flex flex-col sm:flex-row gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
                         >
-                            <div className="shrink-0 mt-0.5">
-                                {update.icon}
+                            <div className="flex items-center gap-3 sm:block">
+                                <div className="shrink-0 mt-0.5">
+                                    {update.icon}
+                                </div>
+                                <div className="sm:hidden shrink-0 ml-auto">
+                                    <span className={`
+                                        text-[10px] px-2 py-0.5 rounded-full font-medium
+                                        ${update.type === 'feature'
+                                            ? 'bg-primary/10 text-primary'
+                                            : 'bg-blue-500/10 text-blue-500'
+                                        }
+                                    `}>
+                                        {update.type === 'feature' ? 'Nuevo' : 'Mejora'}
+                                    </span>
+                                </div>
                             </div>
                             <div className="flex-1 min-w-0">
                                 <h4 className="font-semibold text-sm mb-1">
                                     {update.title}
                                 </h4>
-                                <p className="text-sm text-muted-foreground">
+                                <p className="text-sm text-muted-foreground leading-relaxed">
                                     {update.description}
                                 </p>
                             </div>
-                            <div className="shrink-0">
+                            <div className="hidden sm:block shrink-0">
                                 <span className={`
                                     text-xs px-2 py-1 rounded-full
                                     ${update.type === 'feature'
@@ -107,8 +120,8 @@ export function WhatsNewModal({ version = '1.4.0' }: WhatsNewModalProps) {
                     ))}
                 </div>
 
-                <DialogFooter className="flex-col sm:flex-row gap-4">
-                    <div className="flex items-center gap-2 mr-auto">
+                <DialogFooter className="flex-col sm:flex-row gap-3">
+                    <div className="flex items-center gap-2 mr-auto pb-2 sm:pb-0">
                         <Checkbox
                             id="dont-show"
                             checked={dontShowAgain}
@@ -116,7 +129,7 @@ export function WhatsNewModal({ version = '1.4.0' }: WhatsNewModalProps) {
                         />
                         <label
                             htmlFor="dont-show"
-                            className="text-sm text-muted-foreground cursor-pointer select-none"
+                            className="text-xs sm:text-sm text-muted-foreground cursor-pointer select-none"
                         >
                             No volver a mostrar
                         </label>
@@ -127,10 +140,11 @@ export function WhatsNewModal({ version = '1.4.0' }: WhatsNewModalProps) {
                             handleClose();
                             router.visit('/changelog');
                         }}
+                        className="w-full sm:w-auto"
                     >
-                        Ver Historial Completo
+                        Ver Historial
                     </Button>
-                    <Button onClick={handleClose}>
+                    <Button onClick={handleClose} className="w-full sm:w-auto">
                         ¡Entendido!
                     </Button>
                 </DialogFooter>

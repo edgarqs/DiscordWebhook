@@ -81,15 +81,13 @@ export default function Invitations({ invitations }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Webhook Invitations" />
 
-            <div className="flex h-full flex-1 flex-col gap-6 p-6">
+            <div className="flex h-full flex-1 flex-col gap-4 p-4 sm:gap-6 sm:p-6">
                 {/* Header */}
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Webhook Invitations</h1>
-                        <p className="text-muted-foreground mt-1">
-                            You have been invited to collaborate on the following webhooks
-                        </p>
-                    </div>
+                <div className="flex flex-col gap-2">
+                    <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Webhook Invitations</h1>
+                    <p className="text-muted-foreground mt-1 text-sm sm:text-base">
+                        You have been invited to collaborate on the following webhooks
+                    </p>
                 </div>
 
                 {invitations.length === 0 ? (
@@ -153,10 +151,10 @@ export default function Invitations({ invitations }: Props) {
                                             </span>
                                         </div>
 
-                                        <div className="flex gap-3 pt-4">
+                                        <div className="flex flex-col gap-3 pt-4 sm:flex-row">
                                             <Button
                                                 onClick={() => handleAccept(invitation.token)}
-                                                className="flex-1"
+                                                className="w-full sm:flex-1"
                                             >
                                                 <Check className="h-4 w-4 mr-2" />
                                                 Accept Invitation
@@ -164,7 +162,7 @@ export default function Invitations({ invitations }: Props) {
                                             <Button
                                                 variant="outline"
                                                 onClick={() => handleDecline(invitation.token)}
-                                                className="flex-1"
+                                                className="w-full sm:flex-1"
                                             >
                                                 <X className="h-4 w-4 mr-2" />
                                                 Decline

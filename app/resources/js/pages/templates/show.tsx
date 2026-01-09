@@ -101,16 +101,16 @@ export default function ShowTemplate({ template }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={template.name} />
 
-            <div className="flex h-full flex-1 flex-col gap-6 p-6">
+            <div className="flex h-full flex-1 flex-col gap-4 p-4 sm:gap-6 sm:p-6">
                 {/* Header */}
-                <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-4">
-                        <div className="h-16 w-16 rounded-lg bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-3xl">
+                <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
+                        <div className="h-16 w-16 rounded-lg bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-3xl shrink-0">
                             {getCategoryIcon(template.category)}
                         </div>
-                        <div>
-                            <div className="flex items-center gap-2">
-                                <h1 className="text-3xl font-bold tracking-tight">{template.name}</h1>
+                        <div className="flex flex-col items-center sm:items-start">
+                            <div className="flex flex-wrap justify-center gap-2 sm:justify-start sm:items-center">
+                                <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{template.name}</h1>
                                 {template.is_owner ? (
                                     <Badge variant="default">Owner</Badge>
                                 ) : (
@@ -120,12 +120,12 @@ export default function ShowTemplate({ template }: Props) {
                                 )}
                             </div>
                             {template.description && (
-                                <p className="text-muted-foreground mt-1">{template.description}</p>
+                                <p className="text-muted-foreground mt-1 text-sm sm:text-base">{template.description}</p>
                             )}
-                            <div className="flex items-center gap-3 mt-2">
+                            <div className="flex flex-wrap justify-center gap-3 mt-2 sm:justify-start">
                                 <Badge variant="outline" className="gap-1">
                                     {getCategoryIcon(template.category)}
-                                    {template.category}
+                                    <span className="capitalize">{template.category}</span>
                                 </Badge>
                                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
                                     <User className="h-3.5 w-3.5" />
@@ -140,36 +140,36 @@ export default function ShowTemplate({ template }: Props) {
                     </div>
 
                     {/* Quick Actions */}
-                    <div className="flex gap-2">
-                        <Link href={`/send?template=${template.id}`}>
-                            <Button className="gap-2">
+                    <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap lg:justify-end">
+                        <Link href={`/send?template=${template.id}`} className="col-span-2 sm:col-auto">
+                            <Button className="w-full gap-2">
                                 <Rocket className="h-4 w-4" />
                                 Use Template
                             </Button>
                         </Link>
                         {(template.is_owner || template.permission_level === 'edit') && (
-                            <Link href={`/templates/${template.id}/edit`}>
-                                <Button variant="outline" className="gap-2">
+                            <Link href={`/templates/${template.id}/edit`} className="flex-1 sm:flex-none">
+                                <Button variant="outline" className="w-full gap-2">
                                     <Edit className="h-4 w-4" />
                                     Edit
                                 </Button>
                             </Link>
                         )}
-                        <Button variant="outline" className="gap-2" onClick={handleDuplicate}>
+                        <Button variant="outline" className="flex-1 gap-2 sm:flex-none" onClick={handleDuplicate}>
                             <Copy className="h-4 w-4" />
                             Duplicate
                         </Button>
                         {template.is_owner && (
                             <>
-                                <Link href={`/templates/${template.id}/collaborators`}>
-                                    <Button variant="outline" className="gap-2">
+                                <Link href={`/templates/${template.id}/collaborators`} className="flex-1 sm:flex-none">
+                                    <Button variant="outline" className="w-full gap-2">
                                         <Users className="h-4 w-4" />
                                         Share
                                     </Button>
                                 </Link>
                                 <Button
                                     variant="outline"
-                                    className="gap-2 text-destructive hover:text-destructive"
+                                    className="col-span-2 w-full gap-2 text-destructive hover:text-destructive sm:col-auto sm:w-auto"
                                     onClick={() => setDeleteDialog(true)}
                                 >
                                     <Trash2 className="h-4 w-4" />
@@ -180,7 +180,7 @@ export default function ShowTemplate({ template }: Props) {
                         {!template.is_owner && (
                             <Button
                                 variant="outline"
-                                className="gap-2 text-destructive hover:text-destructive"
+                                className="col-span-2 w-full gap-2 text-destructive hover:text-destructive sm:col-auto sm:w-auto"
                                 onClick={() => setLeaveDialog(true)}
                             >
                                 <LogOut className="h-4 w-4" />
@@ -198,8 +198,8 @@ export default function ShowTemplate({ template }: Props) {
                             This is how your message will look in Discord
                         </CardDescription>
                     </CardHeader>
-                    <CardContent>
-                        <div className="bg-[#36393f] rounded-lg p-4 text-white font-['Whitney','Helvetica_Neue','Helvetica','Arial',sans-serif]">
+                    <CardContent className="p-0 sm:p-6">
+                        <div className="bg-[#36393f] sm:rounded-lg p-3 sm:p-4 text-white hover:bg-[#32353b] transition-colors font-['Whitney','Helvetica_Neue','Helvetica','Arial',sans-serif]">
                             {/* Message Content */}
                             {template.content.content && (
                                 <div className="mb-2 text-sm leading-relaxed whitespace-pre-wrap">
