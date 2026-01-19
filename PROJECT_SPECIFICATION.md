@@ -85,6 +85,14 @@ Integración de IA para la generación automática de contenido de mensajes, sug
   - **Viewer**: Solo lectura e historial.
 - **Gestión de Invitaciones**: Aceptar, rechazar o cancelar desde el dashboard ✅.
 - **Abandonar**: Los colaboradores pueden abandonar recursos compartidos ✅.
+- **Panel de Administración - Mensajes Programados**:
+  - **Vista Global**: Los administradores pueden ver todos los mensajes programados de todos los usuarios.
+  - **Filtros Avanzados**: Por usuario, estado (pendiente, pausado, completado, fallido), tipo (único/recurrente), webhook, y rango de fechas.
+  - **Gestión Completa**:
+    - Pausar/Reanudar mensajes programados de cualquier usuario.
+    - Eliminar mensajes programados (con confirmación).
+    - Ver detalles completos (contenido, archivos adjuntos, historial de envíos).
+  - **Estadísticas**: Total de mensajes programados activos, pausados, completados y fallidos por usuario.
 
 ### 7. Generación de Contenido con IA ⭐ NUEVO
 - **Motores Soportados**: OpenAI (GPT) y Google Gemini.

@@ -3,7 +3,7 @@ import { Head, useForm, usePage, router } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ConfirmDialog } from '@/components/confirm-dialog';
-import { Users, Shield, Webhook as WebhookIcon, MessageSquare, Settings as SettingsIcon, Trash2 } from 'lucide-react';
+import { Users, Shield, Webhook as WebhookIcon, MessageSquare, Settings as SettingsIcon, Trash2, Calendar } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -16,6 +16,7 @@ interface AdminProps {
         adminUsers: number;
         totalWebhooks: number;
         totalMessages: number;
+        totalScheduledMessages: number;
     };
     recentUsers: Array<{
         id: number;
@@ -118,6 +119,25 @@ export default function AdminIndex({ stats, recentUsers, settings }: AdminProps)
                         </CardContent>
                     </Card>
                 </div>
+
+                {/* Scheduled Messages Card */}
+                <Card className="cursor-pointer hover:bg-accent/50 transition-colors" onClick={() => router.visit('/admin/scheduled-messages')}>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Calendar className="h-5 w-5" />
+                            Scheduled Messages
+                        </CardTitle>
+                        <CardDescription>
+                            Manage all scheduled messages from all users
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.totalScheduledMessages}</div>
+                        <p className="text-xs text-muted-foreground mt-2">
+                            Click to view and manage
+                        </p>
+                    </CardContent>
+                </Card>
 
                 {/* Recent Users */}
                 <Card>
