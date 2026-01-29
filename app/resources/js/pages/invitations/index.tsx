@@ -11,6 +11,8 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Mail, Check, X, Clock } from 'lucide-react';
 import { type BreadcrumbItem } from '@/types';
+import { ConfirmDialog } from '@/components/confirm-dialog';
+import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -45,13 +47,26 @@ interface Props {
 }
 
 export default function Invitations({ invitations }: Props) {
+    const [declineDialogOpen, setDeclineDialogOpen] = useState(false);
+    const [tokenToDecline, setTokenToDecline] = useState<string | null>(null);
+
     const handleAccept = (token: string) => {
         router.post(`/invitations/${token}/accept`);
     };
 
-    const handleDecline = (token: string) => {
-        if (confirm('Are you sure you want to decline this invitation?')) {
-            router.post(`/invitations/${token}/decline`);
+    const handleDeclineClick = (token: string) => {
+        setTokenToDecline(token);
+        setDeclineDialogOpen(true);
+    };
+
+    const handleDeclineConfirm = () => {
+        if (tokenToDecline) {
+            router.post(`/invitations/${tokenToDecline}/decline`, {}, {
+                onFinish: () => {
+                    setDeclineDialogOpen(false);
+                    setTokenToDecline(null);
+                },
+            });
         }
     };
 
@@ -161,7 +176,7 @@ export default function Invitations({ invitations }: Props) {
                                             </Button>
                                             <Button
                                                 variant="outline"
-                                                onClick={() => handleDecline(invitation.token)}
+                                                onClick={() => handleDeclineClick(invitation.token)}
                                                 className="w-full sm:flex-1"
                                             >
                                                 <X className="h-4 w-4 mr-2" />
@@ -175,6 +190,18 @@ export default function Invitations({ invitations }: Props) {
                     </div>
                 )}
             </div>
+
+            {/* Decline Confirmation Dialog */}
+            <ConfirmDialog
+                open={declineDialogOpen}
+                onOpenChange={setDeclineDialogOpen}
+                onConfirm={handleDeclineConfirm}
+                title="Decline Invitation"
+                description="Are you sure you want to decline this invitation? You won't be able to access this webhook unless you're invited again."
+                confirmText="Decline"
+                cancelText="Cancel"
+                variant="destructive"
+            />
         </AppLayout>
     );
 }

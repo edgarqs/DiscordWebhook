@@ -10,6 +10,8 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Check, X, Clock, Webhook, User } from 'lucide-react';
+import { ConfirmDialog } from '@/components/confirm-dialog';
+import { useState } from 'react';
 
 interface WebhookData {
     id: number;
@@ -38,14 +40,22 @@ interface Props {
 }
 
 export default function ShowInvitation({ invitation }: Props) {
+    const [declineDialogOpen, setDeclineDialogOpen] = useState(false);
+
     const handleAccept = () => {
         router.post(`/invitations/${invitation.token}/accept`);
     };
 
-    const handleDecline = () => {
-        if (confirm('Are you sure you want to decline this invitation?')) {
-            router.post(`/invitations/${invitation.token}/decline`);
-        }
+    const handleDeclineClick = () => {
+        setDeclineDialogOpen(true);
+    };
+
+    const handleDeclineConfirm = () => {
+        router.post(`/invitations/${invitation.token}/decline`, {}, {
+            onFinish: () => {
+                setDeclineDialogOpen(false);
+            },
+        });
     };
 
     const getPermissionBadge = (level: string) => {
@@ -184,7 +194,7 @@ export default function ShowInvitation({ invitation }: Props) {
                                 </Button>
                                 <Button
                                     variant="outline"
-                                    onClick={handleDecline}
+                                    onClick={handleDeclineClick}
                                     size="lg"
                                     className="flex-1"
                                 >
@@ -201,6 +211,18 @@ export default function ShowInvitation({ invitation }: Props) {
                     </Card>
                 </div>
             </div>
+
+            {/* Decline Confirmation Dialog */}
+            <ConfirmDialog
+                open={declineDialogOpen}
+                onOpenChange={setDeclineDialogOpen}
+                onConfirm={handleDeclineConfirm}
+                title="Decline Invitation"
+                description="Are you sure you want to decline this invitation? You won't be able to access this webhook unless you're invited again."
+                confirmText="Decline"
+                cancelText="Cancel"
+                variant="destructive"
+            />
         </AppLayout>
     );
 }
