@@ -177,21 +177,49 @@ app/
 1.  **Servidor Web**: Nginx/Apache.
 2.  **PHP**: 8.4+.
 3.  **Base de Datos**: MySQL 8.0+.
-4.  **Supervisor**: Esencial para mantener corriendo `php artisan queue:work`.
-5.  **Cron**: Entrada obligatoria: `* * * * * php /path/to/app/artisan schedule:run`.
+4.  **Redis**: Para cache, queue y sessions (mejora significativa de rendimiento).
+5.  **Supervisor**: Esencial para mantener corriendo `php artisan queue:work --queue=default`.
+6.  **Cron**: Entrada obligatoria: `* * * * * php /path/to/app/artisan schedule:run`.
 
 ### Variables de Entorno Clave (.env)
 ```env
 APP_URL=https://tudominio.com
+
+# Base de Datos
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=discord_webhook
 DB_USERNAME=webhook_user
 DB_PASSWORD=secure_password
-QUEUE_CONNECTION=database # o redis
-MAIL_MAILER=smtp          # Para invitaciones
-# Credenciales opcionales
+
+# Redis (Cache, Queue, Sessions)
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+REDIS_CLIENT=phpredis
+
+# Cache
+CACHE_STORE=redis
+REDIS_CACHE_CONNECTION=cache
+
+# Queue (Mensajes Programados)
+QUEUE_CONNECTION=redis
+REDIS_QUEUE_CONNECTION=default
+
+# Sessions
+SESSION_DRIVER=redis
+SESSION_STORE=redis
+
+# Email (Para invitaciones)
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.example.com
+MAIL_PORT=587
+MAIL_USERNAME=your-email@example.com
+MAIL_PASSWORD=your-password
+MAIL_FROM_ADDRESS=noreply@example.com
+
+# IA (Opcional)
 OPENAI_API_KEY=...
 GEMINI_API_KEY=...
 ```
