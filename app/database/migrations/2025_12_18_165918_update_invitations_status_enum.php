@@ -12,11 +12,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // For PostgreSQL, we need to modify the column to accept new enum values
-        // Drop the existing check constraint and recreate with new values
-        DB::statement("ALTER TABLE invitations DROP CONSTRAINT IF EXISTS invitations_status_check");
-        DB::statement("ALTER TABLE invitations ALTER COLUMN status TYPE VARCHAR(20)");
-        DB::statement("ALTER TABLE invitations ADD CONSTRAINT invitations_status_check CHECK (status IN ('pending', 'accepted', 'declined', 'cancelled'))");
+        // Compatible with both PostgreSQL and MySQL
+        Schema::table('invitations', function (Blueprint $table) {
+            $table->enum('status', ['pending', 'accepted', 'declined', 'cancelled'])
+                  ->default('pending')
+                  ->change();
+        });
     }
 
     /**
@@ -25,7 +26,10 @@ return new class extends Migration
     public function down(): void
     {
         // Revert back to original enum values
-        DB::statement("ALTER TABLE invitations DROP CONSTRAINT IF EXISTS invitations_status_check");
-        DB::statement("ALTER TABLE invitations ADD CONSTRAINT invitations_status_check CHECK (status IN ('pending', 'accepted', 'rejected'))");
+        Schema::table('invitations', function (Blueprint $table) {
+            $table->enum('status', ['pending', 'accepted', 'rejected'])
+                  ->default('pending')
+                  ->change();
+        });
     }
 };
