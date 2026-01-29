@@ -113,8 +113,8 @@ Integración de IA para la generación automática de contenido de mensajes, sug
 ## 🏗️ Arquitectura Técnica
 
 ### Stack Tecnológico Actualizado
-- **Backend**: Laravel 12.x / PHP 8.4
-- **Database**: PostgreSQL
+- **Backend**: Laravel 12.x / PHP 8.4+
+- **Database**: MySQL 8.0+
 - **Frontend**: React + TypeScript + Inertia.js
 - **UI Library**: Shadcn UI + Tailwind CSS
 - **Workers**: Laravel Queue (Database/Redis) + Laravel Scheduler (Cron)
@@ -176,14 +176,19 @@ app/
 ### Entorno de Producción
 1.  **Servidor Web**: Nginx/Apache.
 2.  **PHP**: 8.4+.
-3.  **Base de Datos**: PostgreSQL.
+3.  **Base de Datos**: MySQL 8.0+.
 4.  **Supervisor**: Esencial para mantener corriendo `php artisan queue:work`.
 5.  **Cron**: Entrada obligatoria: `* * * * * php /path/to/app/artisan schedule:run`.
 
 ### Variables de Entorno Clave (.env)
 ```env
 APP_URL=https://tudominio.com
-DB_CONNECTION=pgsql
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=discord_webhook
+DB_USERNAME=webhook_user
+DB_PASSWORD=secure_password
 QUEUE_CONNECTION=database # o redis
 MAIL_MAILER=smtp          # Para invitaciones
 # Credenciales opcionales
