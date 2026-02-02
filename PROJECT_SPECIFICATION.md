@@ -110,6 +110,7 @@ Integración de IA para la generación automática de contenido de mensajes, sug
 - **Frontend**: React + TypeScript + Inertia.js
 - **UI Library**: Shadcn UI + Tailwind CSS
 - **Workers**: Laravel Queue (Database/Redis) + Laravel Scheduler (Cron)
+- **Analytics**: Matomo Tag Manager (opcional, configurado via variables de entorno)
 
 ### Estructura de Archivos (Clave)
 ```
@@ -178,6 +179,10 @@ APP_URL=https://tudominio.com
 DB_CONNECTION=pgsql
 QUEUE_CONNECTION=database # o redis
 MAIL_MAILER=smtp          # Para invitaciones
+
+# Analytics (Opcional)
+VITE_MATOMO_CONTAINER_URL=https://your-matomo.com/js/container_XXXXXX.js
+
 # Credenciales opcionales
 OPENAI_API_KEY=...
 GEMINI_API_KEY=...
@@ -226,6 +231,7 @@ GEMINI_API_KEY=...
 
 ## 📝 Changelog Reciente
 
+- **v1.5 (2026-02-02)**: Integración de Matomo Tag Manager para analytics.
 - **v1.4 (2026-01-XX)**: Generación de contenido con IA (OpenAI/Gemini) y límites de uso.
 - **v1.3**: Soporte para menciones (@user, @role) y mejoras de UI.
 - **v1.2**: Sistema completo de Mensajes Programados (Recurring/One-time).
