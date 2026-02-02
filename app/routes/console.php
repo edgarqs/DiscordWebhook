@@ -10,6 +10,3 @@ Artisan::command('inspire', function () {
 
 // Schedule the processing of scheduled messages every minute
 Schedule::command('scheduled-messages:process')->everyMinute();
-
-// Para UptimeKuma
-Schedule::command('monitor:push')->everyMinute();
