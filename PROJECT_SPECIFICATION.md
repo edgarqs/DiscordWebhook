@@ -85,6 +85,14 @@ Integración de IA para la generación automática de contenido de mensajes, sug
   - **Viewer**: Solo lectura e historial.
 - **Gestión de Invitaciones**: Aceptar, rechazar o cancelar desde el dashboard ✅.
 - **Abandonar**: Los colaboradores pueden abandonar recursos compartidos ✅.
+- **Panel de Administración - Mensajes Programados**:
+  - **Vista Global**: Los administradores pueden ver todos los mensajes programados de todos los usuarios.
+  - **Filtros Avanzados**: Por usuario, estado (pendiente, pausado, completado, fallido), tipo (único/recurrente), webhook, y rango de fechas.
+  - **Gestión Completa**:
+    - Pausar/Reanudar mensajes programados de cualquier usuario.
+    - Eliminar mensajes programados (con confirmación).
+    - Ver detalles completos (contenido, archivos adjuntos, historial de envíos).
+  - **Estadísticas**: Total de mensajes programados activos, pausados, completados y fallidos por usuario.
 
 ### 7. Generación de Contenido con IA ⭐ NUEVO
 - **Motores Soportados**: OpenAI (GPT) y Google Gemini.
@@ -105,8 +113,8 @@ Integración de IA para la generación automática de contenido de mensajes, sug
 ## 🏗️ Arquitectura Técnica
 
 ### Stack Tecnológico Actualizado
-- **Backend**: Laravel 12.x / PHP 8.4
-- **Database**: PostgreSQL
+- **Backend**: Laravel 12.x / PHP 8.4+
+- **Database**: MySQL 8.0+
 - **Frontend**: React + TypeScript + Inertia.js
 - **UI Library**: Shadcn UI + Tailwind CSS
 - **Workers**: Laravel Queue (Database/Redis) + Laravel Scheduler (Cron)
@@ -169,9 +177,10 @@ app/
 ### Entorno de Producción
 1.  **Servidor Web**: Nginx/Apache.
 2.  **PHP**: 8.4+.
-3.  **Base de Datos**: PostgreSQL.
-4.  **Supervisor**: Esencial para mantener corriendo `php artisan queue:work`.
-5.  **Cron**: Entrada obligatoria: `* * * * * php /path/to/app/artisan schedule:run`.
+3.  **Base de Datos**: MySQL 8.0+.
+4.  **Redis**: Para cache, queue y sessions (mejora significativa de rendimiento).
+5.  **Supervisor**: Esencial para mantener corriendo `php artisan queue:work --queue=default`.
+6.  **Cron**: Entrada obligatoria: `* * * * * php /path/to/app/artisan schedule:run`.
 
 ### Variables de Entorno Clave (.env)
 ```env
@@ -179,10 +188,6 @@ APP_URL=https://tudominio.com
 DB_CONNECTION=pgsql
 QUEUE_CONNECTION=database # o redis
 MAIL_MAILER=smtp          # Para invitaciones
-
-# Analytics (Opcional)
-VITE_MATOMO_CONTAINER_URL=https://your-matomo.com/js/container_XXXXXX.js
-
 # Credenciales opcionales
 OPENAI_API_KEY=...
 GEMINI_API_KEY=...

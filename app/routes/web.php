@@ -110,6 +110,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             $adminUsers = \App\Models\User::where('role', 'admin')->count();
             $totalWebhooks = \App\Models\Webhook::count();
             $totalMessages = \App\Models\MessageHistory::count();
+            $totalScheduledMessages = \App\Models\ScheduledMessage::count();
             $recentUsers = \App\Models\User::latest()->limit(10)->get();
 
             return Inertia::render('admin/index', [
@@ -118,6 +119,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'adminUsers' => $adminUsers,
                     'totalWebhooks' => $totalWebhooks,
                     'totalMessages' => $totalMessages,
+                    'totalScheduledMessages' => $totalScheduledMessages,
                 ],
                 'recentUsers' => $recentUsers,
                 'settings' => [
@@ -173,6 +175,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         })->name('admin.users.destroy');
 
         Route::post('admin/users/{user}/toggle-ai', [\App\Http\Controllers\AiController::class, 'toggleAccess'])->name('admin.users.toggle-ai');
+
+        // Admin Scheduled Messages Management
+        Route::get('admin/scheduled-messages', [\App\Http\Controllers\AdminScheduledMessageController::class, 'index'])
+            ->name('admin.scheduled.index');
+        Route::get('admin/scheduled-messages/{scheduled}', [\App\Http\Controllers\AdminScheduledMessageController::class, 'show'])
+            ->name('admin.scheduled.show');
+        Route::post('admin/scheduled-messages/{scheduled}/pause', [\App\Http\Controllers\AdminScheduledMessageController::class, 'pause'])
+            ->name('admin.scheduled.pause');
+        Route::post('admin/scheduled-messages/{scheduled}/resume', [\App\Http\Controllers\AdminScheduledMessageController::class, 'resume'])
+            ->name('admin.scheduled.resume');
+        Route::delete('admin/scheduled-messages/{scheduled}', [\App\Http\Controllers\AdminScheduledMessageController::class, 'destroy'])
+            ->name('admin.scheduled.destroy');
     });
 
     // AI Generation Route
