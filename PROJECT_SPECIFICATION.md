@@ -108,6 +108,15 @@ Integración de IA para la generación automática de contenido de mensajes, sug
 - **Categorías**: Features, Improvements, Fixes.
 - **Modal "What's New"**: Notificación automática de nuevas versiones al usuario.
 
+### 9. Sistema de Monitoreo (Health Check) ⭐ NUEVO
+- **Heartbeat con Uptime Kuma**:
+  - Comando dedicado `monitor:push` para verificar la salud del sistema.
+  - Verificaciones automáticas de:
+    - Conexión a la Base de Datos.
+    - Respuesta HTTP local de la aplicación.
+  - Integración mediante URL de push (webhook) de Uptime Kuma.
+  - Ejecución programada cada minuto vía Laravel Scheduler.
+
 ---
 
 ## 🏗️ Arquitectura Técnica
@@ -124,7 +133,8 @@ Integración de IA para la generación automática de contenido de mensajes, sug
 app/
 ├── app/
 │   ├── Console/Commands/
-│   │   └── ProcessScheduledMessages.php (Procesa envíos programados)
+│   │   ├── ProcessScheduledMessages.php (Procesa envíos programados)
+│   │   └── UptimeKumaPush.php (Verifica salud y envía heartbeat)
 │   ├── Jobs/
 │   │   └── SendScheduledMessage.php (Ejecuta el envío a Discord)
 │   ├── Services/
@@ -222,6 +232,9 @@ MAIL_FROM_ADDRESS=noreply@example.com
 # IA (Opcional)
 OPENAI_API_KEY=...
 GEMINI_API_KEY=...
+
+# Monitoreo
+UPTIME_KUMA_PUSH_URL=https://uptime.example.com/api/push/...
 ```
 
 ---
@@ -267,6 +280,7 @@ GEMINI_API_KEY=...
 
 ## 📝 Changelog Reciente
 
+- **v1.5 (2026-02-02)**: Sistema de Monitoreo con Uptime Kuma (heartbeat automático).
 - **v1.4 (2026-01-XX)**: Generación de contenido con IA (OpenAI/Gemini) y límites de uso.
 - **v1.3**: Soporte para menciones (@user, @role) y mejoras de UI.
 - **v1.2**: Sistema completo de Mensajes Programados (Recurring/One-time).
